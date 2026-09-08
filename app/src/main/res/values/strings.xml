@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fale binauralne</string>
+    <string name="mode_relax">Relaks</string>
+    <string name="mode_focus">Skupienie</string>
+    <string name="mode_sleep">Sen</string>
+    <string name="mode_meditation">Medytacja</string>
+    <string name="mode_custom">Niestandardowy</string>
+    <string name="mode_relax_desc">Fale alfa (~9 Hz) — spokój i odprężenie</string>
+    <string name="mode_focus_desc">Fale beta (~16 Hz) — koncentracja i jasność umysłu</string>
+    <string name="mode_sleep_desc">Fale delta (~3 Hz) — głęboki sen i regeneracja</string>
+    <string name="mode_meditation_desc">Fale theta (~6 Hz) — medytacja i introspekcja</string>
+    <string name="mode_custom_desc">Ustaw własną częstotliwość nośną i binauralną</string>
+    <string name="home_choose_mode">Wybierz tryb</string>
+    <string name="play">Odtwarzaj</string>
+    <string name="pause">Pauza</string>
+    <string name="stop">Stop</string>
+    <string name="volume">Głośność</string>
+    <string name="headphones_tip">Załóż słuchawki stereo — efekt binauralny wymaga osobnych kanałów L/R.</string>
+    <string name="freq_summary">L %1$s Hz  ·  R %2$s Hz  ·  Δ %3$s Hz</string>
+    <string name="settings">Ustawienia</string>
+    <string name="settings_section_playback">Odtwarzanie</string>
+    <string name="settings_mix_title">Miksuj z innymi aplikacjami</string>
+    <string name="settings_mix_desc">Nie pauzuj Spotify ani innych odtwarzaczy (domyślnie włączone)</string>
+    <string name="settings_keep_screen_on">Nie wyłączaj ekranu</string>
+    <string name="settings_keep_screen_on_desc">Ekran pozostaje włączony podczas odtwarzania</string>
+    <string name="about">O aplikacji</string>
+    <string name="about_disclaimer">Ta aplikacja nie jest wyrobem medycznym i nie stanowi porady medycznej. Nie diagnozuje, nie leczy ani nie zapobiega żadnym chorobom. W razie problemów zdrowotnych skonsultuj się z lekarzem.</string>
+    <string name="about_version">Wersja %1$s</string>
+    <string name="notification_channel_name">Odtwarzanie binauralne</string>
+    <string name="notification_channel_desc">Powiadomienie podczas odtwarzania fal binauralnych</string>
+    <string name="notification_playing">Odtwarzanie: %1$s</string>
+    <string name="notification_paused">Wstrzymano: %1$s</string>
+    <string name="notification_stop">Stop</string>
+    <string name="carrier_freq">Nośna (Hz)</string>
+    <string name="beat_freq">Binaural (Hz)</string>
+    <string name="permission_notification_rationale">Powiadomienie pozwala zatrzymać odtwarzanie, gdy ekran jest wyłączony.</string>
+    <string name="back">Wstecz</string>
+</resources>

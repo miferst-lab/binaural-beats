@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Soft concentric arcs suggesting binaural waves -->
+    <path
+        android:fillColor="#7C9CBF"
+        android:pathData="M54,30c-13.3,0 -24,10.7 -24,24s10.7,24 24,24 24,-10.7 24,-24 -10.7,-24 -24,-24zM54,70c-8.8,0 -16,-7.2 -16,-16s7.2,-16 16,-16 16,7.2 16,16 -7.2,16 -16,16z" />
+    <path
+        android:fillColor="#6BA3A0"
+        android:pathData="M54,42c-6.6,0 -12,5.4 -12,12s5.4,12 12,12 12,-5.4 12,-12 -5.4,-12 -12,-12zM54,58c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4 4,1.8 4,4 -1.8,4 -4,4z" />
+    <path
+        android:fillColor="#9B8EC4"
+        android:pathData="M30,54h8v4h-8zM70,54h8v4h-8z" />
+</vector>
