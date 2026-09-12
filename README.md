@@ -32,13 +32,10 @@ Lewy kanał ≈ carrier − beat/2, prawy ≈ carrier + beat/2.
 
 ## Spotify / współistnienie z muzyką (ważne)
 
-Aplikacja **nie** przejmuje wyłącznego fokusu mediów (`AUDIOFOCUS_GAIN`), który pauzowałby Spotify.
+Dźwięk idzie na **strumień mediów** (ten sam suwak głośności co Spotify), PCM 16-bit.
 
-Zamiast tego:
-
-1. `AudioAttributes`: `USAGE_ASSISTANCE_SONIFICATION` + `CONTENT_TYPE_SONIFICATION` (nie `USAGE_MEDIA` / music).
-2. Fokus: `AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK` — inne odtwarzacze mogą grać dalej (ew. lekko ściszone).
-3. W ustawieniach przełącznik **„Miksuj z innymi aplikacjami”** (domyślnie włączony). Wyłączenie przełącza atrybuty na media/music (agresywniejsze wobec innych playerów).
+- **Miksuj z innymi aplikacjami** (domyślnie włączone): nie bierzemy audio focus — Spotify gra dalej, tony nakładają się pod muzyką.
+- Miks wyłączony: `AUDIOFOCUS_GAIN` — inne odtwarzacze pauzują.
 
 Szczegóły w kodzie: `BinauralAudioEngine`, `BinauralPlaybackService`.
 

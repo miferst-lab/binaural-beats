@@ -6,40 +6,41 @@ import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.os.Build
+import android.util.Log
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import kotlin.math.PI
 import kotlin.math.sin
 
 /**
- * Real-time stereo sine generator via [AudioTrack] (PCM float when available, else 16-bit).
+ * Real-time stereo sine generator via [AudioTrack] (PCM 16-bit; float only as fallback).
  *
  * Left and right channels use slightly different frequencies so the perceived
  * binaural beat equals |fL − fR|. Generation runs on a dedicated thread.
  *
  * Audio focus / Spotify coexistence:
- * Uses USAGE_ASSISTANCE_SONIFICATION + CONTENT_TYPE_SONIFICATION and requests
- * AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK (or none when mixWithOtherApps), so Spotify
- * and other music apps are not paused. See README.
+ * Always uses USAGE_MEDIA so output follows the **media** volume slider
+ * (USAGE_ASSISTANCE_SONIFICATION is often routed to a muted notification stream).
+ * When mixWithOtherApps is on we do **not** request exclusive focus, so Spotify
+ * can keep playing. When mix is off we request AUDIOFOCUS_GAIN.
  */
 class BinauralAudioEngine(
-    private val sampleRate: Int = 44100
+    private val preferredSampleRate: Int = 44100
 ) {
     @Volatile private var leftFreqHz: Double = 215.5
     @Volatile private var rightFreqHz: Double = 224.5
-    @Volatile private var amplitude: Float = 0.35f
+    @Volatile private var amplitude: Float = 0.45f
     @Volatile private var running = false
     @Volatile private var paused = false
 
     private var track: AudioTrack? = null
     private var thread: Thread? = null
+    private var sampleRate: Int = preferredSampleRate
+    private var useFloat: Boolean = false
 
     private var phaseL = 0.0
     private var phaseR = 0.0
 
     private val lock = Any()
-
-    private val useFloat: Boolean =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
 
     fun setFrequencies(leftHz: Float, rightHz: Float) {
         leftFreqHz = leftHz.toDouble().coerceIn(
@@ -54,7 +55,6 @@ class BinauralAudioEngine(
 
     fun setVolume(volume: Float) {
         amplitude = FrequencyMath.clampVolume(volume)
-        // Amplitude is applied in the PCM buffer; keep track gain at unity.
         synchronized(lock) {
             try {
                 track?.setVolume(1f)
@@ -70,12 +70,12 @@ class BinauralAudioEngine(
     fun isSessionActive(): Boolean = running
 
     /**
-     * @param mixWithOtherApps when true, use sonification usage so we don't fight Spotify.
+     * @param mixWithOtherApps unused for routing (always media); kept for API stability.
+     * Focus is handled by the service.
      */
     fun start(mixWithOtherApps: Boolean = true) {
         synchronized(lock) {
             if (running) {
-                // Already generating — ensure AudioTrack is playing (fixes pause→play race).
                 paused = false
                 try {
                     track?.play()
@@ -84,54 +84,32 @@ class BinauralAudioEngine(
                 }
                 return
             }
+
+            val created = createInitializedTrack()
+            if (created == null) {
+                Log.e(TAG, "AudioTrack failed to initialize — no sound")
+                return
+            }
+
             running = true
             paused = false
             phaseL = 0.0
             phaseR = 0.0
-
-            val channelConfig = AudioFormat.CHANNEL_OUT_STEREO
-            val encoding = if (useFloat) {
-                AudioFormat.ENCODING_PCM_FLOAT
-            } else {
-                AudioFormat.ENCODING_PCM_16BIT
-            }
-
-            val minBuf = AudioTrack.getMinBufferSize(sampleRate, channelConfig, encoding)
-            val bufferSize = (minBuf * 2).coerceAtLeast(sampleRate / 10 * if (useFloat) 8 else 4)
-
-            val attrsBuilder = AudioAttributes.Builder()
-            if (mixWithOtherApps) {
-                attrsBuilder
-                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            } else {
-                attrsBuilder
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            }
-
-            val format = AudioFormat.Builder()
-                .setSampleRate(sampleRate)
-                .setEncoding(encoding)
-                .setChannelMask(channelConfig)
-                .build()
-
-            val localTrack = AudioTrack.Builder()
-                .setAudioAttributes(attrsBuilder.build())
-                .setAudioFormat(format)
-                .setBufferSizeInBytes(bufferSize)
-                .setTransferMode(AudioTrack.MODE_STREAM)
-                .build()
-
-            track = localTrack
-            localTrack.play()
+            track = created
+            created.setVolume(1f)
+            created.play()
+            Log.i(
+                TAG,
+                "AudioTrack started state=${created.state} play=${created.playState} " +
+                    "sr=$sampleRate float=$useFloat mix=$mixWithOtherApps"
+            )
 
             thread = Thread({
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO)
                 if (useFloat) {
-                    writeLoopFloat(bufferSize)
+                    writeLoopFloat(created.bufferSizeInFrames.coerceAtLeast(256))
                 } else {
-                    writeLoop16(bufferSize)
+                    writeLoop16(created.bufferSizeInFrames.coerceAtLeast(256))
                 }
             }, "BinauralAudioEngine").also { it.start() }
         }
@@ -170,7 +148,6 @@ class BinauralAudioEngine(
             track = null
             thread = null
 
-            // Stop/flush first so a blocked WRITE_BLOCKING unblocks before join.
             if (localTrack != null) {
                 try {
                     localTrack.pause()
@@ -199,9 +176,61 @@ class BinauralAudioEngine(
         }
     }
 
-    private fun writeLoopFloat(bufferSizeBytes: Int) {
-        // stereo float: 4 bytes * 2 channels per frame
-        val framesPerChunk = (bufferSizeBytes / 8).coerceAtLeast(256)
+    private fun createInitializedTrack(): AudioTrack? {
+        val rates = intArrayOf(preferredSampleRate, 48000, 44100).distinct()
+        // 16-bit first: PCM float is silent or ERROR_BAD_VALUE on many OEM devices.
+        val encodings = intArrayOf(AudioFormat.ENCODING_PCM_16BIT, AudioFormat.ENCODING_PCM_FLOAT)
+
+        for (rate in rates) {
+            for (encoding in encodings) {
+                val channelConfig = AudioFormat.CHANNEL_OUT_STEREO
+                val minBuf = AudioTrack.getMinBufferSize(rate, channelConfig, encoding)
+                if (minBuf <= 0) {
+                    Log.w(TAG, "getMinBufferSize failed rate=$rate enc=$encoding rc=$minBuf")
+                    continue
+                }
+                val bytesPerFrame = if (encoding == AudioFormat.ENCODING_PCM_FLOAT) 8 else 4
+                val bufferSize = (minBuf * 2).coerceAtLeast(rate / 10 * bytesPerFrame)
+
+                val attrs = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+
+                val format = AudioFormat.Builder()
+                    .setSampleRate(rate)
+                    .setEncoding(encoding)
+                    .setChannelMask(channelConfig)
+                    .build()
+
+                val localTrack = try {
+                    AudioTrack.Builder()
+                        .setAudioAttributes(attrs)
+                        .setAudioFormat(format)
+                        .setBufferSizeInBytes(bufferSize)
+                        .setTransferMode(AudioTrack.MODE_STREAM)
+                        .build()
+                } catch (e: IllegalArgumentException) {
+                    Log.w(TAG, "AudioTrack.Builder failed rate=$rate enc=$encoding", e)
+                    continue
+                }
+
+                if (localTrack.state != AudioTrack.STATE_INITIALIZED) {
+                    Log.w(TAG, "AudioTrack not initialized rate=$rate enc=$encoding state=${localTrack.state}")
+                    localTrack.release()
+                    continue
+                }
+
+                sampleRate = rate
+                useFloat = encoding == AudioFormat.ENCODING_PCM_FLOAT
+                return localTrack
+            }
+        }
+        return null
+    }
+
+    private fun writeLoopFloat(framesPerChunkHint: Int) {
+        val framesPerChunk = framesPerChunkHint.coerceIn(256, 4096)
         val buffer = FloatArray(framesPerChunk * 2)
         val twoPi = 2.0 * PI
 
@@ -217,17 +246,14 @@ class BinauralAudioEngine(
 
             val freqL = leftFreqHz
             val freqR = rightFreqHz
-            // Soft ceiling: keep headroom so slider 100% does not hard-clip on some DACs.
             val amp = (amplitude * 0.9f).coerceIn(0f, 0.9f)
             val stepL = twoPi * freqL / sampleRate
             val stepR = twoPi * freqR / sampleRate
 
             var i = 0
             while (i < framesPerChunk) {
-                val sampleL = (sin(phaseL) * amp).toFloat()
-                val sampleR = (sin(phaseR) * amp).toFloat()
-                buffer[i * 2] = sampleL
-                buffer[i * 2 + 1] = sampleR
+                buffer[i * 2] = (sin(phaseL) * amp).toFloat()
+                buffer[i * 2 + 1] = (sin(phaseR) * amp).toFloat()
                 phaseL += stepL
                 phaseR += stepR
                 if (phaseL >= twoPi) phaseL -= twoPi
@@ -241,12 +267,15 @@ class BinauralAudioEngine(
             } catch (_: IllegalStateException) {
                 break
             }
-            if (written < 0) break
+            if (written < 0) {
+                Log.e(TAG, "AudioTrack.write float failed: $written")
+                break
+            }
         }
     }
 
-    private fun writeLoop16(bufferSizeBytes: Int) {
-        val framesPerChunk = (bufferSizeBytes / 4).coerceAtLeast(256)
+    private fun writeLoop16(framesPerChunkHint: Int) {
+        val framesPerChunk = framesPerChunkHint.coerceIn(256, 4096)
         val buffer = ShortArray(framesPerChunk * 2)
         val twoPi = 2.0 * PI
 
@@ -287,14 +316,50 @@ class BinauralAudioEngine(
             } catch (_: IllegalStateException) {
                 break
             }
-            if (written < 0) break
+            if (written < 0) {
+                Log.e(TAG, "AudioTrack.write 16-bit failed: $written")
+                break
+            }
         }
     }
 
     companion object {
+        private const val TAG = "BinauralAudio"
+
         /**
-         * Request audio focus that allows mixing / ducking under music apps.
-         * Stores the request on API 26+ so [abandonMixableFocus] can release it.
+         * Exclusive media focus — pauses other music apps.
+         */
+        fun requestExclusiveFocus(
+            audioManager: AudioManager,
+            holder: FocusHolder
+        ): Int {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    .setAcceptsDelayedFocusGain(false)
+                    .setWillPauseWhenDucked(false)
+                    .setOnAudioFocusChangeListener { /* keep generating; service owns lifecycle */ }
+                    .build()
+                holder.focusRequest = focusRequest
+                audioManager.requestAudioFocus(focusRequest)
+            } else {
+                @Suppress("DEPRECATION")
+                audioManager.requestAudioFocus(
+                    null,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN
+                )
+            }
+        }
+
+        /**
+         * Soft request that ducks others slightly. Prefer skipping focus entirely
+         * when mixing under Spotify — this is only used if we want a polite duck.
          */
         fun requestMixableFocus(
             audioManager: AudioManager,
@@ -306,8 +371,8 @@ class BinauralAudioEngine(
                 )
                     .setAudioAttributes(
                         AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .build()
                     )
                     .setAcceptsDelayedFocusGain(false)

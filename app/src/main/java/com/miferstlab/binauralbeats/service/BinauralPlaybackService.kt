@@ -78,10 +78,11 @@ class BinauralPlaybackService : Service() {
                 mixWithOtherApps = newMix
 
                 val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-                if (mixWithOtherApps) {
-                    BinauralAudioEngine.requestMixableFocus(am, focusHolder)
-                } else {
-                    BinauralAudioEngine.abandonMixableFocus(am, focusHolder)
+                // Mix ON: do not steal audio focus — Spotify keeps playing, both on STREAM_MUSIC.
+                // Mix OFF: exclusive media focus pauses other players.
+                BinauralAudioEngine.abandonMixableFocus(am, focusHolder)
+                if (!mixWithOtherApps) {
+                    BinauralAudioEngine.requestExclusiveFocus(am, focusHolder)
                 }
 
                 if (engine.isSessionActive()) {
