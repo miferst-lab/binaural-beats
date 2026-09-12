@@ -19,6 +19,11 @@
     <string name="headphones_tip">Załóż słuchawki stereo — efekt binauralny wymaga osobnych kanałów L/R.</string>
     <string name="freq_summary">L %1$s Hz  ·  R %2$s Hz  ·  Δ %3$s Hz</string>
     <string name="settings">Ustawienia</string>
+    <string name="settings_section_appearance">Wygląd</string>
+    <string name="appearance_night">Nocny</string>
+    <string name="appearance_system">System</string>
+    <string name="appearance_light">Jasny</string>
+    <string name="appearance_desc">Nocny to domyślny galaktyczny wygląd. System podąża za motywem urządzenia.</string>
     <string name="settings_section_playback">Odtwarzanie</string>
     <string name="settings_mix_title">Miksuj z innymi aplikacjami</string>
     <string name="settings_mix_desc">Nie pauzuj Spotify ani innych odtwarzaczy (domyślnie włączone)</string>

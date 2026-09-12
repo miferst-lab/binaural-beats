@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.PlaybackState
 import com.miferstlab.binauralbeats.ui.screens.HomeScreen
@@ -43,9 +45,15 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            BinauralBeatsTheme {
-                val state by viewModel.state.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val systemDark = isSystemInDarkTheme()
+            val darkTheme = when (state.appearanceMode) {
+                AppearanceMode.NIGHT -> true
+                AppearanceMode.LIGHT -> false
+                AppearanceMode.SYSTEM -> systemDark
+            }
 
+            BinauralBeatsTheme(darkTheme = darkTheme) {
                 LaunchedEffect(state.keepScreenOn) {
                     if (state.keepScreenOn) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -65,7 +73,8 @@ class MainActivity : ComponentActivity() {
                     onCustomCarrier = viewModel::setCustomCarrier,
                     onCustomBeat = viewModel::setCustomBeat,
                     onMixChanged = viewModel::setMixWithOtherApps,
-                    onKeepScreenOnChanged = viewModel::setKeepScreenOn
+                    onKeepScreenOnChanged = viewModel::setKeepScreenOn,
+                    onAppearanceChanged = viewModel::setAppearanceMode
                 )
             }
         }
@@ -99,7 +108,8 @@ private fun BinauralApp(
     onCustomCarrier: (Float) -> Unit,
     onCustomBeat: (Float) -> Unit,
     onMixChanged: (Boolean) -> Unit,
-    onKeepScreenOnChanged: (Boolean) -> Unit
+    onKeepScreenOnChanged: (Boolean) -> Unit,
+    onAppearanceChanged: (AppearanceMode) -> Unit
 ) {
     // Survive configuration changes / process recreation of composition.
     var screen by rememberSaveable { mutableStateOf(Screen.Home.name) }
@@ -119,6 +129,7 @@ private fun BinauralApp(
             state = state,
             onMixChanged = onMixChanged,
             onKeepScreenOnChanged = onKeepScreenOnChanged,
+            onAppearanceChanged = onAppearanceChanged,
             onBack = { screen = Screen.Home.name }
         )
     }

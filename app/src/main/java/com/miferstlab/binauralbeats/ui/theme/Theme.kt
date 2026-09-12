@@ -8,34 +8,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColors = darkColorScheme(
-    primary = SoftBlue,
-    onPrimary = NightBg,
-    primaryContainer = SoftBlueDark,
-    onPrimaryContainer = OnNight,
-    secondary = SoftTeal,
-    onSecondary = NightBg,
-    tertiary = SoftLavender,
-    background = NightBg,
-    onBackground = OnNight,
-    surface = NightSurface,
-    onSurface = OnNight,
-    surfaceVariant = NightSurfaceVariant,
-    onSurfaceVariant = OnNightMuted,
-    outline = Color(0xFF30363D)
+    primary = NebulaCyan,
+    onPrimary = VoidBg,
+    primaryContainer = NebulaIndigo,
+    onPrimaryContainer = Starlight,
+    secondary = ElectricViolet,
+    onSecondary = VoidBg,
+    secondaryContainer = NebulaIndigo.copy(alpha = 0.85f),
+    onSecondaryContainer = Starlight,
+    tertiary = NebulaMagenta,
+    onTertiary = Starlight,
+    background = VoidBg,
+    onBackground = Starlight,
+    surface = SurfaceGlass,
+    onSurface = Starlight,
+    surfaceVariant = SurfaceGlassVariant,
+    onSurfaceVariant = StarlightMuted,
+    outline = Color(0xFF3A3F6B),
+    outlineVariant = Color(0xFF2A2F4A)
 )
 
 private val LightColors = lightColorScheme(
-    primary = SoftBlueDark,
+    primary = LightPrimary,
     onPrimary = Color.White,
-    primaryContainer = SoftBlue.copy(alpha = 0.25f),
-    onPrimaryContainer = NightBg,
-    secondary = SoftTeal,
-    background = Color(0xFFF5F7FA),
-    onBackground = NightBg,
-    surface = Color.White,
-    onSurface = NightBg,
-    surfaceVariant = Color(0xFFE8ECF0),
-    onSurfaceVariant = Color(0xFF5C6670)
+    primaryContainer = ElectricViolet.copy(alpha = 0.22f),
+    onPrimaryContainer = LightOn,
+    secondary = LightSecondary,
+    onSecondary = Color.White,
+    tertiary = NebulaMagenta,
+    background = LightBg,
+    onBackground = LightOn,
+    surface = LightSurface,
+    onSurface = LightOn,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnMuted,
+    outline = Color(0xFFC5C8DA)
 )
 
 @Composable
@@ -43,7 +50,6 @@ fun BinauralBeatsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // Prefer calm dark-friendly look; still respect system light if user chooses it
     val colors = if (darkTheme) DarkColors else LightColors
     MaterialTheme(
         colorScheme = colors,

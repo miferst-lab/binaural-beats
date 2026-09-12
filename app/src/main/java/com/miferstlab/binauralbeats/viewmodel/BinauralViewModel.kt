@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
+import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
@@ -18,7 +19,15 @@ import kotlinx.coroutines.flow.update
 
 class BinauralViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _state = MutableStateFlow(PlaybackState())
+    private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    private val _state = MutableStateFlow(
+        PlaybackState(
+            appearanceMode = AppearanceMode.fromPrefs(
+                prefs.getString(KEY_APPEARANCE_MODE, AppearanceMode.NIGHT.prefsValue)
+            )
+        )
+    )
     val state: StateFlow<PlaybackState> = _state.asStateFlow()
 
     private var service: BinauralPlaybackService? = null
@@ -86,6 +95,11 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     fun setKeepScreenOn(enabled: Boolean) {
         _state.update { it.copy(keepScreenOn = enabled) }
+    }
+
+    fun setAppearanceMode(mode: AppearanceMode) {
+        prefs.edit().putString(KEY_APPEARANCE_MODE, mode.prefsValue).apply()
+        _state.update { it.copy(appearanceMode = mode) }
     }
 
     fun play() {
@@ -182,5 +196,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         }
         // Do not stop playback here — FGS should outlive the Activity/ViewModel.
         super.onCleared()
+    }
+
+    companion object {
+        private const val PREFS_NAME = "binaural"
+        private const val KEY_APPEARANCE_MODE = "appearance_mode"
     }
 }

@@ -3,7 +3,7 @@
     <style name="Theme.BinauralBeats" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowBackground">#FF0D1117</item>
-        <item name="android:colorPrimary">#FF7C9CBF</item>
+        <item name="android:windowBackground">#FF05060E</item>
+        <item name="android:colorPrimary">#FF3DE0E8</item>
     </style>
 </resources>

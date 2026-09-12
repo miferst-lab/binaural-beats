@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 — galactic night
+
+- Night-first cosmic UI: void backgrounds, nebula accents (cyan / violet / magenta), soft starlight text
+- `GalaxyBackdrop` behind Home + Settings; animated `BrainWaveVisual` while playing
+- Appearance setting: **Nocny** (default) | **System** | **Jasny**, persisted in SharedPreferences (`binaural` / `appearance_mode`)
+- Glass-ish cards, glowing play FAB, polished chips — audio engine unchanged
+
 ## 1.0.1 — cisza na telefonie
 
 - Audio idzie na `USAGE_MEDIA` (głośność multimediów), nie na sonification/powiadomienia
