@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 — ikona i Play
+
+- Nowa ikona (neonowa nieskończoność cyan/fiolet)
+- Grafiki pod Google Play w `store/`
+- Szkic listingu i polityki prywatności
+
+
 ## 1.1.0 — galactic night
 
 - Night-first cosmic UI: void backgrounds, nebula accents (cyan / violet / magenta), soft starlight text
