@@ -9,7 +9,7 @@ Prosta aplikacja Android (Kotlin + Jetpack Compose, Material 3) generująca ster
 
 ## Funkcje / Features
 
-- Tryby: **Relaks**, **Skupienie**, **Sen**, **Medytacja**, **Niestandardowy**
+- Tryby: **Relaks**, **Czytanie**, **Skupienie**, **Energia**, **Sen**, **Medytacja**, **Niestandardowy**
 - Generacja w czasie rzeczywistym przez `AudioTrack` (PCM float / 16-bit)
 - Usługa pierwszoplanowa (foreground service) — odtwarzanie przy wyłączonym ekranie + powiadomienie ze **Stop**
 - Suwak głośności, play/pause
@@ -21,7 +21,9 @@ Prosta aplikacja Android (Kotlin + Jetpack Compose, Material 3) generująca ster
 | Tryb        | Beat (Δf) | Nośna (carrier) | Uwagi              |
 |-------------|-----------|-----------------|--------------------|
 | Relaks      | ~9 Hz     | ~220 Hz         | fale alfa          |
-| Skupienie   | ~16 Hz    | ~220 Hz         | fale beta          |
+| Czytanie    | ~13 Hz    | ~210 Hz         | SMR / niska beta   |
+| Skupienie   | ~16 Hz    | ~220 Hz         | beta (także praca) |
+| Energia     | ~22 Hz    | ~230 Hz         | wysoka beta / sport|
 | Sen         | ~3 Hz     | ~180 Hz         | niższa głośność    |
 | Medytacja   | ~6 Hz     | ~200 Hz         | fale theta         |
 | Niestandardowy | 1–40 Hz | 80–500 Hz     | suwaki użytkownika |

@@ -8,7 +8,9 @@ package com.miferstlab.binauralbeats.data
  *
  * Presets (documented also in README):
  * - Relaks:     ~9 Hz beat,  carrier ~220 Hz  (alpha)
- * - Skupienie:  ~16 Hz beat, carrier ~220 Hz  (beta)
+ * - Skupienie:  ~16 Hz beat, carrier ~220 Hz  (beta) — also covers desk work
+ * - Czytanie:   ~13 Hz beat, carrier ~210 Hz  (SMR / low beta)
+ * - Energia:    ~22 Hz beat, carrier ~230 Hz  (high beta) — sport / alertness
  * - Sen:        ~3 Hz beat,  carrier ~180 Hz  (delta), lower default volume
  * - Medytacja:  ~6 Hz beat,  carrier ~200 Hz  (theta)
  * - Niestandardowy: user-defined carrier + beat
@@ -33,6 +35,20 @@ enum class BinauralMode(
         carrierHz = 220f,
         beatHz = 16f,
         defaultVolume = 0.35f
+    ),
+    CZYTANIE(
+        displayNameRes = "mode_reading",
+        descriptionRes = "mode_reading_desc",
+        carrierHz = 210f,
+        beatHz = 13f,
+        defaultVolume = 0.32f
+    ),
+    ENERGIA(
+        displayNameRes = "mode_energy",
+        descriptionRes = "mode_energy_desc",
+        carrierHz = 230f,
+        beatHz = 22f,
+        defaultVolume = 0.38f
     ),
     SEN(
         displayNameRes = "mode_sleep",

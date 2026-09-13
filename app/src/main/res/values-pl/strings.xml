@@ -7,10 +7,14 @@
     <string name="mode_meditation">Medytacja</string>
     <string name="mode_custom">Niestandardowy</string>
     <string name="mode_relax_desc">Fale alfa (~9 Hz) — spokój i odprężenie</string>
-    <string name="mode_focus_desc">Fale beta (~16 Hz) — koncentracja i jasność umysłu</string>
+    <string name="mode_focus_desc">Fale beta (~16 Hz) — praca, zadania, koncentracja</string>
     <string name="mode_sleep_desc">Fale delta (~3 Hz) — głęboki sen i regeneracja</string>
     <string name="mode_meditation_desc">Fale theta (~6 Hz) — medytacja i introspekcja</string>
     <string name="mode_custom_desc">Ustaw własną częstotliwość nośną i binauralną</string>
+    <string name="mode_reading">Czytanie</string>
+    <string name="mode_reading_desc">Fale SMR (~13 Hz) — spokojna uwaga przy tekście</string>
+    <string name="mode_energy">Energia</string>
+    <string name="mode_energy_desc">Wysokie beta (~22 Hz) — sport i pobudzenie</string>
     <string name="home_choose_mode">Wybierz tryb</string>
     <string name="play">Odtwarzaj</string>
     <string name="pause">Pauza</string>

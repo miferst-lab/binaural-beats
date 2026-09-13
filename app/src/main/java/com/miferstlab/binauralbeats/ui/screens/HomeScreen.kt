@@ -58,6 +58,8 @@ import com.miferstlab.binauralbeats.ui.theme.GalaxyBackdrop
 import com.miferstlab.binauralbeats.ui.theme.NebulaCyan
 import com.miferstlab.binauralbeats.ui.theme.NebulaMagenta
 import com.miferstlab.binauralbeats.ui.theme.SoftAmber
+import com.miferstlab.binauralbeats.ui.theme.SoftEmber
+import com.miferstlab.binauralbeats.ui.theme.SoftSky
 import com.miferstlab.binauralbeats.ui.theme.SoftCoral
 import com.miferstlab.binauralbeats.ui.theme.SoftLavender
 import com.miferstlab.binauralbeats.ui.theme.SoftTeal
@@ -347,6 +349,8 @@ fun HomeScreen(
 private fun modeTitleRes(mode: BinauralMode): Int = when (mode) {
     BinauralMode.RELAKS -> R.string.mode_relax
     BinauralMode.SKUPIENIE -> R.string.mode_focus
+    BinauralMode.CZYTANIE -> R.string.mode_reading
+    BinauralMode.ENERGIA -> R.string.mode_energy
     BinauralMode.SEN -> R.string.mode_sleep
     BinauralMode.MEDYTACJA -> R.string.mode_meditation
     BinauralMode.NIESTANDARDOWY -> R.string.mode_custom
@@ -355,6 +359,8 @@ private fun modeTitleRes(mode: BinauralMode): Int = when (mode) {
 private fun modeDescriptionRes(mode: BinauralMode): Int = when (mode) {
     BinauralMode.RELAKS -> R.string.mode_relax_desc
     BinauralMode.SKUPIENIE -> R.string.mode_focus_desc
+    BinauralMode.CZYTANIE -> R.string.mode_reading_desc
+    BinauralMode.ENERGIA -> R.string.mode_energy_desc
     BinauralMode.SEN -> R.string.mode_sleep_desc
     BinauralMode.MEDYTACJA -> R.string.mode_meditation_desc
     BinauralMode.NIESTANDARDOWY -> R.string.mode_custom_desc
@@ -363,6 +369,8 @@ private fun modeDescriptionRes(mode: BinauralMode): Int = when (mode) {
 private fun modeAccent(mode: BinauralMode) = when (mode) {
     BinauralMode.RELAKS -> NebulaCyan
     BinauralMode.SKUPIENIE -> SoftAmber
+    BinauralMode.CZYTANIE -> SoftSky
+    BinauralMode.ENERGIA -> SoftEmber
     BinauralMode.SEN -> SoftLavender
     BinauralMode.MEDYTACJA -> SoftTeal
     BinauralMode.NIESTANDARDOWY -> SoftCoral

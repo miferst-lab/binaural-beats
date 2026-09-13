@@ -28,6 +28,20 @@ class BinauralModeTest {
     }
 
     @Test
+    fun readingPreset_smrBeat() {
+        val mode = BinauralMode.CZYTANIE
+        assertEquals(13f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
+        assertEquals(210f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
+    }
+
+    @Test
+    fun energyPreset_highBetaBeat() {
+        val mode = BinauralMode.ENERGIA
+        assertEquals(22f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
+        assertEquals(230f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
+    }
+
+    @Test
     fun sleepPreset_deltaBeat_lowerCarrier() {
         val mode = BinauralMode.SEN
         assertEquals(3f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)

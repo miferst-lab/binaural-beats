@@ -17,7 +17,9 @@ Fale binauralne to prosta, darmowa aplikacja do odtwarzania stereofonicznych ton
 
 **Tryby**
 • Relaks — fale alfa (~9 Hz)
-• Skupienie — fale beta (~16 Hz)
+• Czytanie — SMR (~13 Hz)
+• Skupienie — fale beta (~16 Hz), także praca
+• Energia — wysokie beta (~22 Hz), sport
 • Sen — fale delta (~3 Hz)
 • Medytacja — fale theta (~6 Hz)
 • Niestandardowy — własna nośna i różnica L/R

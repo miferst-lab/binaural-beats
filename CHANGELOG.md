@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2 — Czytanie i Energia
+
+- Nowe presety: **Czytanie** (~13 Hz SMR), **Energia** (~22 Hz, sport)
+- **Skupienie** obejmuje też pracę (osobny tryb byłby tym samym pasmem beta)
+- Praca nie dostała osobnego chipa — to ten sam zakres co Skupienie
+
+
 ## 1.1.1 — ikona i Play
 
 - Nowa ikona (neonowa nieskończoność cyan/fiolet)

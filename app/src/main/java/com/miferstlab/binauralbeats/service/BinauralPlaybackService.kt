@@ -208,6 +208,8 @@ class BinauralPlaybackService : Service() {
         val resId = when (mode) {
             BinauralMode.RELAKS -> R.string.mode_relax
             BinauralMode.SKUPIENIE -> R.string.mode_focus
+            BinauralMode.CZYTANIE -> R.string.mode_reading
+            BinauralMode.ENERGIA -> R.string.mode_energy
             BinauralMode.SEN -> R.string.mode_sleep
             BinauralMode.MEDYTACJA -> R.string.mode_meditation
             BinauralMode.NIESTANDARDOWY -> R.string.mode_custom

@@ -27,6 +27,8 @@ val SoftTeal = Color(0xFF4ECDC4)
 val SoftLavender = ElectricViolet
 val SoftAmber = Color(0xFFE8B86D)
 val SoftCoral = NebulaMagenta
+val SoftSky = Color(0xFF6EC8FF)
+val SoftEmber = Color(0xFFFF8A4C)
 
 /** Legacy aliases used by Theme */
 val NightBg = VoidBg
