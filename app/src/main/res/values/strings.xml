@@ -45,4 +45,18 @@
     <string name="beat_freq">Binaural (Hz)</string>
     <string name="permission_notification_rationale">Powiadomienie pozwala zatrzymać odtwarzanie, gdy ekran jest wyłączony.</string>
     <string name="back">Wstecz</string>
+
+    <string name="ambient_section">Ambient</string>
+    <string name="ambient_off">Wyłącz</string>
+    <string name="ambient_forest_night">Las nocą</string>
+    <string name="ambient_waves">Fale</string>
+    <string name="ambient_morning_village">Poranek na wsi</string>
+    <string name="ambient_rain">Deszcz</string>
+    <string name="ambient_fireplace">Kominek</string>
+    <string name="ambient_stream">Strumień</string>
+    <string name="ambient_volume">Głośność ambientu</string>
+    <string name="volume_decrease">Zmniejsz głośność o 1%</string>
+    <string name="volume_increase">Zwiększ głośność o 1%</string>
+    <string name="ambient_volume_decrease">Zmniejsz głośność ambientu o 1%</string>
+    <string name="ambient_volume_increase">Zwiększ głośność ambientu o 1%</string>
 </resources>

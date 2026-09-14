@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.PlaybackState
@@ -70,6 +71,10 @@ class MainActivity : ComponentActivity() {
                         viewModel.togglePlayPause()
                     },
                     onVolumeChange = viewModel::setVolume,
+                    onVolumeNudge = viewModel::nudgeVolume,
+                    onAmbientSelected = viewModel::setAmbient,
+                    onAmbientVolumeChange = viewModel::setAmbientVolume,
+                    onAmbientVolumeNudge = viewModel::nudgeAmbientVolume,
                     onCustomCarrier = viewModel::setCustomCarrier,
                     onCustomBeat = viewModel::setCustomBeat,
                     onMixChanged = viewModel::setMixWithOtherApps,
@@ -105,6 +110,10 @@ private fun BinauralApp(
     onModeSelected: (BinauralMode) -> Unit,
     onPlayPause: () -> Unit,
     onVolumeChange: (Float) -> Unit,
+    onVolumeNudge: (Float) -> Unit,
+    onAmbientSelected: (AmbientSound) -> Unit,
+    onAmbientVolumeChange: (Float) -> Unit,
+    onAmbientVolumeNudge: (Float) -> Unit,
     onCustomCarrier: (Float) -> Unit,
     onCustomBeat: (Float) -> Unit,
     onMixChanged: (Boolean) -> Unit,
@@ -121,6 +130,10 @@ private fun BinauralApp(
             onModeSelected = onModeSelected,
             onPlayPause = onPlayPause,
             onVolumeChange = onVolumeChange,
+            onVolumeNudge = onVolumeNudge,
+            onAmbientSelected = onAmbientSelected,
+            onAmbientVolumeChange = onAmbientVolumeChange,
+            onAmbientVolumeNudge = onAmbientVolumeNudge,
             onCustomCarrier = onCustomCarrier,
             onCustomBeat = onCustomBeat,
             onOpenSettings = { screen = Screen.Settings.name }

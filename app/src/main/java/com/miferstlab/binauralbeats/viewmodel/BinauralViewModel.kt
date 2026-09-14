@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
+import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
@@ -25,6 +26,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         PlaybackState(
             appearanceMode = AppearanceMode.fromPrefs(
                 prefs.getString(KEY_APPEARANCE_MODE, AppearanceMode.NIGHT.prefsValue)
+            ),
+            ambient = AmbientSound.fromPrefs(prefs.getString(KEY_AMBIENT, AmbientSound.OFF.prefsValue)),
+            ambientVolume = FrequencyMath.clampVolume(
+                prefs.getFloat(KEY_AMBIENT_VOLUME, 0.35f)
             )
         )
     )
@@ -71,6 +76,33 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    /** Nudge main binaural volume by [delta] (e.g. ±0.01). */
+    fun nudgeVolume(delta: Float) {
+        setVolume(_state.value.volume + delta)
+    }
+
+    fun setAmbient(ambient: AmbientSound) {
+        prefs.edit().putString(KEY_AMBIENT, ambient.prefsValue).apply()
+        _state.update { it.copy(ambient = ambient) }
+        if (sessionActive) {
+            pushUpdateToService()
+        }
+    }
+
+    fun setAmbientVolume(volume: Float) {
+        val clamped = FrequencyMath.clampVolume(volume)
+        prefs.edit().putFloat(KEY_AMBIENT_VOLUME, clamped).apply()
+        _state.update { it.copy(ambientVolume = clamped) }
+        if (sessionActive) {
+            pushUpdateToService()
+        }
+    }
+
+    /** Nudge ambient volume by [delta] (e.g. ±0.01). */
+    fun nudgeAmbientVolume(delta: Float) {
+        setAmbientVolume(_state.value.ambientVolume + delta)
+    }
+
     fun setCustomCarrier(hz: Float) {
         _state.update { it.copy(customCarrierHz = FrequencyMath.clampCarrier(hz)) }
         if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
@@ -111,7 +143,9 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             volume = s.volume,
             carrier = s.customCarrierHz,
             beat = s.customBeatHz,
-            mixWithOtherApps = s.mixWithOtherApps
+            mixWithOtherApps = s.mixWithOtherApps,
+            ambient = s.ambient,
+            ambientVolume = s.ambientVolume
         )
         // Always use startForegroundService for START (Android 8+ / 14 FGS contract).
         ctx.startForegroundService(intent)
@@ -185,6 +219,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
                 putExtra(BinauralPlaybackService.EXTRA_VOLUME, s.volume)
                 putExtra(BinauralPlaybackService.EXTRA_CARRIER, s.customCarrierHz)
                 putExtra(BinauralPlaybackService.EXTRA_BEAT, s.customBeatHz)
+                putExtra(BinauralPlaybackService.EXTRA_AMBIENT, s.ambient.prefsValue)
+                putExtra(BinauralPlaybackService.EXTRA_AMBIENT_VOLUME, s.ambientVolume)
             }
         )
     }
@@ -201,5 +237,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     companion object {
         private const val PREFS_NAME = "binaural"
         private const val KEY_APPEARANCE_MODE = "appearance_mode"
+        private const val KEY_AMBIENT = "ambient"
+        private const val KEY_AMBIENT_VOLUME = "ambient_volume"
     }
 }

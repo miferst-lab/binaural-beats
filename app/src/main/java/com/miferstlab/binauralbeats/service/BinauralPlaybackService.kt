@@ -16,12 +16,17 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.miferstlab.binauralbeats.MainActivity
 import com.miferstlab.binauralbeats.R
+import com.miferstlab.binauralbeats.audio.AmbientPlayer
 import com.miferstlab.binauralbeats.audio.BinauralAudioEngine
+import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.BinauralMode
 
 /**
  * Foreground service so binaural tones continue with the screen off.
  * Notification includes a Stop action.
+ *
+ * Owns [AmbientPlayer] so ambient loops stay in sync with the binaural session
+ * (USAGE_MEDIA; Spotify mix / focus behavior unchanged).
  *
  * Android 14+: uses [ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK] and
  * calls [ServiceCompat.startForeground] before any long-running work.
@@ -30,10 +35,12 @@ class BinauralPlaybackService : Service() {
 
     private val binder = LocalBinder()
     private val engine = BinauralAudioEngine()
+    private lateinit var ambientPlayer: AmbientPlayer
     private val focusHolder = BinauralAudioEngine.FocusHolder()
     private var currentMode: BinauralMode = BinauralMode.RELAKS
     private var mixWithOtherApps: Boolean = true
     private var foregroundStarted = false
+    private var currentAmbient: AmbientSound = AmbientSound.OFF
 
     inner class LocalBinder : Binder() {
         fun getService(): BinauralPlaybackService = this@BinauralPlaybackService
@@ -43,6 +50,7 @@ class BinauralPlaybackService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        ambientPlayer = AmbientPlayer(applicationContext)
         createNotificationChannel()
     }
 
@@ -61,6 +69,8 @@ class BinauralPlaybackService : Service() {
                 val carrier = intent.getFloatExtra(EXTRA_CARRIER, currentMode.carrierHz)
                 val beat = intent.getFloatExtra(EXTRA_BEAT, currentMode.beatHz)
                 val newMix = intent.getBooleanExtra(EXTRA_MIX, true)
+                val ambientName = intent.getStringExtra(EXTRA_AMBIENT)
+                val ambientVol = intent.getFloatExtra(EXTRA_AMBIENT_VOLUME, 0.35f)
 
                 // Promote to FGS immediately (Android 8+/14 timeout).
                 startAsForeground()
@@ -90,15 +100,19 @@ class BinauralPlaybackService : Service() {
                 } else {
                     engine.start(mixWithOtherApps)
                 }
+
+                applyAmbient(ambientName, ambientVol, playing = true)
                 updateNotification()
             }
             ACTION_PAUSE -> {
                 engine.pause()
+                ambientPlayer.pause()
                 updateNotification(paused = true)
             }
             ACTION_RESUME -> {
                 startAsForeground()
                 engine.resume()
+                ambientPlayer.start()
                 updateNotification(paused = false)
             }
             ACTION_UPDATE -> {
@@ -115,6 +129,18 @@ class BinauralPlaybackService : Service() {
                     currentMode.rightHz(carrier, beat)
                 )
                 engine.setVolume(volume)
+
+                val ambientName = intent.getStringExtra(EXTRA_AMBIENT)
+                val hasAmbientVol = intent.hasExtra(EXTRA_AMBIENT_VOLUME)
+                val ambientVol = intent.getFloatExtra(EXTRA_AMBIENT_VOLUME, 0.35f)
+                if (ambientName != null || hasAmbientVol) {
+                    applyAmbient(
+                        ambientName ?: currentAmbient.prefsValue,
+                        if (hasAmbientVol) ambientVol else null,
+                        playing = engine.isRunning()
+                    )
+                }
+
                 if (foregroundStarted) {
                     updateNotification()
                 }
@@ -133,6 +159,7 @@ class BinauralPlaybackService : Service() {
 
     fun stopPlayback() {
         engine.stop()
+        ambientPlayer.stopKeepingSelection()
         val am = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         BinauralAudioEngine.abandonMixableFocus(am, focusHolder)
         if (foregroundStarted) {
@@ -143,7 +170,28 @@ class BinauralPlaybackService : Service() {
 
     override fun onDestroy() {
         stopPlayback()
+        ambientPlayer.release()
         super.onDestroy()
+    }
+
+    private fun applyAmbient(prefsOrName: String?, volume: Float?, playing: Boolean) {
+        val ambient = when {
+            prefsOrName == null -> currentAmbient
+            else -> AmbientSound.fromPrefs(prefsOrName).takeIf { it.prefsValue == prefsOrName }
+                ?: runCatching { AmbientSound.valueOf(prefsOrName) }.getOrDefault(currentAmbient)
+        }
+        currentAmbient = ambient
+        if (volume != null) {
+            ambientPlayer.setVolume(volume)
+        }
+        ambientPlayer.setAmbient(ambient)
+        if (playing && ambient != AmbientSound.OFF) {
+            ambientPlayer.start()
+        } else if (!playing) {
+            ambientPlayer.pause()
+        } else if (ambient == AmbientSound.OFF) {
+            ambientPlayer.pause()
+        }
     }
 
     private fun startAsForeground() {
@@ -247,6 +295,8 @@ class BinauralPlaybackService : Service() {
         const val EXTRA_CARRIER = "carrier"
         const val EXTRA_BEAT = "beat"
         const val EXTRA_MIX = "mix"
+        const val EXTRA_AMBIENT = "ambient"
+        const val EXTRA_AMBIENT_VOLUME = "ambient_volume"
 
         fun startIntent(
             context: Context,
@@ -254,7 +304,9 @@ class BinauralPlaybackService : Service() {
             volume: Float,
             carrier: Float,
             beat: Float,
-            mixWithOtherApps: Boolean
+            mixWithOtherApps: Boolean,
+            ambient: AmbientSound = AmbientSound.OFF,
+            ambientVolume: Float = 0.35f
         ): Intent = Intent(context, BinauralPlaybackService::class.java).apply {
             action = ACTION_START
             putExtra(EXTRA_MODE, mode.name)
@@ -262,6 +314,8 @@ class BinauralPlaybackService : Service() {
             putExtra(EXTRA_CARRIER, carrier)
             putExtra(EXTRA_BEAT, beat)
             putExtra(EXTRA_MIX, mixWithOtherApps)
+            putExtra(EXTRA_AMBIENT, ambient.prefsValue)
+            putExtra(EXTRA_AMBIENT_VOLUME, ambientVolume)
         }
     }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Ambient background loops (6 CC0 beds + Off) with separate volume
+- − / + buttons next to binaural and ambient volume sliders (1% steps)
+- Persist ambient selection and ambient volume
+
+
 ## 1.1.2 — Czytanie i Energia
 
 - Nowe presety: **Czytanie** (~13 Hz SMR), **Energia** (~22 Hz, sport)

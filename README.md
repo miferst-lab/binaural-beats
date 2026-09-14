@@ -12,7 +12,8 @@ Prosta aplikacja Android (Kotlin + Jetpack Compose, Material 3) generująca ster
 - Tryby: **Relaks**, **Czytanie**, **Skupienie**, **Energia**, **Sen**, **Medytacja**, **Niestandardowy**
 - Generacja w czasie rzeczywistym przez `AudioTrack` (PCM float / 16-bit)
 - Usługa pierwszoplanowa (foreground service) — odtwarzanie przy wyłączonym ekranie + powiadomienie ze **Stop**
-- Suwak głośności, play/pause
+- Suwak głośności z przyciskami −/+, play/pause
+- **Ambient** (las nocą, fale, poranek, deszcz, kominek, strumień) z osobną głośnością
 - Domyślnie **miks z innymi aplikacjami** (Spotify nie jest pauzowane)
 - UI po polsku, spokojny ciemny motyw
 

@@ -17,9 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Headset
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Card
@@ -49,6 +52,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
+import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
@@ -72,6 +76,10 @@ fun HomeScreen(
     onModeSelected: (BinauralMode) -> Unit,
     onPlayPause: () -> Unit,
     onVolumeChange: (Float) -> Unit,
+    onVolumeNudge: (Float) -> Unit,
+    onAmbientSelected: (AmbientSound) -> Unit,
+    onAmbientVolumeChange: (Float) -> Unit,
+    onAmbientVolumeNudge: (Float) -> Unit,
     onCustomCarrier: (Float) -> Unit,
     onCustomBeat: (Float) -> Unit,
     onOpenSettings: () -> Unit
@@ -208,46 +216,85 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(20.dp))
 
+                VolumeCard(
+                    title = stringResource(R.string.volume),
+                    volume = state.volume,
+                    onVolumeChange = onVolumeChange,
+                    onNudge = onVolumeNudge,
+                    glassSurface = glassSurface,
+                    accent = NebulaCyan,
+                    decreaseCd = stringResource(R.string.volume_decrease),
+                    increaseCd = stringResource(R.string.volume_increase)
+                )
+
+                Spacer(Modifier.height(12.dp))
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, NebulaCyan.copy(alpha = 0.18f))
+                    border = BorderStroke(1.dp, SoftTeal.copy(alpha = 0.28f))
                 ) {
-                    Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.VolumeUp,
-                                    contentDescription = null,
-                                    tint = NebulaCyan
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    text = stringResource(R.string.volume),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
+                            Icon(
+                                Icons.Default.MusicNote,
+                                contentDescription = null,
+                                tint = SoftTeal
+                            )
+                            Spacer(Modifier.width(8.dp))
                             Text(
-                                text = "${(state.volume * 100).toInt()}%",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = stringResource(R.string.ambient_section),
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
-                        Slider(
-                            value = state.volume,
-                            onValueChange = onVolumeChange,
-                            valueRange = 0f..1f,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = SliderDefaults.colors(
-                                thumbColor = NebulaCyan,
-                                activeTrackColor = NebulaCyan.copy(alpha = 0.85f),
-                                inactiveTrackColor = ElectricViolet.copy(alpha = 0.25f)
+
+                        Spacer(Modifier.height(10.dp))
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            AmbientSound.entries.forEach { ambient ->
+                                val selected = state.ambient == ambient
+                                FilterChip(
+                                    selected = selected,
+                                    onClick = { onAmbientSelected(ambient) },
+                                    label = { Text(stringResource(ambient.labelRes)) },
+                                    border = BorderStroke(
+                                        width = if (selected) 1.5.dp else 1.dp,
+                                        color = if (selected) {
+                                            SoftTeal.copy(alpha = 0.85f)
+                                        } else {
+                                            MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                                        }
+                                    ),
+                                    colors = FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = SoftTeal.copy(alpha = 0.28f),
+                                        selectedLabelColor = MaterialTheme.colorScheme.onSurface,
+                                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
+                                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                )
+                            }
+                        }
+
+                        if (state.ambient != AmbientSound.OFF) {
+                            Spacer(Modifier.height(12.dp))
+                            VolumeSliderRow(
+                                volume = state.ambientVolume,
+                                onVolumeChange = onAmbientVolumeChange,
+                                onNudge = onAmbientVolumeNudge,
+                                accent = SoftTeal,
+                                decreaseCd = stringResource(R.string.ambient_volume_decrease),
+                                increaseCd = stringResource(R.string.ambient_volume_increase),
+                                showTitle = true,
+                                title = stringResource(R.string.ambient_volume)
                             )
-                        )
+                        }
                     }
                 }
 
@@ -258,7 +305,7 @@ fun HomeScreen(
                         colors = CardDefaults.cardColors(containerColor = glassSurface),
                         border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.22f))
                     ) {
-                        Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                             Text(
                                 text = stringResource(R.string.carrier_freq) +
                                     ": ${state.customCarrierHz.toInt()} Hz",
@@ -342,6 +389,130 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(32.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun VolumeCard(
+    title: String,
+    volume: Float,
+    onVolumeChange: (Float) -> Unit,
+    onNudge: (Float) -> Unit,
+    glassSurface: Color,
+    accent: Color,
+    decreaseCd: String,
+    increaseCd: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = glassSurface),
+        border = BorderStroke(1.dp, accent.copy(alpha = 0.18f))
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.VolumeUp,
+                        contentDescription = null,
+                        tint = accent
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Text(
+                    text = "${(volume * 100).toInt()}%",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            VolumeSliderRow(
+                volume = volume,
+                onVolumeChange = onVolumeChange,
+                onNudge = onNudge,
+                accent = accent,
+                decreaseCd = decreaseCd,
+                increaseCd = increaseCd,
+                showTitle = false,
+                title = title
+            )
+        }
+    }
+}
+
+@Composable
+private fun VolumeSliderRow(
+    volume: Float,
+    onVolumeChange: (Float) -> Unit,
+    onNudge: (Float) -> Unit,
+    accent: Color,
+    decreaseCd: String,
+    increaseCd: String,
+    showTitle: Boolean,
+    title: String
+) {
+    if (showTitle) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = "${(volume * 100).toInt()}%",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        IconButton(
+            onClick = { onNudge(-0.01f) },
+            modifier = Modifier
+                .size(48.dp)
+                .semantics { contentDescription = decreaseCd }
+        ) {
+            Icon(
+                Icons.Default.Remove,
+                contentDescription = null,
+                tint = accent
+            )
+        }
+        Slider(
+            value = volume,
+            onValueChange = onVolumeChange,
+            valueRange = 0f..1f,
+            modifier = Modifier.weight(1f),
+            colors = SliderDefaults.colors(
+                thumbColor = accent,
+                activeTrackColor = accent.copy(alpha = 0.85f),
+                inactiveTrackColor = ElectricViolet.copy(alpha = 0.25f)
+            )
+        )
+        IconButton(
+            onClick = { onNudge(0.01f) },
+            modifier = Modifier
+                .size(48.dp)
+                .semantics { contentDescription = increaseCd }
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = null,
+                tint = accent
+            )
         }
     }
 }

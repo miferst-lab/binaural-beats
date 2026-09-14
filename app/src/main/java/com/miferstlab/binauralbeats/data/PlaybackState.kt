@@ -8,5 +8,7 @@ data class PlaybackState(
     val customBeatHz: Float = 10f,
     val mixWithOtherApps: Boolean = true,
     val keepScreenOn: Boolean = false,
-    val appearanceMode: AppearanceMode = AppearanceMode.NIGHT
+    val appearanceMode: AppearanceMode = AppearanceMode.NIGHT,
+    val ambient: AmbientSound = AmbientSound.OFF,
+    val ambientVolume: Float = 0.35f
 )
