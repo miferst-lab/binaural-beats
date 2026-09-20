@@ -59,4 +59,29 @@
     <string name="volume_increase">Zwiększ głośność o 1%</string>
     <string name="ambient_volume_decrease">Zmniejsz głośność ambientu o 1%</string>
     <string name="ambient_volume_increase">Zwiększ głośność ambientu o 1%</string>
+
+    <string name="ambient_mountain_wind">Wiatr górski</string>
+    <string name="ambient_cave_drip">Krople w jaskini</string>
+    <string name="ambient_soft_thunder">Odległy grzmot</string>
+    <string name="ambient_premium_badge">Premium</string>
+    <string name="ambient_locked_cd">Zablokowany ambient Premium</string>
+
+    <string name="free_session_remaining">Sesja darmowa: zostało %1$s</string>
+    <string name="free_limit_title">Limit darmowego słuchania</string>
+    <string name="free_limit_message">Osiągnięto 30-minutowy limit darmowej sesji. Odblokuj Premium, aby słuchać bez limitu i zyskać dodatkowe ambienty.</string>
+    <string name="free_limit_ok">OK</string>
+    <string name="upgrade_premium">Odblokuj Premium</string>
+
+    <string name="premium_upsell_title">Ambient Premium</string>
+    <string name="premium_upsell_message">Ten ambient jest dostępny w Premium. Odblokuj Premium, aby uzyskać dodatkowe tła i nielimitowane sesje.</string>
+    <string name="premium_upsell_cancel">Nie teraz</string>
+
+    <string name="settings_section_premium">Premium</string>
+    <string name="settings_premium_status_on">Premium odblokowane</string>
+    <string name="settings_premium_status_off">Plan darmowy — 30 min na sesję</string>
+    <string name="settings_premium_desc">Premium odblokowuje dłuższe sesje i dodatkowe ambienty. Id produktu Play: binaural_premium_unlock</string>
+    <string name="settings_debug_unlock">Debug: pozwól odblokować Premium</string>
+    <string name="settings_debug_unlock_desc">Do testów bez Play Billing. Włącza lokalne odblokowanie zakupem.</string>
+    <string name="settings_premium_active">Masz Premium</string>
+    <string name="settings_remove_premium_debug">Usuń Premium (debug)</string>
 </resources>

@@ -79,7 +79,13 @@ class MainActivity : ComponentActivity() {
                     onCustomBeat = viewModel::setCustomBeat,
                     onMixChanged = viewModel::setMixWithOtherApps,
                     onKeepScreenOnChanged = viewModel::setKeepScreenOn,
-                    onAppearanceChanged = viewModel::setAppearanceMode
+                    onAppearanceChanged = viewModel::setAppearanceMode,
+                    onDismissFreeLimit = viewModel::dismissFreeLimitDialog,
+                    onDismissPremiumUpsell = viewModel::dismissPremiumUpsellDialog,
+                    onUpgradePremium = { viewModel.purchasePremium(this) },
+                    onDebugUnlockChanged = viewModel::setDebugUnlockEnabled,
+                    isDebugUnlockEnabled = viewModel.isDebugUnlockEnabled(),
+                    onSetPremium = viewModel::setPremium
                 )
             }
         }
@@ -118,7 +124,13 @@ private fun BinauralApp(
     onCustomBeat: (Float) -> Unit,
     onMixChanged: (Boolean) -> Unit,
     onKeepScreenOnChanged: (Boolean) -> Unit,
-    onAppearanceChanged: (AppearanceMode) -> Unit
+    onAppearanceChanged: (AppearanceMode) -> Unit,
+    onDismissFreeLimit: () -> Unit,
+    onDismissPremiumUpsell: () -> Unit,
+    onUpgradePremium: () -> Unit,
+    onDebugUnlockChanged: (Boolean) -> Unit,
+    isDebugUnlockEnabled: Boolean,
+    onSetPremium: (Boolean) -> Unit
 ) {
     // Survive configuration changes / process recreation of composition.
     var screen by rememberSaveable { mutableStateOf(Screen.Home.name) }
@@ -136,14 +148,21 @@ private fun BinauralApp(
             onAmbientVolumeNudge = onAmbientVolumeNudge,
             onCustomCarrier = onCustomCarrier,
             onCustomBeat = onCustomBeat,
-            onOpenSettings = { screen = Screen.Settings.name }
+            onOpenSettings = { screen = Screen.Settings.name },
+            onDismissFreeLimit = onDismissFreeLimit,
+            onDismissPremiumUpsell = onDismissPremiumUpsell,
+            onUpgradePremium = onUpgradePremium
         )
         Screen.Settings -> SettingsScreen(
             state = state,
             onMixChanged = onMixChanged,
             onKeepScreenOnChanged = onKeepScreenOnChanged,
             onAppearanceChanged = onAppearanceChanged,
-            onBack = { screen = Screen.Home.name }
+            onBack = { screen = Screen.Home.name },
+            onUpgradePremium = onUpgradePremium,
+            onDebugUnlockChanged = onDebugUnlockChanged,
+            isDebugUnlockEnabled = isDebugUnlockEnabled,
+            onSetPremium = onSetPremium
         )
     }
 }

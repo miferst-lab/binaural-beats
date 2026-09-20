@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
@@ -25,7 +26,9 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -53,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
 import com.miferstlab.binauralbeats.data.AmbientSound
+import com.miferstlab.binauralbeats.data.Entitlements
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
@@ -82,7 +86,10 @@ fun HomeScreen(
     onAmbientVolumeNudge: (Float) -> Unit,
     onCustomCarrier: (Float) -> Unit,
     onCustomBeat: (Float) -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onDismissFreeLimit: () -> Unit = {},
+    onDismissPremiumUpsell: () -> Unit = {},
+    onUpgradePremium: () -> Unit = {}
 ) {
     val playPauseLabel = stringResource(
         if (state.isPlaying) R.string.pause else R.string.play
@@ -214,6 +221,19 @@ fun HomeScreen(
                     color = ElectricViolet.copy(alpha = 0.9f)
                 )
 
+                if (!state.isPremium) {
+                    val remaining = Entitlements.remainingFreeMs(state.sessionElapsedMs)
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(
+                            R.string.free_session_remaining,
+                            Entitlements.formatMmSs(remaining)
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
                 Spacer(Modifier.height(20.dp))
 
                 VolumeCard(
@@ -260,14 +280,29 @@ fun HomeScreen(
                         ) {
                             AmbientSound.entries.forEach { ambient ->
                                 val selected = state.ambient == ambient
+                                val locked = ambient.isPremium && !state.isPremium
                                 FilterChip(
                                     selected = selected,
                                     onClick = { onAmbientSelected(ambient) },
-                                    label = { Text(stringResource(ambient.labelRes)) },
+                                    label = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            if (locked) {
+                                                Icon(
+                                                    Icons.Default.Lock,
+                                                    contentDescription = stringResource(R.string.ambient_locked_cd),
+                                                    modifier = Modifier.size(14.dp)
+                                                )
+                                                Spacer(Modifier.width(4.dp))
+                                            }
+                                            Text(stringResource(ambientLabelRes(ambient)))
+                                        }
+                                    },
                                     border = BorderStroke(
                                         width = if (selected) 1.5.dp else 1.dp,
                                         color = if (selected) {
                                             SoftTeal.copy(alpha = 0.85f)
+                                        } else if (locked) {
+                                            SoftAmber.copy(alpha = 0.55f)
                                         } else {
                                             MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                                         }
@@ -389,6 +424,42 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(32.dp))
             }
+        }
+
+        if (state.showFreeLimitDialog) {
+            AlertDialog(
+                onDismissRequest = onDismissFreeLimit,
+                title = { Text(stringResource(R.string.free_limit_title)) },
+                text = { Text(stringResource(R.string.free_limit_message)) },
+                confirmButton = {
+                    TextButton(onClick = onUpgradePremium) {
+                        Text(stringResource(R.string.upgrade_premium))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissFreeLimit) {
+                        Text(stringResource(R.string.free_limit_ok))
+                    }
+                }
+            )
+        }
+
+        if (state.showPremiumUpsellDialog) {
+            AlertDialog(
+                onDismissRequest = onDismissPremiumUpsell,
+                title = { Text(stringResource(R.string.premium_upsell_title)) },
+                text = { Text(stringResource(R.string.premium_upsell_message)) },
+                confirmButton = {
+                    TextButton(onClick = onUpgradePremium) {
+                        Text(stringResource(R.string.upgrade_premium))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissPremiumUpsell) {
+                        Text(stringResource(R.string.premium_upsell_cancel))
+                    }
+                }
+            )
         }
     }
 }
@@ -545,4 +616,17 @@ private fun modeAccent(mode: BinauralMode) = when (mode) {
     BinauralMode.SEN -> SoftLavender
     BinauralMode.MEDYTACJA -> SoftTeal
     BinauralMode.NIESTANDARDOWY -> SoftCoral
+}
+
+private fun ambientLabelRes(ambient: AmbientSound): Int = when (ambient) {
+    AmbientSound.OFF -> R.string.ambient_off
+    AmbientSound.FOREST_NIGHT -> R.string.ambient_forest_night
+    AmbientSound.WAVES -> R.string.ambient_waves
+    AmbientSound.MORNING_VILLAGE -> R.string.ambient_morning_village
+    AmbientSound.RAIN -> R.string.ambient_rain
+    AmbientSound.FIREPLACE -> R.string.ambient_fireplace
+    AmbientSound.STREAM -> R.string.ambient_stream
+    AmbientSound.MOUNTAIN_WIND -> R.string.ambient_mountain_wind
+    AmbientSound.CAVE_DRIP -> R.string.ambient_cave_drip
+    AmbientSound.SOFT_THUNDER -> R.string.ambient_soft_thunder
 }

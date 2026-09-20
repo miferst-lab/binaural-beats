@@ -1,54 +1,36 @@
 package com.miferstlab.binauralbeats.data
 
-import com.miferstlab.binauralbeats.R
-
 /**
  * Looping ambient beds layered under binaural tones.
- * [OFF] has no raw resource; others map to res/raw/*.ogg.
+ * Resource ids live next to UI/player (same pattern as [BinauralMode]),
+ * so this type compiles without Android R.
+ *
+ * [isPremium] beds require an entitlement unlock; free tier keeps the original six.
  */
 enum class AmbientSound(
     val prefsValue: String,
-    val labelRes: Int,
-    val rawResId: Int?
+    val rawName: String?,
+    val isPremium: Boolean = false
 ) {
-    OFF(
-        prefsValue = "off",
-        labelRes = R.string.ambient_off,
-        rawResId = null
-    ),
-    FOREST_NIGHT(
-        prefsValue = "forest_night",
-        labelRes = R.string.ambient_forest_night,
-        rawResId = R.raw.ambient_forest_night
-    ),
-    WAVES(
-        prefsValue = "waves",
-        labelRes = R.string.ambient_waves,
-        rawResId = R.raw.ambient_waves
-    ),
-    MORNING_VILLAGE(
-        prefsValue = "morning_village",
-        labelRes = R.string.ambient_morning_village,
-        rawResId = R.raw.ambient_morning_village
-    ),
-    RAIN(
-        prefsValue = "rain",
-        labelRes = R.string.ambient_rain,
-        rawResId = R.raw.ambient_rain
-    ),
-    FIREPLACE(
-        prefsValue = "fireplace",
-        labelRes = R.string.ambient_fireplace,
-        rawResId = R.raw.ambient_fireplace
-    ),
-    STREAM(
-        prefsValue = "stream",
-        labelRes = R.string.ambient_stream,
-        rawResId = R.raw.ambient_stream
-    );
+    OFF("off", null),
+    FOREST_NIGHT("forest_night", "ambient_forest_night"),
+    WAVES("waves", "ambient_waves"),
+    MORNING_VILLAGE("morning_village", "ambient_morning_village"),
+    RAIN("rain", "ambient_rain"),
+    FIREPLACE("fireplace", "ambient_fireplace"),
+    STREAM("stream", "ambient_stream"),
+    /** Premium placeholder — asset TBD; currently reuses waves. */
+    MOUNTAIN_WIND("mountain_wind", "ambient_waves", isPremium = true),
+    /** Premium placeholder — asset TBD; currently reuses stream. */
+    CAVE_DRIP("cave_drip", "ambient_stream", isPremium = true),
+    /** Premium placeholder — asset TBD; currently reuses rain. */
+    SOFT_THUNDER("soft_thunder", "ambient_rain", isPremium = true);
 
     companion object {
         fun fromPrefs(value: String?): AmbientSound =
             entries.firstOrNull { it.prefsValue == value } ?: OFF
+
+        val freeEntries: List<AmbientSound> = entries.filter { !it.isPremium }
+        val premiumEntries: List<AmbientSound> = entries.filter { it.isPremium }
     }
 }

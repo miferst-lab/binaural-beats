@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Seamless ambient loops via dual MediaPlayer crossfade (fixes silence gap on OGG wrap)
+- Freemium: free tier hard 30-minute listen clock per session; Premium unlimited
+- Premium ambient placeholders (Mountain wind, Cave drip, Soft thunder) with lock UI
+- Debug premium unlock in Settings; Play Billing product id `binaural_premium_unlock` (scaffolding)
+- AmbientSound without Android R (unit-test friendly)
+
+
 ## 1.2.0
 
 - Ambient background loops (6 CC0 beds + Off) with separate volume

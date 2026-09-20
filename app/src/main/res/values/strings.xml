@@ -59,4 +59,29 @@
     <string name="volume_increase">Zwiększ głośność o 1%</string>
     <string name="ambient_volume_decrease">Zmniejsz głośność ambientu o 1%</string>
     <string name="ambient_volume_increase">Zwiększ głośność ambientu o 1%</string>
+
+    <string name="ambient_mountain_wind">Mountain wind</string>
+    <string name="ambient_cave_drip">Cave drip</string>
+    <string name="ambient_soft_thunder">Soft thunder</string>
+    <string name="ambient_premium_badge">Premium</string>
+    <string name="ambient_locked_cd">Locked premium ambient</string>
+
+    <string name="free_session_remaining">Free session: %1$s left</string>
+    <string name="free_limit_title">Free listening limit</string>
+    <string name="free_limit_message">You have reached the 30-minute free listening limit for this session. Upgrade to Premium for unlimited sessions and extra ambient beds.</string>
+    <string name="free_limit_ok">OK</string>
+    <string name="upgrade_premium">Upgrade to Premium</string>
+
+    <string name="premium_upsell_title">Premium ambient</string>
+    <string name="premium_upsell_message">This ambient bed is part of Premium. Unlock Premium for extra beds and unlimited listening.</string>
+    <string name="premium_upsell_cancel">Not now</string>
+
+    <string name="settings_section_premium">Premium</string>
+    <string name="settings_premium_status_on">Premium unlocked</string>
+    <string name="settings_premium_status_off">Free plan — 30 min per session</string>
+    <string name="settings_premium_desc">Premium unlocks longer sessions and extra ambient beds. Play product id: binaural_premium_unlock</string>
+    <string name="settings_debug_unlock">Debug: allow premium unlock</string>
+    <string name="settings_debug_unlock_desc">For testing without Play Billing. Turns on local purchase unlock.</string>
+    <string name="settings_premium_active">You have Premium</string>
+    <string name="settings_remove_premium_debug">Remove Premium (debug)</string>
 </resources>

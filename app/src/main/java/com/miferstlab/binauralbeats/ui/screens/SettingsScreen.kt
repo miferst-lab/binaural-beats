@@ -15,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +54,11 @@ fun SettingsScreen(
     onMixChanged: (Boolean) -> Unit,
     onKeepScreenOnChanged: (Boolean) -> Unit,
     onAppearanceChanged: (AppearanceMode) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onUpgradePremium: () -> Unit = {},
+    onDebugUnlockChanged: (Boolean) -> Unit = {},
+    isDebugUnlockEnabled: Boolean = false,
+    onSetPremium: (Boolean) -> Unit = {}
 ) {
     val glassSurface = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
     val showGalaxy = MaterialTheme.colorScheme.background.luminance() < 0.3f
@@ -207,6 +213,82 @@ fun SettingsScreen(
                 Spacer(Modifier.height(28.dp))
 
                 Text(
+                    text = stringResource(R.string.settings_section_premium),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                )
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = glassSurface),
+                    border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.22f))
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(
+                                if (state.isPremium) R.string.settings_premium_status_on
+                                else R.string.settings_premium_status_off
+                            ),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.settings_premium_desc),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        if (state.isPremium) {
+                            Text(
+                                text = stringResource(R.string.settings_premium_active),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = NebulaCyan
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            OutlinedButton(onClick = { onSetPremium(false) }) {
+                                Text(stringResource(R.string.settings_remove_premium_debug))
+                            }
+                        } else {
+                            Button(onClick = onUpgradePremium) {
+                                Text(stringResource(R.string.upgrade_premium))
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.settings_debug_unlock),
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+                            },
+                            supportingContent = {
+                                Text(
+                                    text = stringResource(R.string.settings_debug_unlock_desc),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            trailingContent = {
+                                Switch(
+                                    checked = isDebugUnlockEnabled,
+                                    onCheckedChange = onDebugUnlockChanged,
+                                    colors = SwitchDefaults.colors(
+                                        checkedThumbColor = NebulaCyan,
+                                        checkedTrackColor = NebulaCyan.copy(alpha = 0.45f)
+                                    )
+                                )
+                            },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(28.dp))
+
+                Text(
                     text = stringResource(R.string.about),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -220,7 +302,7 @@ fun SettingsScreen(
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(
-                            text = stringResource(R.string.about_version, "1.1.0"),
+                            text = stringResource(R.string.about_version, "1.3.0"),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )

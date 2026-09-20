@@ -1,5 +1,6 @@
 package com.miferstlab.binauralbeats.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
@@ -7,16 +8,23 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.miferstlab.binauralbeats.billing.BillingManager
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
+import com.miferstlab.binauralbeats.data.Entitlements
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
 import com.miferstlab.binauralbeats.service.BinauralPlaybackService
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class BinauralViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -30,7 +38,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             ambient = AmbientSound.fromPrefs(prefs.getString(KEY_AMBIENT, AmbientSound.OFF.prefsValue)),
             ambientVolume = FrequencyMath.clampVolume(
                 prefs.getFloat(KEY_AMBIENT_VOLUME, 0.35f)
-            )
+            ),
+            isPremium = prefs.getBoolean(KEY_PREMIUM, false)
         )
     )
     val state: StateFlow<PlaybackState> = _state.asStateFlow()
@@ -41,6 +50,16 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     /** True after START until STOP — covers paused sessions so volume updates still reach the FGS. */
     private var sessionActive = false
 
+    /** Free-tier listen clock (ms while isPlaying). Reset on stop. */
+    private var sessionElapsedMs: Long = 0L
+    private var tickerJob: Job? = null
+
+    private val billing = BillingManager(
+        context = application,
+        onPremiumUnlocked = { setPremium(true) },
+        allowDebugUnlock = { prefs.getBoolean(KEY_DEBUG_UNLOCK, false) }
+    )
+
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             val local = binder as? BinauralPlaybackService.LocalBinder ?: return
@@ -49,6 +68,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             val playing = service?.isPlaying() == true
             sessionActive = playing || sessionActive
             _state.update { it.copy(isPlaying = playing) }
+            if (playing) startTicker()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -82,6 +102,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setAmbient(ambient: AmbientSound) {
+        if (ambient.isPremium && !_state.value.isPremium) {
+            _state.update { it.copy(showPremiumUpsellDialog = true) }
+            return
+        }
         prefs.edit().putString(KEY_AMBIENT, ambient.prefsValue).apply()
         _state.update { it.copy(ambient = ambient) }
         if (sessionActive) {
@@ -134,7 +158,48 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         _state.update { it.copy(appearanceMode = mode) }
     }
 
+    fun setPremium(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_PREMIUM, enabled).apply()
+        _state.update {
+            it.copy(
+                isPremium = enabled,
+                showFreeLimitDialog = false,
+                showPremiumUpsellDialog = false
+            )
+        }
+    }
+
+    /** Settings debug toggle — allows purchase button / BillingManager debug path. */
+    fun setDebugUnlockEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_DEBUG_UNLOCK, enabled).apply()
+    }
+
+    fun isDebugUnlockEnabled(): Boolean = prefs.getBoolean(KEY_DEBUG_UNLOCK, false)
+
+    fun purchasePremium(activity: Activity?) {
+        billing.purchasePremium(activity)
+    }
+
+    fun dismissFreeLimitDialog() {
+        // Allow a new free session after the limit dialog is acknowledged.
+        sessionElapsedMs = 0L
+        _state.update { it.copy(showFreeLimitDialog = false, sessionElapsedMs = 0L) }
+    }
+
+    fun dismissPremiumUpsellDialog() {
+        _state.update { it.copy(showPremiumUpsellDialog = false) }
+    }
+
     fun play() {
+        if (!_state.value.isPremium && sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
+            _state.update { it.copy(showFreeLimitDialog = true, isPlaying = false) }
+            return
+        }
+        // Downgrade locked ambient if premium lapsed.
+        if (_state.value.ambient.isPremium && !_state.value.isPremium) {
+            prefs.edit().putString(KEY_AMBIENT, AmbientSound.OFF.prefsValue).apply()
+            _state.update { it.copy(ambient = AmbientSound.OFF) }
+        }
         val ctx = getApplication<Application>()
         val s = _state.value
         val intent = BinauralPlaybackService.startIntent(
@@ -151,7 +216,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         ctx.startForegroundService(intent)
         ensureBound()
         sessionActive = true
-        _state.update { it.copy(isPlaying = true) }
+        _state.update { it.copy(isPlaying = true, sessionElapsedMs = sessionElapsedMs) }
+        startTicker()
     }
 
     fun pause() {
@@ -164,11 +230,16 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             }
         )
         _state.update { it.copy(isPlaying = false) }
+        // Ticker keeps running but only accumulates while isPlaying.
     }
 
     fun resume() {
         if (!sessionActive) {
             play()
+            return
+        }
+        if (!_state.value.isPremium && sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
+            _state.update { it.copy(showFreeLimitDialog = true, isPlaying = false) }
             return
         }
         val ctx = getApplication<Application>()
@@ -178,6 +249,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             }
         )
         _state.update { it.copy(isPlaying = true) }
+        startTicker()
     }
 
     fun togglePlayPause() {
@@ -192,7 +264,56 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             }
         )
         sessionActive = false
-        _state.update { it.copy(isPlaying = false) }
+        tickerJob?.cancel()
+        tickerJob = null
+        sessionElapsedMs = 0L
+        _state.update {
+            it.copy(isPlaying = false, sessionElapsedMs = 0L)
+        }
+    }
+
+    private fun startTicker() {
+        if (tickerJob?.isActive == true) return
+        tickerJob = viewModelScope.launch {
+            while (isActive) {
+                delay(TICK_MS)
+                val s = _state.value
+                if (!s.isPlaying) continue
+                if (s.isPremium) {
+                    // Still surface elapsed for UI if desired; no limit.
+                    sessionElapsedMs += TICK_MS
+                    _state.update { it.copy(sessionElapsedMs = sessionElapsedMs) }
+                    continue
+                }
+                sessionElapsedMs += TICK_MS
+                _state.update { it.copy(sessionElapsedMs = sessionElapsedMs) }
+                if (sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
+                    // Hit free limit: stop binaural + ambient, show CTA.
+                    stopKeepingElapsedAtLimit()
+                    break
+                }
+            }
+        }
+    }
+
+    private fun stopKeepingElapsedAtLimit() {
+        val ctx = getApplication<Application>()
+        ctx.startService(
+            Intent(ctx, BinauralPlaybackService::class.java).apply {
+                action = BinauralPlaybackService.ACTION_STOP
+            }
+        )
+        sessionActive = false
+        tickerJob?.cancel()
+        tickerJob = null
+        sessionElapsedMs = Entitlements.FREE_LISTEN_LIMIT_MS
+        _state.update {
+            it.copy(
+                isPlaying = false,
+                sessionElapsedMs = sessionElapsedMs,
+                showFreeLimitDialog = true
+            )
+        }
     }
 
     private fun ensureBound() {
@@ -226,6 +347,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun onCleared() {
+        tickerJob?.cancel()
         if (bound) {
             runCatching { getApplication<Application>().unbindService(connection) }
             bound = false
@@ -239,5 +361,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         private const val KEY_APPEARANCE_MODE = "appearance_mode"
         private const val KEY_AMBIENT = "ambient"
         private const val KEY_AMBIENT_VOLUME = "ambient_volume"
+        private const val KEY_PREMIUM = "is_premium"
+        private const val KEY_DEBUG_UNLOCK = "debug_premium_unlock"
+        private const val TICK_MS = 1000L
     }
 }
