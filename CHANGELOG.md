@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+
+- Truly seamless ambient loops: dual MediaPlayer equal-power crossfade ~1.8s (was ~280ms), seek-complete before overlap, completion safety net
+- Re-encoded all ambient OGG beds with silence trim + end→start acrossfade (helps rain/thunder wrap)
+- Dedicated premium assets: Cave drip (BigSoundBank Cave #1), Soft thunder (rain/thunder EQ), Mountain wind
+- Cave (jaskinia) no longer reuses stream — was effectively wrong/broken for that bed
+
 ## 1.3.0
 
 - Seamless ambient loops via dual MediaPlayer crossfade (fixes silence gap on OGG wrap)

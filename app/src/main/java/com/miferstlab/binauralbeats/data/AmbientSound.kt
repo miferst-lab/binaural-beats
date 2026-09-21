@@ -19,12 +19,9 @@ enum class AmbientSound(
     RAIN("rain", "ambient_rain"),
     FIREPLACE("fireplace", "ambient_fireplace"),
     STREAM("stream", "ambient_stream"),
-    /** Premium placeholder — asset TBD; currently reuses waves. */
-    MOUNTAIN_WIND("mountain_wind", "ambient_waves", isPremium = true),
-    /** Premium placeholder — asset TBD; currently reuses stream. */
-    CAVE_DRIP("cave_drip", "ambient_stream", isPremium = true),
-    /** Premium placeholder — asset TBD; currently reuses rain. */
-    SOFT_THUNDER("soft_thunder", "ambient_rain", isPremium = true);
+    MOUNTAIN_WIND("mountain_wind", "ambient_mountain_wind", isPremium = true),
+    CAVE_DRIP("cave_drip", "ambient_cave_drip", isPremium = true),
+    SOFT_THUNDER("soft_thunder", "ambient_soft_thunder", isPremium = true);
 
     companion object {
         fun fromPrefs(value: String?): AmbientSound =

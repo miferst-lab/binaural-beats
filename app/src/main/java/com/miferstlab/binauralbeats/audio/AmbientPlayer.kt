@@ -9,14 +9,19 @@ import android.util.Log
 import com.miferstlab.binauralbeats.R
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.FrequencyMath
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Seamless ambient bed via dual [MediaPlayer] crossfade.
  *
- * Single-player [MediaPlayer.isLooping] leaves a audible gap on OGG/Vorbis
+ * Single-player [MediaPlayer.isLooping] leaves an audible gap on OGG/Vorbis
  * (decoder flush + recreate). We keep two prepared players on the same raw
- * resource and crossfade before the active clip ends, preserving
- * [AudioAttributes.USAGE_MEDIA] so Spotify mix behavior is unchanged.
+ * resource and overlap them for ~[CROSSFADE_MS] before the active clip ends,
+ * preserving [AudioAttributes.USAGE_MEDIA] so Spotify mix behavior is unchanged.
+ *
+ * Assets are also pre-processed with end→start acrossfade; the long player
+ * overlap still masks mid-event cuts (thunder) and any residual decoder gap.
  */
 class AmbientPlayer(private val context: Context) {
 
@@ -85,7 +90,6 @@ class AmbientPlayer(private val context: Context) {
         } catch (_: IllegalStateException) {
         }
         fading = false
-        // Leave volumes in a clean state for resume.
         applyVolume(activePlayer(), volume)
         applyVolume(inactivePlayer(), 0f)
     }
@@ -153,7 +157,8 @@ class AmbientPlayer(private val context: Context) {
             0
         }
         val remaining = (duration - position).coerceAtLeast(0)
-        val delay = (remaining - CROSSFADE_MS).coerceAtLeast(0).toLong()
+        // Start the overlap early enough that Handler jitter cannot miss the end.
+        val delay = (remaining - CROSSFADE_MS - SCHEDULE_LEAD_MS).coerceAtLeast(0).toLong()
         val run = Runnable { beginCrossfade() }
         scheduleRunnable = run
         handler.postDelayed(run, delay)
@@ -164,19 +169,35 @@ class AmbientPlayer(private val context: Context) {
         val outgoing = activePlayer() ?: return
         val incoming = inactivePlayer() ?: return
         fading = true
+
+        // seekTo is async on many devices — start/fade only after seek completes.
         try {
-            // Rewind incoming so it starts from the beginning of the loop.
-            incoming.seekTo(0)
             applyVolume(incoming, 0f)
-            if (!incoming.isPlaying) incoming.start()
+            incoming.setOnSeekCompleteListener { mp ->
+                mp.setOnSeekCompleteListener(null)
+                if (!wantPlaying) {
+                    fading = false
+                    return@setOnSeekCompleteListener
+                }
+                try {
+                    if (!mp.isPlaying) mp.start()
+                } catch (e: Exception) {
+                    Log.e(TAG, "incoming start failed", e)
+                    fading = false
+                    hardRestartActive()
+                    return@setOnSeekCompleteListener
+                }
+                runEqualPowerFade(outgoing, incoming)
+            }
+            incoming.seekTo(0)
         } catch (e: Exception) {
             Log.e(TAG, "crossfade prepare failed", e)
             fading = false
-            // Fallback: hard-cut restart of active.
             hardRestartActive()
-            return
         }
+    }
 
+    private fun runEqualPowerFade(outgoing: MediaPlayer, incoming: MediaPlayer) {
         val steps = (CROSSFADE_MS / STEP_MS).coerceAtLeast(1)
         var step = 0
         val target = volume
@@ -187,28 +208,35 @@ class AmbientPlayer(private val context: Context) {
                     return
                 }
                 step++
-                val t = step.toFloat() / steps
-                applyVolume(outgoing, target * (1f - t))
-                applyVolume(incoming, target * t)
+                val t = (step.toFloat() / steps).coerceIn(0f, 1f)
+                // Equal-power crossfade: constant perceived loudness, no dip in the middle.
+                val outGain = cos(HALF_PI * t).toFloat()
+                val inGain = sin(HALF_PI * t).toFloat()
+                applyVolume(outgoing, target * outGain)
+                applyVolume(incoming, target * inGain)
                 if (step < steps) {
                     handler.postDelayed(this, STEP_MS.toLong())
                     crossfadeRunnable = this
                 } else {
-                    fading = false
-                    try {
-                        if (outgoing.isPlaying) outgoing.pause()
-                        outgoing.seekTo(0)
-                    } catch (_: Exception) {
-                    }
-                    applyVolume(outgoing, 0f)
-                    applyVolume(incoming, target)
-                    activeSlot = 1 - activeSlot
-                    scheduleCrossfade()
+                    finishCrossfade(outgoing, incoming, target)
                 }
             }
         }
         crossfadeRunnable = run
         handler.post(run)
+    }
+
+    private fun finishCrossfade(outgoing: MediaPlayer, incoming: MediaPlayer, target: Float) {
+        fading = false
+        try {
+            if (outgoing.isPlaying) outgoing.pause()
+            outgoing.seekTo(0)
+        } catch (_: Exception) {
+        }
+        applyVolume(outgoing, 0f)
+        applyVolume(incoming, target)
+        activeSlot = 1 - activeSlot
+        scheduleCrossfade()
     }
 
     private fun hardRestartActive() {
@@ -243,6 +271,16 @@ class AmbientPlayer(private val context: Context) {
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build()
         )
+        // Safety net: if scheduling missed the end, kick a crossfade immediately.
+        mp.setOnCompletionListener { completed ->
+            if (!wantPlaying) return@setOnCompletionListener
+            handler.post {
+                if (!wantPlaying || fading) return@post
+                if (completed !== activePlayer()) return@post
+                Log.w(TAG, "active completed before crossfade — forcing overlap")
+                beginCrossfade()
+            }
+        }
         return mp
     }
 
@@ -271,6 +309,7 @@ class AmbientPlayer(private val context: Context) {
         if (mp == null) return
         try {
             mp.setOnCompletionListener(null)
+            mp.setOnSeekCompleteListener(null)
             if (mp.isPlaying) mp.stop()
         } catch (_: Exception) {
         }
@@ -282,9 +321,12 @@ class AmbientPlayer(private val context: Context) {
 
     companion object {
         private const val TAG = "AmbientPlayer"
-        /** Overlap window that masks OGG decoder gap on loop wrap. */
-        private const val CROSSFADE_MS = 280
-        private const val STEP_MS = 28
+        /** Overlap window that masks OGG decoder gap and mid-event cuts (thunder). */
+        private const val CROSSFADE_MS = 1800
+        private const val STEP_MS = 40
+        /** Extra headroom so a delayed Handler still starts before clip end. */
+        private const val SCHEDULE_LEAD_MS = 120
+        private const val HALF_PI = (Math.PI / 2.0)
 
         fun rawResId(sound: AmbientSound): Int? = when (sound) {
             AmbientSound.OFF -> null
@@ -294,10 +336,9 @@ class AmbientPlayer(private val context: Context) {
             AmbientSound.RAIN -> R.raw.ambient_rain
             AmbientSound.FIREPLACE -> R.raw.ambient_fireplace
             AmbientSound.STREAM -> R.raw.ambient_stream
-            // Premium placeholders reuse existing beds until dedicated packs land.
-            AmbientSound.MOUNTAIN_WIND -> R.raw.ambient_waves
-            AmbientSound.CAVE_DRIP -> R.raw.ambient_stream
-            AmbientSound.SOFT_THUNDER -> R.raw.ambient_rain
+            AmbientSound.MOUNTAIN_WIND -> R.raw.ambient_mountain_wind
+            AmbientSound.CAVE_DRIP -> R.raw.ambient_cave_drip
+            AmbientSound.SOFT_THUNDER -> R.raw.ambient_soft_thunder
         }
     }
 }
