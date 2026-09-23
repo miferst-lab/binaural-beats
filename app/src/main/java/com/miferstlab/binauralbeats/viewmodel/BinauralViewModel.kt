@@ -30,18 +30,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    private val _state = MutableStateFlow(
-        PlaybackState(
-            appearanceMode = AppearanceMode.fromPrefs(
-                prefs.getString(KEY_APPEARANCE_MODE, AppearanceMode.NIGHT.prefsValue)
-            ),
-            ambient = AmbientSound.fromPrefs(prefs.getString(KEY_AMBIENT, AmbientSound.OFF.prefsValue)),
-            ambientVolume = FrequencyMath.clampVolume(
-                prefs.getFloat(KEY_AMBIENT_VOLUME, 0.35f)
-            ),
-            isPremium = prefs.getBoolean(KEY_PREMIUM, false)
-        )
-    )
+    private val trialStartMs: Long = ensureTrialStart()
+    private var furthestNowMs: Long = prefs.getLong(KEY_FURTHEST_NOW, 0L)
+
+    private val _state = MutableStateFlow(initialState())
     val state: StateFlow<PlaybackState> = _state.asStateFlow()
 
     private var service: BinauralPlaybackService? = null
@@ -50,9 +42,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     /** True after START until STOP — covers paused sessions so volume updates still reach the FGS. */
     private var sessionActive = false
 
-    /** Free-tier listen clock (ms while isPlaying). Reset on stop. */
-    private var sessionElapsedMs: Long = 0L
-    private var tickerJob: Job? = null
+    private var trialTickerJob: Job? = null
 
     private val billing = BillingManager(
         context = application,
@@ -68,13 +58,97 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             val playing = service?.isPlaying() == true
             sessionActive = playing || sessionActive
             _state.update { it.copy(isPlaying = playing) }
-            if (playing) startTicker()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
             bound = false
         }
+    }
+
+    init {
+        refreshTrialState()
+        startTrialTicker()
+    }
+
+    private fun initialState(): PlaybackState {
+        val now = effectiveNow()
+        val premium = prefs.getBoolean(KEY_PREMIUM, false)
+        val trialActive = !premium && Entitlements.isTrialActive(trialStartMs, now)
+        return PlaybackState(
+            appearanceMode = AppearanceMode.fromPrefs(
+                prefs.getString(KEY_APPEARANCE_MODE, AppearanceMode.NIGHT.prefsValue)
+            ),
+            ambient = AmbientSound.fromPrefs(prefs.getString(KEY_AMBIENT, AmbientSound.OFF.prefsValue)),
+            ambientVolume = FrequencyMath.clampVolume(
+                prefs.getFloat(KEY_AMBIENT_VOLUME, 0.35f)
+            ),
+            isPremium = premium,
+            isTrialActive = trialActive,
+            trialDaysRemaining = if (premium) 0 else Entitlements.trialRemainingDays(trialStartMs, now)
+        )
+    }
+
+    /** Persist first-install / trial start once; never move backwards. */
+    private fun ensureTrialStart(): Long {
+        val existing = prefs.getLong(KEY_TRIAL_START, 0L)
+        if (existing > 0L) return existing
+        val now = System.currentTimeMillis()
+        prefs.edit()
+            .putLong(KEY_TRIAL_START, now)
+            .putLong(KEY_FURTHEST_NOW, now)
+            .apply()
+        return now
+    }
+
+    /**
+     * Wall-clock with rollback clamp: [furthestNowMs] only advances.
+     * Clock going backwards does not extend remaining trial time.
+     */
+    private fun effectiveNow(): Long {
+        val wall = System.currentTimeMillis()
+        val effective = maxOf(wall, furthestNowMs)
+        if (effective > furthestNowMs) {
+            furthestNowMs = effective
+            prefs.edit().putLong(KEY_FURTHEST_NOW, furthestNowMs).apply()
+        }
+        return effective
+    }
+
+    private fun refreshTrialState() {
+        val now = effectiveNow()
+        val premium = _state.value.isPremium || prefs.getBoolean(KEY_PREMIUM, false)
+        val trialActive = !premium && Entitlements.isTrialActive(trialStartMs, now)
+        val days = if (premium) 0 else Entitlements.trialRemainingDays(trialStartMs, now)
+        _state.update {
+            it.copy(
+                isPremium = premium,
+                isTrialActive = trialActive,
+                trialDaysRemaining = days
+            )
+        }
+        // If trial just expired while playing, stop and show paywall.
+        if (!premium && !trialActive && _state.value.isPlaying) {
+            stop()
+            _state.update { it.copy(showTrialExpiredDialog = true) }
+        }
+    }
+
+    private fun startTrialTicker() {
+        if (trialTickerJob?.isActive == true) return
+        trialTickerJob = viewModelScope.launch {
+            while (isActive) {
+                delay(TRIAL_TICK_MS)
+                if (_state.value.isPremium) continue
+                refreshTrialState()
+            }
+        }
+    }
+
+    private fun canPlay(): Boolean {
+        refreshTrialState()
+        val s = _state.value
+        return s.isPremium || s.isTrialActive
     }
 
     fun selectMode(mode: BinauralMode) {
@@ -102,7 +176,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setAmbient(ambient: AmbientSound) {
-        if (ambient.isPremium && !_state.value.isPremium) {
+        if (ambient.isPremium && !_state.value.hasFullAccess) {
             _state.update { it.copy(showPremiumUpsellDialog = true) }
             return
         }
@@ -143,7 +217,6 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     fun setMixWithOtherApps(enabled: Boolean) {
         _state.update { it.copy(mixWithOtherApps = enabled) }
-        // Apply on next play/resume; if already playing, restart with new attrs.
         if (sessionActive) {
             play()
         }
@@ -163,7 +236,9 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         _state.update {
             it.copy(
                 isPremium = enabled,
-                showFreeLimitDialog = false,
+                isTrialActive = if (enabled) false else Entitlements.isTrialActive(trialStartMs, effectiveNow()),
+                trialDaysRemaining = if (enabled) 0 else Entitlements.trialRemainingDays(trialStartMs, effectiveNow()),
+                showTrialExpiredDialog = false,
                 showPremiumUpsellDialog = false
             )
         }
@@ -180,23 +255,24 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         billing.purchasePremium(activity)
     }
 
-    fun dismissFreeLimitDialog() {
-        // Allow a new free session after the limit dialog is acknowledged.
-        sessionElapsedMs = 0L
-        _state.update { it.copy(showFreeLimitDialog = false, sessionElapsedMs = 0L) }
+    fun dismissTrialExpiredDialog() {
+        _state.update { it.copy(showTrialExpiredDialog = false) }
     }
+
+    /** Back-compat name used by MainActivity / HomeScreen. */
+    fun dismissFreeLimitDialog() = dismissTrialExpiredDialog()
 
     fun dismissPremiumUpsellDialog() {
         _state.update { it.copy(showPremiumUpsellDialog = false) }
     }
 
     fun play() {
-        if (!_state.value.isPremium && sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
-            _state.update { it.copy(showFreeLimitDialog = true, isPlaying = false) }
+        if (!canPlay()) {
+            _state.update { it.copy(showTrialExpiredDialog = true, isPlaying = false) }
             return
         }
-        // Downgrade locked ambient if premium lapsed.
-        if (_state.value.ambient.isPremium && !_state.value.isPremium) {
+        // Downgrade locked ambient if access lapsed.
+        if (_state.value.ambient.isPremium && !_state.value.hasFullAccess) {
             prefs.edit().putString(KEY_AMBIENT, AmbientSound.OFF.prefsValue).apply()
             _state.update { it.copy(ambient = AmbientSound.OFF) }
         }
@@ -212,25 +288,21 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             ambient = s.ambient,
             ambientVolume = s.ambientVolume
         )
-        // Always use startForegroundService for START (Android 8+ / 14 FGS contract).
         ctx.startForegroundService(intent)
         ensureBound()
         sessionActive = true
-        _state.update { it.copy(isPlaying = true, sessionElapsedMs = sessionElapsedMs) }
-        startTicker()
+        _state.update { it.copy(isPlaying = true) }
     }
 
     fun pause() {
         if (!sessionActive) return
         val ctx = getApplication<Application>()
-        // Service is already an FGS from play(); startService is safe for pause/update.
         ctx.startService(
             Intent(ctx, BinauralPlaybackService::class.java).apply {
                 action = BinauralPlaybackService.ACTION_PAUSE
             }
         )
         _state.update { it.copy(isPlaying = false) }
-        // Ticker keeps running but only accumulates while isPlaying.
     }
 
     fun resume() {
@@ -238,8 +310,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             play()
             return
         }
-        if (!_state.value.isPremium && sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
-            _state.update { it.copy(showFreeLimitDialog = true, isPlaying = false) }
+        if (!canPlay()) {
+            _state.update { it.copy(showTrialExpiredDialog = true, isPlaying = false) }
             return
         }
         val ctx = getApplication<Application>()
@@ -249,7 +321,6 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             }
         )
         _state.update { it.copy(isPlaying = true) }
-        startTicker()
     }
 
     fun togglePlayPause() {
@@ -264,62 +335,12 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
             }
         )
         sessionActive = false
-        tickerJob?.cancel()
-        tickerJob = null
-        sessionElapsedMs = 0L
-        _state.update {
-            it.copy(isPlaying = false, sessionElapsedMs = 0L)
-        }
-    }
-
-    private fun startTicker() {
-        if (tickerJob?.isActive == true) return
-        tickerJob = viewModelScope.launch {
-            while (isActive) {
-                delay(TICK_MS)
-                val s = _state.value
-                if (!s.isPlaying) continue
-                if (s.isPremium) {
-                    // Still surface elapsed for UI if desired; no limit.
-                    sessionElapsedMs += TICK_MS
-                    _state.update { it.copy(sessionElapsedMs = sessionElapsedMs) }
-                    continue
-                }
-                sessionElapsedMs += TICK_MS
-                _state.update { it.copy(sessionElapsedMs = sessionElapsedMs) }
-                if (sessionElapsedMs >= Entitlements.FREE_LISTEN_LIMIT_MS) {
-                    // Hit free limit: stop binaural + ambient, show CTA.
-                    stopKeepingElapsedAtLimit()
-                    break
-                }
-            }
-        }
-    }
-
-    private fun stopKeepingElapsedAtLimit() {
-        val ctx = getApplication<Application>()
-        ctx.startService(
-            Intent(ctx, BinauralPlaybackService::class.java).apply {
-                action = BinauralPlaybackService.ACTION_STOP
-            }
-        )
-        sessionActive = false
-        tickerJob?.cancel()
-        tickerJob = null
-        sessionElapsedMs = Entitlements.FREE_LISTEN_LIMIT_MS
-        _state.update {
-            it.copy(
-                isPlaying = false,
-                sessionElapsedMs = sessionElapsedMs,
-                showFreeLimitDialog = true
-            )
-        }
+        _state.update { it.copy(isPlaying = false) }
     }
 
     private fun ensureBound() {
         if (bound) return
         val ctx = getApplication<Application>()
-        // Bind without creating a non-foreground started service on init.
         runCatching {
             ctx.bindService(
                 Intent(ctx, BinauralPlaybackService::class.java),
@@ -347,12 +368,11 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun onCleared() {
-        tickerJob?.cancel()
+        trialTickerJob?.cancel()
         if (bound) {
             runCatching { getApplication<Application>().unbindService(connection) }
             bound = false
         }
-        // Do not stop playback here — FGS should outlive the Activity/ViewModel.
         super.onCleared()
     }
 
@@ -363,6 +383,8 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
         private const val KEY_AMBIENT_VOLUME = "ambient_volume"
         private const val KEY_PREMIUM = "is_premium"
         private const val KEY_DEBUG_UNLOCK = "debug_premium_unlock"
-        private const val TICK_MS = 1000L
+        private const val KEY_TRIAL_START = "trial_start_ms"
+        private const val KEY_FURTHEST_NOW = "trial_furthest_now_ms"
+        private const val TRIAL_TICK_MS = 60_000L
     }
 }

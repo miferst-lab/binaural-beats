@@ -302,7 +302,7 @@ fun SettingsScreen(
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(
-                            text = stringResource(R.string.about_version, "1.3.0"),
+                            text = stringResource(R.string.about_version, "1.4.0"),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )

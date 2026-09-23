@@ -1,6 +1,6 @@
 # Ambient loop licenses
 
-All ambient bed files shipped in `app/src/main/res/raw/` are **downloaded** (not synthesized) from [BigSoundBank](https://bigsoundbank.com/), released by **Joseph SARDIN** under **CC0** (public-domain dedication). Trimmed, end→start acrossfaded for seamless looping, and converted to OGG Vorbis for the app; no other changes to authorship.
+All ambient bed files shipped in `app/src/main/res/raw/` are **downloaded** (not synthesized) from [BigSoundBank](https://bigsoundbank.com/), released by **Joseph SARDIN** under **CC0** (public-domain dedication). Trimmed, equal-power end→start acrossfaded (~2.5s) for seamless single-player looping, and converted to OGG Vorbis for the app; no other changes to authorship.
 
 | App file | Source title | Sound # | Author | License | Source URL |
 |----------|--------------|---------|--------|---------|------------|

@@ -66,22 +66,28 @@
     <string name="ambient_premium_badge">Premium</string>
     <string name="ambient_locked_cd">Zablokowany ambient Premium</string>
 
-    <string name="free_session_remaining">Sesja darmowa: zostało %1$s</string>
-    <string name="free_limit_title">Limit darmowego słuchania</string>
-    <string name="free_limit_message">Osiągnięto 30-minutowy limit darmowej sesji. Odblokuj Premium, aby słuchać bez limitu i zyskać dodatkowe ambienty.</string>
+    <string name="free_session_remaining">Okres próbny: zostało %1$d dni</string>
+    <string name="free_limit_title">Koniec okresu próbnego</string>
+    <string name="free_limit_message">Bezpłatny okres próbny (7 dni) dobiegł końca. Kup Premium, aby nadal słuchać fal binauralnych i ambientów.</string>
     <string name="free_limit_ok">OK</string>
     <string name="upgrade_premium">Odblokuj Premium</string>
 
     <string name="premium_upsell_title">Ambient Premium</string>
-    <string name="premium_upsell_message">Ten ambient jest dostępny w Premium. Odblokuj Premium, aby uzyskać dodatkowe tła i nielimitowane sesje.</string>
+    <string name="premium_upsell_message">Ten ambient jest dostępny w Premium (oraz w okresie próbnym). Odblokuj Premium po wygaśnięciu próby.</string>
     <string name="premium_upsell_cancel">Nie teraz</string>
 
     <string name="settings_section_premium">Premium</string>
     <string name="settings_premium_status_on">Premium odblokowane</string>
-    <string name="settings_premium_status_off">Plan darmowy — 30 min na sesję</string>
-    <string name="settings_premium_desc">Premium odblokowuje dłuższe sesje i dodatkowe ambienty. Id produktu Play: binaural_premium_unlock</string>
+    <string name="settings_premium_status_off">Plan darmowy — okres próbny 7 dni od instalacji</string>
+    <string name="settings_premium_desc">Premium odblokowuje nielimitowane słuchanie i dodatkowe ambienty po okresie próbnym. Id produktu Play: binaural_premium_unlock</string>
     <string name="settings_debug_unlock">Debug: pozwól odblokować Premium</string>
     <string name="settings_debug_unlock_desc">Do testów bez Play Billing. Włącza lokalne odblokowanie zakupem.</string>
     <string name="settings_premium_active">Masz Premium</string>
     <string name="settings_remove_premium_debug">Usuń Premium (debug)</string>
+
+    <string name="trial_days_remaining">Okres próbny: zostało %1$d dni</string>
+    <string name="trial_expired_banner">Okres próbny zakończony — wymagany zakup</string>
+    <string name="trial_expired_title">Koniec okresu próbnego</string>
+    <string name="trial_expired_message">Bezpłatny okres próbny (7 dni) dobiegł końca. Kup Premium, aby nadal słuchać fal binauralnych i ambientów.</string>
+    <string name="trial_expired_ok">OK</string>
 </resources>

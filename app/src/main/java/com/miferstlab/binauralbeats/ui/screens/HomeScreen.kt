@@ -56,7 +56,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
 import com.miferstlab.binauralbeats.data.AmbientSound
-import com.miferstlab.binauralbeats.data.Entitlements
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
@@ -222,13 +221,16 @@ fun HomeScreen(
                 )
 
                 if (!state.isPremium) {
-                    val remaining = Entitlements.remainingFreeMs(state.sessionElapsedMs)
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        text = stringResource(
-                            R.string.free_session_remaining,
-                            Entitlements.formatMmSs(remaining)
-                        ),
+                        text = if (state.isTrialActive) {
+                            stringResource(
+                                R.string.trial_days_remaining,
+                                state.trialDaysRemaining
+                            )
+                        } else {
+                            stringResource(R.string.trial_expired_banner)
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -280,7 +282,7 @@ fun HomeScreen(
                         ) {
                             AmbientSound.entries.forEach { ambient ->
                                 val selected = state.ambient == ambient
-                                val locked = ambient.isPremium && !state.isPremium
+                                val locked = ambient.isPremium && !state.hasFullAccess
                                 FilterChip(
                                     selected = selected,
                                     onClick = { onAmbientSelected(ambient) },
@@ -426,11 +428,11 @@ fun HomeScreen(
             }
         }
 
-        if (state.showFreeLimitDialog) {
+        if (state.showTrialExpiredDialog) {
             AlertDialog(
                 onDismissRequest = onDismissFreeLimit,
-                title = { Text(stringResource(R.string.free_limit_title)) },
-                text = { Text(stringResource(R.string.free_limit_message)) },
+                title = { Text(stringResource(R.string.trial_expired_title)) },
+                text = { Text(stringResource(R.string.trial_expired_message)) },
                 confirmButton = {
                     TextButton(onClick = onUpgradePremium) {
                         Text(stringResource(R.string.upgrade_premium))
@@ -438,7 +440,7 @@ fun HomeScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = onDismissFreeLimit) {
-                        Text(stringResource(R.string.free_limit_ok))
+                        Text(stringResource(R.string.trial_expired_ok))
                     }
                 }
             )

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0
+
+- Seamless ambient loops (v2): equal-power end→start acrossfade (~2.5s) re-encoded into every OGG bed + gapless ExoPlayer `REPEAT_MODE_ONE` (replaces dual MediaPlayer crossfade that still clicked on thunder/cave)
+- Freemium: **7-day trial from first install** replaces the 30-minute per-session listen clock; after expiry playback is blocked until Premium (`binaural_premium_unlock`)
+- Trial clock rollback clamp (`trial_furthest_now_ms`); debug Premium unlock kept
+- Tooling: `tools/make_seamless_loops.py` for regenerating looped beds
+
 ## 1.3.1
 
 - Truly seamless ambient loops: dual MediaPlayer equal-power crossfade ~1.8s (was ~280ms), seek-complete before overlap, completion safety net
