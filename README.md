@@ -1,126 +1,118 @@
-# Binaural Beats / Fale binauralne
+# Binaural Waves (binaural-beats)
 
-Prosta aplikacja Android (Kotlin + Jetpack Compose, Material 3) generująca stereofoniczne tony sinusoidalne z różnicą częstotliwości L/R — klasyczny efekt **binaural beat**.
+Android app (Kotlin + Jetpack Compose, Material 3) that generates stereo sine tones with an L/R frequency difference — the classic **binaural beat** — layered with a library of real-world ambient soundscapes.
 
 **applicationId:** `com.miferstlab.binauralbeats`  
 **minSdk 26 · targetSdk 35 · Gradle Kotlin DSL**
 
 ---
 
-## Funkcje / Features
+## Features
 
-- Tryby: **Relaks**, **Czytanie**, **Skupienie**, **Energia**, **Sen**, **Medytacja**, **Niestandardowy**
-- Generacja w czasie rzeczywistym przez `AudioTrack` (PCM float / 16-bit)
-- Usługa pierwszoplanowa (foreground service) — odtwarzanie przy wyłączonym ekranie + powiadomienie ze **Stop**
-- Suwak głośności z przyciskami −/+, play/pause
-- **Ambient** (las nocą, fale, poranek, deszcz, kominek, strumień) z osobną głośnością
-- Domyślnie **miks z innymi aplikacjami** (Spotify nie jest pauzowane)
-- UI po polsku, spokojny ciemny motyw
+- Modes: **Relax**, **Reading**, **Focus**, **Energy**, **Sleep**, **Meditation**, **Custom**
+- Real-time synthesis via `AudioTrack` (PCM 16-bit)
+- Foreground service — keeps playing with the screen off; notification with **Stop**
+- Volume slider with −/+ (1%) buttons, play/pause
+- **Ambient library**: 44 real field recordings (~5 min each, seamless loops) in 9 groups —
+  Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi — with separate volume and ±1% buttons
+- **Sound credits** screen (Settings → About)
+- **Mix with other apps** on by default (Spotify is not paused)
+- 7-day trial from install, then one-time Premium unlock (`binaural_premium_unlock`)
+- English UI, calm dark "galactic" theme
 
-### Presety częstotliwości
+### Frequency presets
 
-| Tryb        | Beat (Δf) | Nośna (carrier) | Uwagi              |
-|-------------|-----------|-----------------|--------------------|
-| Relaks      | ~9 Hz     | ~220 Hz         | fale alfa          |
-| Czytanie    | ~13 Hz    | ~210 Hz         | SMR / niska beta   |
-| Skupienie   | ~16 Hz    | ~220 Hz         | beta (także praca) |
-| Energia     | ~22 Hz    | ~230 Hz         | wysoka beta / sport|
-| Sen         | ~3 Hz     | ~180 Hz         | niższa głośność    |
-| Medytacja   | ~6 Hz     | ~200 Hz         | fale theta         |
-| Niestandardowy | 1–40 Hz | 80–500 Hz     | suwaki użytkownika |
+| Mode       | Beat (Δf) | Carrier   | Notes                |
+|------------|-----------|-----------|----------------------|
+| Relax      | ~9 Hz     | ~220 Hz   | alpha                |
+| Reading    | ~13 Hz    | ~210 Hz   | SMR / low beta       |
+| Focus      | ~16 Hz    | ~220 Hz   | beta (also work)     |
+| Energy     | ~22 Hz    | ~230 Hz   | high beta / sport    |
+| Sleep      | ~3 Hz     | ~180 Hz   | lower default volume |
+| Meditation | ~6 Hz     | ~200 Hz   | theta                |
+| Custom     | 1–40 Hz   | 80–500 Hz | user sliders         |
 
-Lewy kanał ≈ carrier − beat/2, prawy ≈ carrier + beat/2.
-
----
-
-## Spotify / współistnienie z muzyką (ważne)
-
-Dźwięk idzie na **strumień mediów** (ten sam suwak głośności co Spotify), PCM 16-bit.
-
-- **Miksuj z innymi aplikacjami** (domyślnie włączone): nie bierzemy audio focus — Spotify gra dalej, tony nakładają się pod muzyką.
-- Miks wyłączony: `AUDIOFOCUS_GAIN` — inne odtwarzacze pauzują.
-
-Szczegóły w kodzie: `BinauralAudioEngine`, `BinauralPlaybackService`.
+Left ≈ carrier − beat/2, right ≈ carrier + beat/2.
 
 ---
 
-## Disclaimer / Zastrzeżenie
+## Ambient library
 
-**PL:** Ta aplikacja nie jest wyrobem medycznym i nie stanowi porady medycznej. Nie diagnozuje, nie leczy ani nie zapobiega żadnym chorobom. W razie problemów zdrowotnych skonsultuj się z lekarzem.
-
-**EN:** This app is not a medical device and is not medical advice. It does not diagnose, treat, or prevent any disease. Consult a physician for health concerns.
+- Audio: `app/src/main/assets/ambient/<key>.ogg` — OGG Vorbis q0 (~64 kbps), 44.1 kHz stereo, ~5 min,
+  loudness-normalised to −20 LUFS, 4 s equal-power crossfade baked into the loop seam; played gapless by
+  Media3 ExoPlayer (`REPEAT_MODE_ONE`, `asset:///` URIs).
+- Sources: Freesound.org, **CC0 1.0 only** — see `app/src/main/assets/ambient/CREDITS.md` / `manifest.json`.
+- Spec: `tools/ambient_tracks.json` (source id, excerpt start, category, English name, free/premium).
+- Rebuild audio: `python3 tools/build_ambient_library.py` (needs ffmpeg + numpy).
+- Regenerate Kotlin enum + strings: `python3 tools/gen_ambient_kotlin.py`.
+- Free tier: 1–3 tracks per category (`free: true`), the rest are Premium (all unlocked during the trial).
 
 ---
 
-## Wymagania / Build
+## Spotify / coexisting with music
 
-- Android Studio Ladybug+ (lub nowsze z AGP 8.7)
-- JDK 17
-- Android SDK 35
+Audio goes to the **media stream** (same volume as Spotify).
 
-### Otwórz projekt
+- **Mix with other apps** (default on): no exclusive audio focus — Spotify keeps playing under/over the tones.
+- Mix off: other players pause.
 
-1. Sklonuj / rozpakuj repozytorium.
-2. Otwórz folder w **Android Studio** (File → Open).
-3. Poczekaj na sync Gradle.
+See `BinauralAudioEngine`, `BinauralPlaybackService`.
 
-### Zbuduj debug APK
+---
+
+## Disclaimer
+
+This app is not a medical device and is not medical advice. It does not diagnose, treat, or prevent any disease. Consult a physician for health concerns.
+
+---
+
+## Build
+
+- Android Studio Ladybug+ (AGP 8.7), JDK 17, Android SDK 35
 
 ```bash
-./gradlew assembleDebug
+./gradlew assembleDebug        # app/build/outputs/apk/debug/app-debug.apk
+./gradlew testDebugUnitTest    # JVM unit tests
 ```
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`
+---
 
-> Na niektórych środowiskach CI bez SDK build nie przejdzie — lokalnie w Android Studio jest OK.
+## Privacy / Play Console
+
+- No data collection — no analytics, accounts, ads, location or contacts. Data safety: *No data collected*.
+- Permissions: `FOREGROUND_SERVICE` / `MEDIA_PLAYBACK`, `POST_NOTIFICATIONS`, `WAKE_LOCK` — background playback and the Stop notification only.
+- Policy text: `store/PRIVACY.md`; listing text: `store/PLAY.md`.
 
 ---
 
-## Privacy / Google Play Console (MVP)
-
-- **Brak zbierania danych** — brak analityki, kont, reklam, lokalizacji, kontaktów.
-- Brak backendu / logowania.
-- W Play Console Data safety: zaznacz *No data collected* (dla tego MVP).
-- Uprawnienia: `FOREGROUND_SERVICE` / `MEDIA_PLAYBACK`, `POST_NOTIFICATIONS`, `WAKE_LOCK` — wyłącznie do odtwarzania w tle i powiadomienia Stop.
-
----
-
-## Struktura (skrót)
+## Structure
 
 ```
 app/src/main/java/com/miferstlab/binauralbeats/
-  audio/BinauralAudioEngine.kt   # sine L/R + AudioTrack
+  audio/BinauralAudioEngine.kt, AmbientPlayer.kt
   service/BinauralPlaybackService.kt
   viewmodel/BinauralViewModel.kt
-  data/BinauralMode.kt
-  ui/screens/HomeScreen.kt, SettingsScreen.kt
+  data/BinauralMode.kt, AmbientSound.kt (generated), Entitlements.kt
+  ui/screens/HomeScreen.kt, SettingsScreen.kt, CreditsScreen.kt
+  ui/components/AmbientPicker.kt, ui/AmbientText.kt (generated)
   MainActivity.kt
 ```
 
 ---
 
-## Licencja
+## Review notes (historical)
 
-Kod na potrzeby repozytorium `miferst-lab/binaural-beats`. Dostosuj licencję według potrzeb projektu.
+1. **AudioTrack start/stop/pause** — synchronised start/stop/pause/resume; stop pauses/flushes first (unblocks `WRITE_BLOCKING`), then join, then release.
+2. **Audio focus** — `AudioFocusRequest` kept in `FocusHolder` and abandoned on stop/destroy.
+3. **FGS / Android 14+** — `startForeground` immediately with type `mediaPlayback`; silent notification + "Paused" state.
+4. **ViewModel binding** — bind only after `startForegroundService`; `togglePlayPause` uses pause/resume.
+5. **POST_NOTIFICATIONS** — requested once, on first play (API 33+).
+6. **L/R + volume** — pure `FrequencyMath` helpers; soft amplitude ceiling (~0.9).
+7. **Navigation** — Home/Settings/Credits via `rememberSaveable`, system Back supported.
+8. **JVM tests** — `FrequencyMathTest`, `BinauralModeTest`, `EntitlementsTest`, `AmbientSoundTest`.
 
----
+### Known limitations
 
-## Zmiany po review
-
-Krótki opis nienaruszających zakresu poprawek po code review:
-
-1. **AudioTrack start/stop/pause** — synchronizacja `start`/`stop`/`pause`/`resume`; `stop` najpierw pauzuje/flushuje track (odblokowuje `WRITE_BLOCKING`), potem `join`, potem `release`. Ponowne `start` przy aktywnej sesji wywołuje `play()` (naprawa race pause→play).
-2. **Audio focus** — `AudioFocusRequest` trzymany w `FocusHolder` i **oddawany** przy stop/destroy; miks ze Spotify nadal przez `TRANSIENT_MAY_DUCK` + sonification usage.
-3. **FGS / Android 14+** — `startForeground` natychmiast w `ACTION_START`/`RESUME` z typem `mediaPlayback`; `ServiceCompat.stopForeground`; ciche powiadomienie + stan „Wstrzymano”.
-4. **ViewModel binding** — brak `bindService(BIND_AUTO_CREATE)` w `init` (uniknięcie started service bez FGS); bind dopiero po `startForegroundService`; `togglePlayPause` używa pause/resume zamiast zawsze START; ViewModel nie zatrzymuje FGS w `onCleared`.
-5. **POST_NOTIFICATIONS** — prośba raz, przy pierwszym play (API 33+), bez spamowania dialogiem przy starcie Activity.
-6. **L/R + volume** — czyste helpery `FrequencyMath` (clamp carrier/beat/volume, L/R, Δ); soft ceiling amplitudy (~0.9) przeciw clippingowi.
-7. **Konfiguracja** — nawigacja Home/Settings przez `rememberSaveable`.
-8. **Testy JVM** — `FrequencyMathTest`, `BinauralModeTest` (`./gradlew test`).
-9. **ProGuard** — keep rules dla service/binder/enum/engine (minify nadal wyłączone).
-
-### Znane ograniczenia
-
-- Bez uprawnienia powiadomień (API 33+) FGS może działać, ale użytkownik nie zobaczy akcji Stop w szufladzie.
-- Wyłączenie „Miksuj z innymi…” zmienia atrybuty AudioTrack (restart sesji); nie bierze twardego `AUDIOFOCUS_GAIN`.
-- Brak osobnego przycisku Stop w UI (jest w powiadomieniu); pause utrzymuje sesję FGS.
+- Without notification permission (API 33+) the FGS still runs, but there is no Stop action in the shade.
+- Turning "Mix with other apps" off restarts the AudioTrack session.
+- No separate Stop button in the UI (it is in the notification); pause keeps the FGS session.

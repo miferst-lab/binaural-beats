@@ -37,7 +37,7 @@ class BinauralPlaybackService : Service() {
     private val engine = BinauralAudioEngine()
     private lateinit var ambientPlayer: AmbientPlayer
     private val focusHolder = BinauralAudioEngine.FocusHolder()
-    private var currentMode: BinauralMode = BinauralMode.RELAKS
+    private var currentMode: BinauralMode = BinauralMode.RELAX
     private var mixWithOtherApps: Boolean = true
     private var foregroundStarted = false
     private var currentAmbient: AmbientSound = AmbientSound.OFF
@@ -62,9 +62,9 @@ class BinauralPlaybackService : Service() {
                 return START_NOT_STICKY
             }
             ACTION_START -> {
-                val modeName = intent.getStringExtra(EXTRA_MODE) ?: BinauralMode.RELAKS.name
+                val modeName = intent.getStringExtra(EXTRA_MODE) ?: BinauralMode.RELAX.name
                 currentMode = runCatching { BinauralMode.valueOf(modeName) }
-                    .getOrDefault(BinauralMode.RELAKS)
+                    .getOrDefault(BinauralMode.RELAX)
                 val volume = intent.getFloatExtra(EXTRA_VOLUME, currentMode.defaultVolume)
                 val carrier = intent.getFloatExtra(EXTRA_CARRIER, currentMode.carrierHz)
                 val beat = intent.getFloatExtra(EXTRA_BEAT, currentMode.beatHz)
@@ -254,13 +254,13 @@ class BinauralPlaybackService : Service() {
 
     private fun modeDisplayName(mode: BinauralMode): String {
         val resId = when (mode) {
-            BinauralMode.RELAKS -> R.string.mode_relax
-            BinauralMode.SKUPIENIE -> R.string.mode_focus
-            BinauralMode.CZYTANIE -> R.string.mode_reading
-            BinauralMode.ENERGIA -> R.string.mode_energy
-            BinauralMode.SEN -> R.string.mode_sleep
-            BinauralMode.MEDYTACJA -> R.string.mode_meditation
-            BinauralMode.NIESTANDARDOWY -> R.string.mode_custom
+            BinauralMode.RELAX -> R.string.mode_relax
+            BinauralMode.FOCUS -> R.string.mode_focus
+            BinauralMode.READING -> R.string.mode_reading
+            BinauralMode.ENERGY -> R.string.mode_energy
+            BinauralMode.SLEEP -> R.string.mode_sleep
+            BinauralMode.MEDITATION -> R.string.mode_meditation
+            BinauralMode.CUSTOM -> R.string.mode_custom
         }
         return getString(resId)
     }

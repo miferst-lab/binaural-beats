@@ -2,8 +2,8 @@ package com.miferstlab.binauralbeats.data
 
 data class PlaybackState(
     val isPlaying: Boolean = false,
-    val mode: BinauralMode = BinauralMode.RELAKS,
-    val volume: Float = BinauralMode.RELAKS.defaultVolume,
+    val mode: BinauralMode = BinauralMode.RELAX,
+    val volume: Float = BinauralMode.RELAX.defaultVolume,
     val customCarrierHz: Float = 200f,
     val customBeatHz: Float = 10f,
     val mixWithOtherApps: Boolean = true,

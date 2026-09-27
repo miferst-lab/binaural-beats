@@ -1,6 +1,7 @@
 package com.miferstlab.binauralbeats.ui.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Card
@@ -35,9 +37,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
@@ -58,8 +62,15 @@ fun SettingsScreen(
     onUpgradePremium: () -> Unit = {},
     onDebugUnlockChanged: (Boolean) -> Unit = {},
     isDebugUnlockEnabled: Boolean = false,
-    onSetPremium: (Boolean) -> Unit = {}
+    onSetPremium: (Boolean) -> Unit = {},
+    onOpenCredits: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val versionName = remember {
+        runCatching {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }.getOrNull() ?: ""
+    }
     val glassSurface = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
     val showGalaxy = MaterialTheme.colorScheme.background.luminance() < 0.3f
 
@@ -302,7 +313,7 @@ fun SettingsScreen(
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(
-                            text = stringResource(R.string.about_version, "1.4.0"),
+                            text = stringResource(R.string.about_version, versionName),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -314,6 +325,33 @@ fun SettingsScreen(
                             lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
                         )
                     }
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+                    )
+                    ListItem(
+                        modifier = Modifier.clickable(onClick = onOpenCredits),
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.credits_open),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = stringResource(R.string.credits_open_desc),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null
+                            )
+                        },
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                    )
                 }
 
                 Spacer(Modifier.height(24.dp))

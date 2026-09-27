@@ -1,57 +1,63 @@
-# Google Play — listing (darmowa)
+# Google Play — store listing (English)
 
-Aplikacja jest **darmowa**, bez reklam i zakupów w aplikacji.
+## Identifiers
+- **Package name:** `com.miferstlab.binauralbeats`
+- **App name (max 30 chars):** Binaural Waves
+- **Short description (max 80 chars):** Binaural beats + 40+ real ambient soundscapes for focus, sleep and reading.
 
-## Konto dewelopera
-Play Console wymaga **jednorazowej opłaty Google** (ok. 25 USD). Sama aplikacja zostaje darmowa.  
-https://play.google.com/console
+## Full description
 
-## Identyfikatory
-- **Nazwa pakietu:** `com.miferstlab.binauralbeats`
-- **Nazwa (50 znaków):** Fale binauralne
-- **Krótki opis (80 znaków):** Tony binauralne pod muzykę — relaks, skupienie, sen. Działa ze Spotify.
+Binaural Waves plays clean stereo binaural beats (separate left/right tones) layered with real-world ambient soundscapes — and it mixes under your own music.
 
-## Opis pełny (PL)
+**Modes**
+• Relax — alpha waves (~9 Hz)
+• Reading — SMR (~13 Hz)
+• Focus — beta waves (~16 Hz), also for work
+• Energy — high beta (~22 Hz), sport and alertness
+• Sleep — delta waves (~3 Hz)
+• Meditation — theta waves (~6 Hz)
+• Custom — your own carrier and L/R difference
 
-Fale binauralne to prosta, darmowa aplikacja do odtwarzania stereofonicznych tonów (L/R) — klasyczny efekt binaural beat.
+**Ambient library — 44 real field recordings, ~5 minutes each, seamlessly looped**
+• Nature — rain, thunderstorm, ocean waves, forest stream, fireplace, night forest, cave
+• Joyful — dawn chorus, sunny meadow, summer field, street market
+• Calm — gentle shore, babbling brook, mountain dusk, night breeze
+• Focus — busy café, quiet library, waterfall, rain on the cabin
+• Sleep — steady rain, rain on the window, desert wind, distant storms
+• Melancholic — grey morning rain, autumn leaves, frozen winter night
+• Crime & Noir — rainy city night, wet streets, an old pendulum clock
+• Fantasy — tavern, mountain village, village bells, dripping cavern, wind over the peaks
+• Sci‑Fi — spaceship hum, starship cruise, engineering deck, space station, neon city
+Separate ambient volume with fine ±1% steps.
 
-**Tryby**
-• Relaks — fale alfa (~9 Hz)
-• Czytanie — SMR (~13 Hz)
-• Skupienie — fale beta (~16 Hz), także praca
-• Energia — wysokie beta (~22 Hz), sport
-• Sen — fale delta (~3 Hz)
-• Medytacja — fale theta (~6 Hz)
-• Niestandardowy — własna nośna i różnica L/R
+**Plays under your music**
+Mixes with other apps by default — Spotify and other players keep playing.
 
-**Pod muzyką**
-Domyślnie miksuje się z innymi aplikacjami. Spotify i inne odtwarzacze nie są pauzowane — tony siadają pod Twoją playlistą.
+**Also**
+• Plays in the background with the screen off
+• Galactic night theme
+• No account, no ads, works offline
 
-**Inne**
-• Działa w tle (ekran wyłączony)
-• Tryb nocny / galaktyczny wygląd
-• Bez konta, bez reklam, bez internetu
+**Free trial & Premium**
+Everything is unlocked for 7 days after install. After that, a one-time Premium unlock keeps the tones and the full ambient library.
 
-Załóż słuchawki stereo — efekt binauralny wymaga osobnych kanałów L i P.
+Use stereo headphones — the binaural effect needs separate left and right channels.
 
-Ta aplikacja nie jest wyrobem medycznym i nie stanowi porady medycznej.
+This app is not a medical device and does not provide medical advice.
 
-## Grafiki (folder `store/`)
-- `icon-512.png` — ikona High-res (512×512)
-- `icon-1024.png` — zapas
-- `feature-1024x500.png` — grafika wyróżniająca
-- Zrzuty: zrób 2–8 screenshotów z telefonu (telefon, nie tablet), min. 2
+## Graphics (`store/` folder)
+- `icon-512.png` — high-res icon (512×512)
+- `icon-1024.png` — spare
+- `feature-1024x500.png` — feature graphic
+- Screenshots: take 2–8 phone screenshots (min. 2)
 
-## Polityka prywatności
-Play wymaga publicznego URL. Wklej ten plik jako GitHub Pages albo surowy plik publiczny:
-`store/PRIVACY.pl.md`
+## Privacy policy
+Play requires a public URL. Publish `store/PRIVACY.md` (e.g. GitHub Pages or any public page).
+If the repo is private, enable Pages or host the policy elsewhere.
 
-Jeśli repo jest prywatne, włącz Pages albo wrzuć politykę na publiczną stronę.
+## Release signing
+Android Studio: Build → Generate Signed App Bundle (.aab). Keep the keystore safe — without it you cannot update the app.
 
-## Podpis wydania (release)
-Z Android Studio: Build → Generate Signed App Bundle (.aab).  
-Zachowaj keystore — bez niego nie zaktualizujesz aplikacji.
-
-Kategoria: Zdrowie i fitness albo Muzyka i audio.  
-Grupa wiekowa: PEGI 3 / Everyone.  
-Cena: darmowa.
+Category: Health & Fitness or Music & Audio. Content rating: Everyone / PEGI 3.
+Pricing: free download with a one-time in-app purchase (`binaural_premium_unlock`).
+Sound credits: `app/src/main/assets/ambient/CREDITS.md` (all CC0).

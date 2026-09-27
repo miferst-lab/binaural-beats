@@ -18,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
@@ -49,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -59,6 +59,7 @@ import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
+import com.miferstlab.binauralbeats.ui.components.AmbientPicker
 import com.miferstlab.binauralbeats.ui.components.BrainWaveVisual
 import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
 import com.miferstlab.binauralbeats.ui.theme.GalaxyBackdrop
@@ -224,8 +225,9 @@ fun HomeScreen(
                     Spacer(Modifier.height(6.dp))
                     Text(
                         text = if (state.isTrialActive) {
-                            stringResource(
-                                R.string.trial_days_remaining,
+                            pluralStringResource(
+                                R.plurals.trial_days_remaining,
+                                state.trialDaysRemaining,
                                 state.trialDaysRemaining
                             )
                         } else {
@@ -275,49 +277,14 @@ fun HomeScreen(
 
                         Spacer(Modifier.height(10.dp))
 
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        AmbientPicker(
+                            selected = state.ambient,
+                            hasFullAccess = state.hasFullAccess,
+                            accent = SoftTeal,
+                            lockedAccent = SoftAmber,
+                            onAmbientSelected = onAmbientSelected,
                             modifier = Modifier.fillMaxWidth()
-                        ) {
-                            AmbientSound.entries.forEach { ambient ->
-                                val selected = state.ambient == ambient
-                                val locked = ambient.isPremium && !state.hasFullAccess
-                                FilterChip(
-                                    selected = selected,
-                                    onClick = { onAmbientSelected(ambient) },
-                                    label = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            if (locked) {
-                                                Icon(
-                                                    Icons.Default.Lock,
-                                                    contentDescription = stringResource(R.string.ambient_locked_cd),
-                                                    modifier = Modifier.size(14.dp)
-                                                )
-                                                Spacer(Modifier.width(4.dp))
-                                            }
-                                            Text(stringResource(ambientLabelRes(ambient)))
-                                        }
-                                    },
-                                    border = BorderStroke(
-                                        width = if (selected) 1.5.dp else 1.dp,
-                                        color = if (selected) {
-                                            SoftTeal.copy(alpha = 0.85f)
-                                        } else if (locked) {
-                                            SoftAmber.copy(alpha = 0.55f)
-                                        } else {
-                                            MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                                        }
-                                    ),
-                                    colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = SoftTeal.copy(alpha = 0.28f),
-                                        selectedLabelColor = MaterialTheme.colorScheme.onSurface,
-                                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
-                                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                )
-                            }
-                        }
+                        )
 
                         if (state.ambient != AmbientSound.OFF) {
                             Spacer(Modifier.height(12.dp))
@@ -335,7 +302,7 @@ fun HomeScreen(
                     }
                 }
 
-                if (state.mode == BinauralMode.NIESTANDARDOWY) {
+                if (state.mode == BinauralMode.CUSTOM) {
                     Spacer(Modifier.height(12.dp))
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -591,44 +558,31 @@ private fun VolumeSliderRow(
 }
 
 private fun modeTitleRes(mode: BinauralMode): Int = when (mode) {
-    BinauralMode.RELAKS -> R.string.mode_relax
-    BinauralMode.SKUPIENIE -> R.string.mode_focus
-    BinauralMode.CZYTANIE -> R.string.mode_reading
-    BinauralMode.ENERGIA -> R.string.mode_energy
-    BinauralMode.SEN -> R.string.mode_sleep
-    BinauralMode.MEDYTACJA -> R.string.mode_meditation
-    BinauralMode.NIESTANDARDOWY -> R.string.mode_custom
+    BinauralMode.RELAX -> R.string.mode_relax
+    BinauralMode.FOCUS -> R.string.mode_focus
+    BinauralMode.READING -> R.string.mode_reading
+    BinauralMode.ENERGY -> R.string.mode_energy
+    BinauralMode.SLEEP -> R.string.mode_sleep
+    BinauralMode.MEDITATION -> R.string.mode_meditation
+    BinauralMode.CUSTOM -> R.string.mode_custom
 }
 
 private fun modeDescriptionRes(mode: BinauralMode): Int = when (mode) {
-    BinauralMode.RELAKS -> R.string.mode_relax_desc
-    BinauralMode.SKUPIENIE -> R.string.mode_focus_desc
-    BinauralMode.CZYTANIE -> R.string.mode_reading_desc
-    BinauralMode.ENERGIA -> R.string.mode_energy_desc
-    BinauralMode.SEN -> R.string.mode_sleep_desc
-    BinauralMode.MEDYTACJA -> R.string.mode_meditation_desc
-    BinauralMode.NIESTANDARDOWY -> R.string.mode_custom_desc
+    BinauralMode.RELAX -> R.string.mode_relax_desc
+    BinauralMode.FOCUS -> R.string.mode_focus_desc
+    BinauralMode.READING -> R.string.mode_reading_desc
+    BinauralMode.ENERGY -> R.string.mode_energy_desc
+    BinauralMode.SLEEP -> R.string.mode_sleep_desc
+    BinauralMode.MEDITATION -> R.string.mode_meditation_desc
+    BinauralMode.CUSTOM -> R.string.mode_custom_desc
 }
 
 private fun modeAccent(mode: BinauralMode) = when (mode) {
-    BinauralMode.RELAKS -> NebulaCyan
-    BinauralMode.SKUPIENIE -> SoftAmber
-    BinauralMode.CZYTANIE -> SoftSky
-    BinauralMode.ENERGIA -> SoftEmber
-    BinauralMode.SEN -> SoftLavender
-    BinauralMode.MEDYTACJA -> SoftTeal
-    BinauralMode.NIESTANDARDOWY -> SoftCoral
-}
-
-private fun ambientLabelRes(ambient: AmbientSound): Int = when (ambient) {
-    AmbientSound.OFF -> R.string.ambient_off
-    AmbientSound.FOREST_NIGHT -> R.string.ambient_forest_night
-    AmbientSound.WAVES -> R.string.ambient_waves
-    AmbientSound.MORNING_VILLAGE -> R.string.ambient_morning_village
-    AmbientSound.RAIN -> R.string.ambient_rain
-    AmbientSound.FIREPLACE -> R.string.ambient_fireplace
-    AmbientSound.STREAM -> R.string.ambient_stream
-    AmbientSound.MOUNTAIN_WIND -> R.string.ambient_mountain_wind
-    AmbientSound.CAVE_DRIP -> R.string.ambient_cave_drip
-    AmbientSound.SOFT_THUNDER -> R.string.ambient_soft_thunder
+    BinauralMode.RELAX -> NebulaCyan
+    BinauralMode.FOCUS -> SoftAmber
+    BinauralMode.READING -> SoftSky
+    BinauralMode.ENERGY -> SoftEmber
+    BinauralMode.SLEEP -> SoftLavender
+    BinauralMode.MEDITATION -> SoftTeal
+    BinauralMode.CUSTOM -> SoftCoral
 }

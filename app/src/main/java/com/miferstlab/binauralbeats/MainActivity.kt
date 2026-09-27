@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +25,7 @@ import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.PlaybackState
+import com.miferstlab.binauralbeats.ui.screens.CreditsScreen
 import com.miferstlab.binauralbeats.ui.screens.HomeScreen
 import com.miferstlab.binauralbeats.ui.screens.SettingsScreen
 import com.miferstlab.binauralbeats.ui.theme.BinauralBeatsTheme
@@ -108,7 +110,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Screen { Home, Settings }
+private enum class Screen { Home, Settings, Credits }
 
 @Composable
 private fun BinauralApp(
@@ -136,6 +138,10 @@ private fun BinauralApp(
     var screen by rememberSaveable { mutableStateOf(Screen.Home.name) }
     val current = runCatching { Screen.valueOf(screen) }.getOrDefault(Screen.Home)
 
+    BackHandler(enabled = current != Screen.Home) {
+        screen = if (current == Screen.Credits) Screen.Settings.name else Screen.Home.name
+    }
+
     when (current) {
         Screen.Home -> HomeScreen(
             state = state,
@@ -162,7 +168,9 @@ private fun BinauralApp(
             onUpgradePremium = onUpgradePremium,
             onDebugUnlockChanged = onDebugUnlockChanged,
             isDebugUnlockEnabled = isDebugUnlockEnabled,
-            onSetPremium = onSetPremium
+            onSetPremium = onSetPremium,
+            onOpenCredits = { screen = Screen.Credits.name }
         )
+        Screen.Credits -> CreditsScreen(onBack = { screen = Screen.Settings.name })
     }
 }

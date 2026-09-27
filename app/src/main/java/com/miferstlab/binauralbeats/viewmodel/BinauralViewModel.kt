@@ -203,14 +203,14 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     fun setCustomCarrier(hz: Float) {
         _state.update { it.copy(customCarrierHz = FrequencyMath.clampCarrier(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }
 
     fun setCustomBeat(hz: Float) {
         _state.update { it.copy(customBeatHz = FrequencyMath.clampBeat(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }

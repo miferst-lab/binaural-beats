@@ -8,7 +8,6 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.miferstlab.binauralbeats.R
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.FrequencyMath
 
@@ -17,8 +16,9 @@ import com.miferstlab.binauralbeats.data.FrequencyMath
  *
  * Dual [android.media.MediaPlayer] equal-power crossfade still produced audible
  * seams (overlap of mid-event content such as thunder/drips). Assets are
- * pre-processed with equal-power end→start acrossfade (~2.5s); a single looping
- * player then wraps without a second volume fade.
+ * pre-processed (tools/build_ambient_library.py) with an equal-power 4 s end→start
+ * crossfade; a single looping player then wraps without a second volume fade.
+ * Files are ~5 min OGG Vorbis in `assets/ambient/`, played via `asset:///` URIs.
  *
  * AudioAttributes stay USAGE_MEDIA so Spotify mix behavior is unchanged.
  */
@@ -43,7 +43,7 @@ class AmbientPlayer(private val context: Context) {
         }
         releasePlayer()
         current = sound
-        val resId = rawResId(sound) ?: return
+        val assetPath = sound.assetPath ?: return
         try {
             val exo = ExoPlayer.Builder(context).build().also { p ->
                 p.setAudioAttributes(
@@ -55,7 +55,7 @@ class AmbientPlayer(private val context: Context) {
                 )
                 p.repeatMode = Player.REPEAT_MODE_ONE
                 p.volume = volume
-                val uri = Uri.parse("android.resource://${context.packageName}/$resId")
+                val uri = Uri.parse("asset:///$assetPath")
                 p.setMediaItem(MediaItem.fromUri(uri))
                 p.prepare()
             }
@@ -130,18 +130,5 @@ class AmbientPlayer(private val context: Context) {
 
     companion object {
         private const val TAG = "AmbientPlayer"
-
-        fun rawResId(sound: AmbientSound): Int? = when (sound) {
-            AmbientSound.OFF -> null
-            AmbientSound.FOREST_NIGHT -> R.raw.ambient_forest_night
-            AmbientSound.WAVES -> R.raw.ambient_waves
-            AmbientSound.MORNING_VILLAGE -> R.raw.ambient_morning_village
-            AmbientSound.RAIN -> R.raw.ambient_rain
-            AmbientSound.FIREPLACE -> R.raw.ambient_fireplace
-            AmbientSound.STREAM -> R.raw.ambient_stream
-            AmbientSound.MOUNTAIN_WIND -> R.raw.ambient_mountain_wind
-            AmbientSound.CAVE_DRIP -> R.raw.ambient_cave_drip
-            AmbientSound.SOFT_THUNDER -> R.raw.ambient_soft_thunder
-        }
     }
 }

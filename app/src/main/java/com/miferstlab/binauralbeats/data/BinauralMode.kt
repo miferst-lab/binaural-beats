@@ -7,13 +7,13 @@ package com.miferstlab.binauralbeats.data
  * Carrier ≈ average of the two ear tones.
  *
  * Presets (documented also in README):
- * - Relaks:     ~9 Hz beat,  carrier ~220 Hz  (alpha)
- * - Skupienie:  ~16 Hz beat, carrier ~220 Hz  (beta) — also covers desk work
- * - Czytanie:   ~13 Hz beat, carrier ~210 Hz  (SMR / low beta)
- * - Energia:    ~22 Hz beat, carrier ~230 Hz  (high beta) — sport / alertness
- * - Sen:        ~3 Hz beat,  carrier ~180 Hz  (delta), lower default volume
- * - Medytacja:  ~6 Hz beat,  carrier ~200 Hz  (theta)
- * - Niestandardowy: user-defined carrier + beat
+ * - Relax:      ~9 Hz beat,  carrier ~220 Hz  (alpha)
+ * - Focus:      ~16 Hz beat, carrier ~220 Hz  (beta) — also covers desk work
+ * - Reading:    ~13 Hz beat, carrier ~210 Hz  (SMR / low beta)
+ * - Energy:     ~22 Hz beat, carrier ~230 Hz  (high beta) — sport / alertness
+ * - Sleep:      ~3 Hz beat,  carrier ~180 Hz  (delta), lower default volume
+ * - Meditation: ~6 Hz beat,  carrier ~200 Hz  (theta)
+ * - Custom:     user-defined carrier + beat
  */
 enum class BinauralMode(
     val displayNameRes: String,
@@ -22,49 +22,49 @@ enum class BinauralMode(
     val beatHz: Float,
     val defaultVolume: Float
 ) {
-    RELAKS(
+    RELAX(
         displayNameRes = "mode_relax",
         descriptionRes = "mode_relax_desc",
         carrierHz = 220f,
         beatHz = 9f,
         defaultVolume = 0.35f
     ),
-    SKUPIENIE(
+    FOCUS(
         displayNameRes = "mode_focus",
         descriptionRes = "mode_focus_desc",
         carrierHz = 220f,
         beatHz = 16f,
         defaultVolume = 0.35f
     ),
-    CZYTANIE(
+    READING(
         displayNameRes = "mode_reading",
         descriptionRes = "mode_reading_desc",
         carrierHz = 210f,
         beatHz = 13f,
         defaultVolume = 0.32f
     ),
-    ENERGIA(
+    ENERGY(
         displayNameRes = "mode_energy",
         descriptionRes = "mode_energy_desc",
         carrierHz = 230f,
         beatHz = 22f,
         defaultVolume = 0.38f
     ),
-    SEN(
+    SLEEP(
         displayNameRes = "mode_sleep",
         descriptionRes = "mode_sleep_desc",
         carrierHz = 180f,
         beatHz = 3f,
         defaultVolume = 0.22f
     ),
-    MEDYTACJA(
+    MEDITATION(
         displayNameRes = "mode_meditation",
         descriptionRes = "mode_meditation_desc",
         carrierHz = 200f,
         beatHz = 6f,
         defaultVolume = 0.30f
     ),
-    NIESTANDARDOWY(
+    CUSTOM(
         displayNameRes = "mode_custom",
         descriptionRes = "mode_custom_desc",
         carrierHz = 200f,
@@ -90,7 +90,7 @@ enum class BinauralMode(
         customCarrier: Float = carrierHz,
         customBeat: Float = beatHz
     ): Pair<Float, Float> {
-        return if (this == NIESTANDARDOWY) {
+        return if (this == CUSTOM) {
             FrequencyMath.clampCarrier(customCarrier) to FrequencyMath.clampBeat(customBeat)
         } else {
             carrierHz to beatHz
