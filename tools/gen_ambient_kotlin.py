@@ -22,7 +22,7 @@ def enum_name(key): return key.upper()
 cat_lines = ",\n".join(f'    {CATS[c][0]}("{c}")' for c in spec["categories"])
 tr = []
 for t in spec["tracks"]:
-    tr.append(f'    {enum_name(t["key"])}(\n        "{t["key"]}", AmbientCategory.{CATS[t["cat"]][0]}, isPremium = {str(not t["free"]).lower()},\n'
+    tr.append(f'    {enum_name(t["key"])}(\n        "{t["key"]}", AmbientCategory.{CATS[t["cat"]][0]},\n'
               f'        sourceTitle = {kstr(t["source_title"])}, author = {kstr(t["author"])},\n'
               f'        sourceUrl = {kstr(t["url"])}, license = {kstr(t["license"])}\n    )')
 legacy = ",\n".join(f'            "{k}" to {enum_name(v)}' for k, v in LEGACY.items())
@@ -40,12 +40,12 @@ enum class AmbientCategory(val prefsValue: String) {{
  * `assets/ambient/<prefsValue>.ogg` (≈5 min, -20 LUFS, seamless crossfaded loop).
  * All sources are Freesound CC0 recordings; credits are shown in Settings → Sound credits.
  *
- * [isPremium] beds need Premium once the trial is over (all are unlocked during the trial).
+ * There is no per-track tier: every bed is available whenever the app is usable
+ * (7-day trial or Premium) — the only gate is the app-wide trial/purchase check.
  */
 enum class AmbientSound(
     val prefsValue: String,
     val category: AmbientCategory?,
-    val isPremium: Boolean = false,
     val sourceTitle: String = "",
     val author: String = "",
     val sourceUrl: String = "",
@@ -69,8 +69,6 @@ enum class AmbientSound(
             entries.filter {{ it.category == category }}
 
         val tracks: List<AmbientSound> = entries.filter {{ it != OFF }}
-        val freeEntries: List<AmbientSound> = tracks.filter {{ !it.isPremium }}
-        val premiumEntries: List<AmbientSound> = tracks.filter {{ it.isPremium }}
     }}
 }}
 ''')

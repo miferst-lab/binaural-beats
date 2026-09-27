@@ -18,10 +18,8 @@ data class PlaybackState(
     /** Whole days left in trial (0 when expired / premium). */
     val trialDaysRemaining: Int = 7,
     /** One-shot UI flag: trial expired, purchase required to play. */
-    val showTrialExpiredDialog: Boolean = false,
-    /** One-shot UI flag: user tapped a locked premium ambient (post-trial free). */
-    val showPremiumUpsellDialog: Boolean = false
+    val showTrialExpiredDialog: Boolean = false
 ) {
-    /** Can use premium ambients and unlimited playback. */
+    /** App is usable (all modes, all ambients): Premium, or still within the 7-day trial. */
     val hasFullAccess: Boolean get() = isPremium || isTrialActive
 }

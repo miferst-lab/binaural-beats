@@ -11,7 +11,9 @@ import android.content.pm.ServiceInfo
 import android.media.AudioManager
 import android.os.Binder
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.miferstlab.binauralbeats.MainActivity
@@ -20,6 +22,7 @@ import com.miferstlab.binauralbeats.audio.AmbientPlayer
 import com.miferstlab.binauralbeats.audio.BinauralAudioEngine
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.BinauralMode
+import com.miferstlab.binauralbeats.data.Entitlements
 
 /**
  * Foreground service so binaural tones continue with the screen off.
@@ -42,6 +45,19 @@ class BinauralPlaybackService : Service() {
     private var foregroundStarted = false
     private var currentAmbient: AmbientSound = AmbientSound.OFF
 
+    /**
+     * Trial gate enforced here too: the ViewModel's ticker dies with the Activity, but this
+     * foreground service may keep running. Without this a session started on day 7 could
+     * continue indefinitely after the trial ended.
+     */
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val trialGuard = object : Runnable {
+        override fun run() {
+            if (!enforceTrialGate()) return
+            mainHandler.postDelayed(this, TRIAL_GUARD_INTERVAL_MS)
+        }
+    }
+
     inner class LocalBinder : Binder() {
         fun getService(): BinauralPlaybackService = this@BinauralPlaybackService
     }
@@ -57,6 +73,7 @@ class BinauralPlaybackService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_STOP -> {
+                mainHandler.removeCallbacks(trialGuard)
                 stopPlayback()
                 stopSelf()
                 return START_NOT_STICKY
@@ -103,8 +120,10 @@ class BinauralPlaybackService : Service() {
 
                 applyAmbient(ambientName, ambientVol, playing = true)
                 updateNotification()
+                startTrialGuard()
             }
             ACTION_PAUSE -> {
+                mainHandler.removeCallbacks(trialGuard)
                 engine.pause()
                 ambientPlayer.pause()
                 updateNotification(paused = true)
@@ -114,6 +133,7 @@ class BinauralPlaybackService : Service() {
                 engine.resume()
                 ambientPlayer.start()
                 updateNotification(paused = false)
+                startTrialGuard()
             }
             ACTION_UPDATE -> {
                 val volume = intent.getFloatExtra(EXTRA_VOLUME, 0.35f)
@@ -169,9 +189,26 @@ class BinauralPlaybackService : Service() {
     }
 
     override fun onDestroy() {
+        mainHandler.removeCallbacks(trialGuard)
         stopPlayback()
         ambientPlayer.release()
         super.onDestroy()
+    }
+
+    private fun startTrialGuard() {
+        mainHandler.removeCallbacks(trialGuard)
+        trialGuard.run()
+    }
+
+    /** @return true if playback may continue; otherwise stops the session and the service. */
+    private fun enforceTrialGate(): Boolean {
+        val prefs = getSharedPreferences(Entitlements.PREFS_NAME, Context.MODE_PRIVATE)
+        val premium = prefs.getBoolean(Entitlements.KEY_PREMIUM, false)
+        val now = maxOf(System.currentTimeMillis(), prefs.getLong(Entitlements.KEY_FURTHEST_NOW, 0L))
+        if (Entitlements.hasAccess(premium, prefs.getLong(Entitlements.KEY_TRIAL_START, 0L), now)) return true
+        stopPlayback()
+        stopSelf()
+        return false
     }
 
     private fun applyAmbient(prefsOrName: String?, volume: Float?, playing: Boolean) {
@@ -283,6 +320,7 @@ class BinauralPlaybackService : Service() {
     companion object {
         const val CHANNEL_ID = "binaural_playback"
         const val NOTIFICATION_ID = 42
+        private const val TRIAL_GUARD_INTERVAL_MS = 60_000L
 
         const val ACTION_START = "com.miferstlab.binauralbeats.START"
         const val ACTION_STOP = "com.miferstlab.binauralbeats.STOP"

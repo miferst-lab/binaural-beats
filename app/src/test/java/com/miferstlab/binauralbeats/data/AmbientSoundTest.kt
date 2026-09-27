@@ -9,14 +9,21 @@ import java.io.File
 class AmbientSoundTest {
 
     @Test
-    fun libraryIsLargeAndEveryCategoryHasFreeAndPremium() {
-        assertTrue(AmbientSound.tracks.size >= 40)
+    fun libraryIsLargeAndEveryCategoryHasTracks() {
+        assertEquals(44, AmbientSound.tracks.size)
         AmbientCategory.entries.forEach { cat ->
-            val list = AmbientSound.inCategory(cat)
-            assertTrue("$cat has tracks", list.size >= 4)
-            assertTrue("$cat has a free track", list.any { !it.isPremium })
-            assertTrue("$cat has a premium track", list.any { it.isPremium })
+            assertTrue("$cat has tracks", AmbientSound.inCategory(cat).size >= 4)
         }
+    }
+
+    @Test
+    fun manifestHasNoPerTrackTier() {
+        // Business model: full app during the 7-day trial, then Premium — no free/premium split per track.
+        val manifest = File("src/main/assets/ambient/manifest.json")
+        if (!manifest.exists()) return
+        val text = manifest.readText()
+        assertTrue("manifest must not contain a per-track premium flag", !text.contains("\"premium\""))
+        assertTrue("manifest must not contain a per-track free flag", !text.contains("\"free\""))
     }
 
     @Test

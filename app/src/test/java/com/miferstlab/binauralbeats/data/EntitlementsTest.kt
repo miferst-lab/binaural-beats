@@ -25,4 +25,17 @@ class EntitlementsTest {
         assertEquals(1, Entitlements.trialRemainingDays(start, start + 6 * day + 1))
         assertEquals(0, Entitlements.trialRemainingDays(start, start + 7 * day))
     }
+
+    @Test
+    fun fullAccessForSevenDaysThenBlockedUntilPurchase() {
+        val start = 1_700_000_000_000L
+        val day = 24L * 60L * 60L * 1000L
+        assertTrue(Entitlements.hasAccess(false, start, start))
+        assertTrue(Entitlements.hasAccess(false, start, start + 7 * day - 1))
+        assertFalse(Entitlements.hasAccess(false, start, start + 7 * day))
+        assertFalse(Entitlements.hasAccess(false, start, start + 30 * day))
+        assertTrue(Entitlements.hasAccess(true, start, start + 30 * day))
+        // No trial start recorded yet (first launch) = full trial.
+        assertTrue(Entitlements.hasAccess(false, 0L, start))
+    }
 }

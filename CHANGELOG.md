@@ -6,7 +6,13 @@
   loudness-normalised to −20 LUFS, 4 s equal-power crossfade at the loop seam, OGG Vorbis q0 in `assets/ambient/`
 - 9 groups: Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi;
   ambient picker now shows category chips + tracks of the selected category (volume slider and ±1% kept)
-- Free/Premium split: 11 free (3 Nature + 1 per other group), 33 Premium; everything unlocked during the 7-day trial
+- Business model: 7-day free trial of the full app (all 44 tracks, all modes), then playback is blocked until Premium
+  (`binaural_premium_unlock`). **No free tier and no per-track free/premium split** — the `free` flag was removed from
+  `tools/ambient_tracks.json`, the `premium` field from `manifest.json`, the Tier column from `CREDITS.md`,
+  `AmbientSound.isPremium` / `freeEntries` / `premiumEntries`, and the lock icons + "Premium ambient" upsell dialog from the picker
+- Trial gate is also enforced in the playback service (checked every minute while playing), so a session started
+  before the trial ends cannot keep playing after it once the Activity/ViewModel is gone
+- Store listing (`store/PLAY.md`), README and Settings copy describe the 7-day trial → Premium model
 - Old ambient selections (≤1.4.0) migrate to the closest new track
 - **Sound credits** screen (Settings → About → Sound credits); `CREDITS.md` + `manifest.json` next to the audio
 - **App switched to English**: all UI strings, mode names, trial/paywall texts, notifications, store listing,

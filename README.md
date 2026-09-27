@@ -17,7 +17,7 @@ Android app (Kotlin + Jetpack Compose, Material 3) that generates stereo sine to
   Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi — with separate volume and ±1% buttons
 - **Sound credits** screen (Settings → About)
 - **Mix with other apps** on by default (Spotify is not paused)
-- 7-day trial from install, then one-time Premium unlock (`binaural_premium_unlock`)
+- 7-day free trial of the full app from install; after that playback is blocked until the one-time Premium purchase (`binaural_premium_unlock`). No free tier, no per-track locks
 - English UI, calm dark "galactic" theme
 
 ### Frequency presets
@@ -42,10 +42,10 @@ Left ≈ carrier − beat/2, right ≈ carrier + beat/2.
   loudness-normalised to −20 LUFS, 4 s equal-power crossfade baked into the loop seam; played gapless by
   Media3 ExoPlayer (`REPEAT_MODE_ONE`, `asset:///` URIs).
 - Sources: Freesound.org, **CC0 1.0 only** — see `app/src/main/assets/ambient/CREDITS.md` / `manifest.json`.
-- Spec: `tools/ambient_tracks.json` (source id, excerpt start, category, English name, free/premium).
+- Spec: `tools/ambient_tracks.json` (source id, excerpt start, category, English name).
 - Rebuild audio: `python3 tools/build_ambient_library.py` (needs ffmpeg + numpy).
 - Regenerate Kotlin enum + strings: `python3 tools/gen_ambient_kotlin.py`.
-- Free tier: 1–3 tracks per category (`free: true`), the rest are Premium (all unlocked during the trial).
+- No per-track tiers: every track is available during the trial and with Premium; after the trial, without Premium, nothing plays.
 
 ---
 

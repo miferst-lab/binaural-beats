@@ -20,12 +20,12 @@ enum class AmbientCategory(val prefsValue: String) {
  * `assets/ambient/<prefsValue>.ogg` (≈5 min, -20 LUFS, seamless crossfaded loop).
  * All sources are Freesound CC0 recordings; credits are shown in Settings → Sound credits.
  *
- * [isPremium] beds need Premium once the trial is over (all are unlocked during the trial).
+ * There is no per-track tier: every bed is available whenever the app is usable
+ * (7-day trial or Premium) — the only gate is the app-wide trial/purchase check.
  */
 enum class AmbientSound(
     val prefsValue: String,
     val category: AmbientCategory?,
-    val isPremium: Boolean = false,
     val sourceTitle: String = "",
     val author: String = "",
     val sourceUrl: String = "",
@@ -33,222 +33,222 @@ enum class AmbientSound(
 ) {
     OFF("off", null),
     NATURE_RAIN(
-        "nature_rain", AmbientCategory.NATURE, isPremium = false,
+        "nature_rain", AmbientCategory.NATURE,
         sourceTitle = "Medium Light Rain", author = "Baconation",
         sourceUrl = "https://freesound.org/people/Baconation/sounds/592482/", license = "CC0 1.0"
     ),
     NATURE_THUNDER(
-        "nature_thunder", AmbientCategory.NATURE, isPremium = false,
+        "nature_thunder", AmbientCategory.NATURE,
         sourceTitle = "Rain and thunder in Thailand", author = "felix.blume",
         sourceUrl = "https://freesound.org/people/felix.blume/sounds/447510/", license = "CC0 1.0"
     ),
     NATURE_WAVES(
-        "nature_waves", AmbientCategory.NATURE, isPremium = false,
+        "nature_waves", AmbientCategory.NATURE,
         sourceTitle = "Waves at Baltic Sea shore.wav", author = "pulswelle",
         sourceUrl = "https://freesound.org/people/pulswelle/sounds/339517/", license = "CC0 1.0"
     ),
     NATURE_STREAM(
-        "nature_stream", AmbientCategory.NATURE, isPremium = true,
+        "nature_stream", AmbientCategory.NATURE,
         sourceTitle = "Calm Stream In Forest.wav", author = "BurghRecords",
         sourceUrl = "https://freesound.org/people/BurghRecords/sounds/578068/", license = "CC0 1.0"
     ),
     NATURE_FIREPLACE(
-        "nature_fireplace", AmbientCategory.NATURE, isPremium = true,
+        "nature_fireplace", AmbientCategory.NATURE,
         sourceTitle = "Aachen_Burning Fireplace Crackling Fire Sounds.wav", author = "visionear",
         sourceUrl = "https://freesound.org/people/visionear/sounds/501417/", license = "CC0 1.0"
     ),
     NATURE_NIGHT_FOREST(
-        "nature_night_forest", AmbientCategory.NATURE, isPremium = true,
+        "nature_night_forest", AmbientCategory.NATURE,
         sourceTitle = "Forest at night, crickets, cicadas and insects in the Sian Ka'an Biosphere Reserve", author = "felix.blume",
         sourceUrl = "https://freesound.org/people/felix.blume/sounds/328293/", license = "CC0 1.0"
     ),
     NATURE_CAVE(
-        "nature_cave", AmbientCategory.NATURE, isPremium = true,
+        "nature_cave", AmbientCategory.NATURE,
         sourceTitle = "Cave Ambience", author = "pointlessperson1",
         sourceUrl = "https://freesound.org/people/pointlessperson1/sounds/740041/", license = "CC0 1.0"
     ),
     JOYFUL_DAWN_CHORUS(
-        "joyful_dawn_chorus", AmbientCategory.JOYFUL, isPremium = false,
+        "joyful_dawn_chorus", AmbientCategory.JOYFUL,
         sourceTitle = "Dawn Chorus Birdsong", author = "squashy555",
         sourceUrl = "https://freesound.org/people/squashy555/sounds/573080/", license = "CC0 1.0"
     ),
     JOYFUL_SUNNY_MEADOW(
-        "joyful_sunny_meadow", AmbientCategory.JOYFUL, isPremium = true,
+        "joyful_sunny_meadow", AmbientCategory.JOYFUL,
         sourceTitle = "french sunny meadow at noon", author = "bruno.auzet",
         sourceUrl = "https://freesound.org/people/bruno.auzet/sounds/538793/", license = "CC0 1.0"
     ),
     JOYFUL_SUMMER_FIELD(
-        "joyful_summer_field", AmbientCategory.JOYFUL, isPremium = true,
+        "joyful_summer_field", AmbientCategory.JOYFUL,
         sourceTitle = "Greenfield, birds, suburban sounds in the background", author = "originalmaja",
         sourceUrl = "https://freesound.org/people/originalmaja/sounds/211082/", license = "CC0 1.0"
     ),
     JOYFUL_STREET_MARKET(
-        "joyful_street_market", AmbientCategory.JOYFUL, isPremium = true,
+        "joyful_street_market", AmbientCategory.JOYFUL,
         sourceTitle = "Street-Market-Gap-France.wav", author = "Astounded",
         sourceUrl = "https://freesound.org/people/Astounded/sounds/483561/", license = "CC0 1.0"
     ),
     CALM_GENTLE_WAVES(
-        "calm_gentle_waves", AmbientCategory.CALM, isPremium = false,
+        "calm_gentle_waves", AmbientCategory.CALM,
         sourceTitle = "Gentle Ocean Waves Mix (2018)", author = "esh9419",
         sourceUrl = "https://freesound.org/people/esh9419/sounds/417797/", license = "CC0 1.0"
     ),
     CALM_BROOK(
-        "calm_brook", AmbientCategory.CALM, isPremium = true,
+        "calm_brook", AmbientCategory.CALM,
         sourceTitle = "Babbling Brook", author = "deleted_user_2906614",
         sourceUrl = "https://freesound.org/people/deleted_user_2906614/sounds/241095/", license = "CC0 1.0"
     ),
     CALM_PROVENCE_DUSK(
-        "calm_provence_dusk", AmbientCategory.CALM, isPremium = true,
+        "calm_provence_dusk", AmbientCategory.CALM,
         sourceTitle = "Ambience - dawn atmosphere -  air - light wind - south France - provence - far village - no insects.wav", author = "ValentinPetiteau",
         sourceUrl = "https://freesound.org/people/ValentinPetiteau/sounds/647660/", license = "CC0 1.0"
     ),
     CALM_NIGHT_BREEZE(
-        "calm_night_breeze", AmbientCategory.CALM, isPremium = true,
+        "calm_night_breeze", AmbientCategory.CALM,
         sourceTitle = "Backyard with wind at night.wav", author = "BonnyOrbit",
         sourceUrl = "https://freesound.org/people/BonnyOrbit/sounds/380781/", license = "CC0 1.0"
     ),
     FOCUS_CAFE(
-        "focus_cafe", AmbientCategory.FOCUS, isPremium = false,
+        "focus_cafe", AmbientCategory.FOCUS,
         sourceTitle = "Cafe Ambience", author = "bittermelonheart",
         sourceUrl = "https://freesound.org/people/bittermelonheart/sounds/732984/", license = "CC0 1.0"
     ),
     FOCUS_LIBRARY(
-        "focus_library", AmbientCategory.FOCUS, isPremium = true,
+        "focus_library", AmbientCategory.FOCUS,
         sourceTitle = "Quiet library ambience", author = "xkeril",
         sourceUrl = "https://freesound.org/people/xkeril/sounds/620683/", license = "CC0 1.0"
     ),
     FOCUS_WATERFALL(
-        "focus_waterfall", AmbientCategory.FOCUS, isPremium = true,
+        "focus_waterfall", AmbientCategory.FOCUS,
         sourceTitle = "waterfall", author = "Antonio_Lai",
         sourceUrl = "https://freesound.org/people/Antonio_Lai/sounds/519558/", license = "CC0 1.0"
     ),
     FOCUS_CABIN_RAIN(
-        "focus_cabin_rain", AmbientCategory.FOCUS, isPremium = true,
+        "focus_cabin_rain", AmbientCategory.FOCUS,
         sourceTitle = "Forest Rainstorm 02", author = "rifualk",
         sourceUrl = "https://freesound.org/people/rifualk/sounds/648475/", license = "CC0 1.0"
     ),
     SLEEP_STEADY_RAIN(
-        "sleep_steady_rain", AmbientCategory.SLEEP, isPremium = false,
+        "sleep_steady_rain", AmbientCategory.SLEEP,
         sourceTitle = "Rain Slowly Passing TREATED LOOP_Edgewater_06192020.wav", author = "speakwithanimals",
         sourceUrl = "https://freesound.org/people/speakwithanimals/sounds/525046/", license = "CC0 1.0"
     ),
     SLEEP_RAIN_WINDOW(
-        "sleep_rain_window", AmbientCategory.SLEEP, isPremium = true,
+        "sleep_rain_window", AmbientCategory.SLEEP,
         sourceTitle = "Heavy Rain Behind A Window", author = "unfa",
         sourceUrl = "https://freesound.org/people/unfa/sounds/533154/", license = "CC0 1.0"
     ),
     SLEEP_DESERT_WIND(
-        "sleep_desert_wind", AmbientCategory.SLEEP, isPremium = true,
+        "sleep_desert_wind", AmbientCategory.SLEEP,
         sourceTitle = "Desert binaural Wind.WAV", author = "Benbojangles",
         sourceUrl = "https://freesound.org/people/Benbojangles/sounds/457159/", license = "CC0 1.0"
     ),
     SLEEP_NIGHT_STORM(
-        "sleep_night_storm", AmbientCategory.SLEEP, isPremium = true,
+        "sleep_night_storm", AmbientCategory.SLEEP,
         sourceTitle = "Thunderstorm / Gewitter-bei-Nacht-02.wav /Thunderstorm at night", author = "BlueDelta",
         sourceUrl = "https://freesound.org/people/BlueDelta/sounds/332692/", license = "CC0 1.0"
     ),
     SLEEP_WINTER_STORM(
-        "sleep_winter_storm", AmbientCategory.SLEEP, isPremium = true,
+        "sleep_winter_storm", AmbientCategory.SLEEP,
         sourceTitle = "Howling winter storm ambient sounds", author = "DBlover",
         sourceUrl = "https://freesound.org/people/DBlover/sounds/505999/", license = "CC0 1.0"
     ),
     MEL_GREY_MORNING(
-        "mel_grey_morning", AmbientCategory.MELANCHOLIC, isPremium = false,
+        "mel_grey_morning", AmbientCategory.MELANCHOLIC,
         sourceTitle = "Early Morning Rain by Casco Bay Maine", author = "be-steele",
         sourceUrl = "https://freesound.org/people/be-steele/sounds/362415/", license = "CC0 1.0"
     ),
     MEL_AUTUMN_LEAVES(
-        "mel_autumn_leaves", AmbientCategory.MELANCHOLIC, isPremium = true,
+        "mel_autumn_leaves", AmbientCategory.MELANCHOLIC,
         sourceTitle = "Nov neighborhood breezes 48HZ autumn Leaves NOVEMBER 6 2023", author = "kvgarlic",
         sourceUrl = "https://freesound.org/people/kvgarlic/sounds/709410/", license = "CC0 1.0"
     ),
     MEL_FROZEN_NIGHT(
-        "mel_frozen_night", AmbientCategory.MELANCHOLIC, isPremium = true,
+        "mel_frozen_night", AmbientCategory.MELANCHOLIC,
         sourceTitle = "Winter night - frozen trees", author = "traus",
         sourceUrl = "https://freesound.org/people/traus/sounds/370266/", license = "CC0 1.0"
     ),
     MEL_DISTANT_CHIMES(
-        "mel_distant_chimes", AmbientCategory.MELANCHOLIC, isPremium = true,
+        "mel_distant_chimes", AmbientCategory.MELANCHOLIC,
         sourceTitle = "Distant Thunder and Windchimes", author = "Wildhorsemann",
         sourceUrl = "https://freesound.org/people/Wildhorsemann/sounds/400382/", license = "CC0 1.0"
     ),
     NOIR_RAINY_CROSSROAD(
-        "noir_rainy_crossroad", AmbientCategory.NOIR, isPremium = false,
+        "noir_rainy_crossroad", AmbientCategory.NOIR,
         sourceTitle = "rainy night at a crossroad", author = "FrojeoStern",
         sourceUrl = "https://freesound.org/people/FrojeoStern/sounds/276875/", license = "CC0 1.0"
     ),
     NOIR_WET_STREET(
-        "noir_wet_street", AmbientCategory.NOIR, isPremium = true,
+        "noir_wet_street", AmbientCategory.NOIR,
         sourceTitle = "Light rain at night with cars passing by .wav", author = "humi74",
         sourceUrl = "https://freesound.org/people/humi74/sounds/532392/", license = "CC0 1.0"
     ),
     NOIR_OLD_CLOCK(
-        "noir_old_clock", AmbientCategory.NOIR, isPremium = true,
+        "noir_old_clock", AmbientCategory.NOIR,
         sourceTitle = "Clock Ticking.wav", author = "photogtony",
         sourceUrl = "https://freesound.org/people/photogtony/sounds/242008/", license = "CC0 1.0"
     ),
     NOIR_RAIN_WINDOW(
-        "noir_rain_window", AmbientCategory.NOIR, isPremium = true,
+        "noir_rain_window", AmbientCategory.NOIR,
         sourceTitle = "Rain from Half Open Window 1.aif", author = "RutgerMuller",
         sourceUrl = "https://freesound.org/people/RutgerMuller/sounds/158690/", license = "CC0 1.0"
     ),
     NOIR_DOWNTOWN_STORM(
-        "noir_downtown_storm", AmbientCategory.NOIR, isPremium = true,
+        "noir_downtown_storm", AmbientCategory.NOIR,
         sourceTitle = "Rain in Mexico City", author = "felix.blume",
         sourceUrl = "https://freesound.org/people/felix.blume/sounds/317384/", license = "CC0 1.0"
     ),
     FANTASY_TAVERN(
-        "fantasy_tavern", AmbientCategory.FANTASY, isPremium = false,
+        "fantasy_tavern", AmbientCategory.FANTASY,
         sourceTitle = "Bar, Pub, Tavern_2.wav", author = "o_ciz",
         sourceUrl = "https://freesound.org/people/o_ciz/sounds/475504/", license = "CC0 1.0"
     ),
     FANTASY_VILLAGE(
-        "fantasy_village", AmbientCategory.FANTASY, isPremium = true,
+        "fantasy_village", AmbientCategory.FANTASY,
         sourceTitle = "morning ambience of a small mountain village in the mountains of Kazakhstan", author = "gladkiy",
         sourceUrl = "https://freesound.org/people/gladkiy/sounds/276946/", license = "CC0 1.0"
     ),
     FANTASY_BELLS(
-        "fantasy_bells", AmbientCategory.FANTASY, isPremium = true,
+        "fantasy_bells", AmbientCategory.FANTASY,
         sourceTitle = "Churchbells", author = "lunarweekly",
         sourceUrl = "https://freesound.org/people/lunarweekly/sounds/404911/", license = "CC0 1.0"
     ),
     FANTASY_DRIPPING_CAVE(
-        "fantasy_dripping_cave", AmbientCategory.FANTASY, isPremium = true,
+        "fantasy_dripping_cave", AmbientCategory.FANTASY,
         sourceTitle = "ambience cave5.ogg", author = "fonografico",
         sourceUrl = "https://freesound.org/people/fonografico/sounds/636110/", license = "CC0 1.0"
     ),
     FANTASY_PEAK_WIND(
-        "fantasy_peak_wind", AmbientCategory.FANTASY, isPremium = true,
+        "fantasy_peak_wind", AmbientCategory.FANTASY,
         sourceTitle = "winter wind 01c.aiff", author = "klangfabrik",
         sourceUrl = "https://freesound.org/people/klangfabrik/sounds/117513/", license = "CC0 1.0"
     ),
     FANTASY_OLD_FOREST(
-        "fantasy_old_forest", AmbientCategory.FANTASY, isPremium = true,
+        "fantasy_old_forest", AmbientCategory.FANTASY,
         sourceTitle = "Amazon Jungle Morning.aif", author = "trundlefly",
         sourceUrl = "https://freesound.org/people/trundlefly/sounds/349326/", license = "CC0 1.0"
     ),
     SCIFI_SHIP_HUM(
-        "scifi_ship_hum", AmbientCategory.SCI_FI, isPremium = false,
+        "scifi_ship_hum", AmbientCategory.SCI_FI,
         sourceTitle = "Spaceship Ambience", author = "PotatokingXII",
         sourceUrl = "https://freesound.org/people/PotatokingXII/sounds/443499/", license = "CC0 1.0"
     ),
     SCIFI_STARSHIP(
-        "scifi_starship", AmbientCategory.SCI_FI, isPremium = true,
+        "scifi_starship", AmbientCategory.SCI_FI,
         sourceTitle = "StarShip.mp3", author = "ClawVO",
         sourceUrl = "https://freesound.org/people/ClawVO/sounds/705655/", license = "CC0 1.0"
     ),
     SCIFI_ENGINEERING(
-        "scifi_engineering", AmbientCategory.SCI_FI, isPremium = true,
+        "scifi_engineering", AmbientCategory.SCI_FI,
         sourceTitle = "RoomTone07", author = "richwise",
         sourceUrl = "https://freesound.org/people/richwise/sounds/474832/", license = "CC0 1.0"
     ),
     SCIFI_STATION(
-        "scifi_station", AmbientCategory.SCI_FI, isPremium = true,
+        "scifi_station", AmbientCategory.SCI_FI,
         sourceTitle = "Sci-fi Station.wav", author = "Shoni182",
         sourceUrl = "https://freesound.org/people/Shoni182/sounds/417606/", license = "CC0 1.0"
     ),
     SCIFI_NIGHT_CITY(
-        "scifi_night_city", AmbientCategory.SCI_FI, isPremium = true,
+        "scifi_night_city", AmbientCategory.SCI_FI,
         sourceTitle = "TokyoStreetAtNight_120.wav", author = "markystar",
         sourceUrl = "https://freesound.org/people/markystar/sounds/42195/", license = "CC0 1.0"
     );
@@ -276,7 +276,5 @@ enum class AmbientSound(
             entries.filter { it.category == category }
 
         val tracks: List<AmbientSound> = entries.filter { it != OFF }
-        val freeEntries: List<AmbientSound> = tracks.filter { !it.isPremium }
-        val premiumEntries: List<AmbientSound> = tracks.filter { it.isPremium }
     }
 }

@@ -38,8 +38,9 @@ Mixes with other apps by default — Spotify and other players keep playing.
 • Galactic night theme
 • No account, no ads, works offline
 
-**Free trial & Premium**
-Everything is unlocked for 7 days after install. After that, a one-time Premium unlock keeps the tones and the full ambient library.
+**7-day free trial, then Premium**
+Try the full app free for 7 days after install — every mode, all 44 ambient soundscapes, unlimited listening, nothing locked.
+When the trial ends, playback stops until you buy Premium. Premium is a one-time in-app purchase that keeps the whole app unlocked. There is no free tier after the trial.
 
 Use stereo headphones — the binaural effect needs separate left and right channels.
 
@@ -59,5 +60,5 @@ If the repo is private, enable Pages or host the policy elsewhere.
 Android Studio: Build → Generate Signed App Bundle (.aab). Keep the keystore safe — without it you cannot update the app.
 
 Category: Health & Fitness or Music & Audio. Content rating: Everyone / PEGI 3.
-Pricing: free download with a one-time in-app purchase (`binaural_premium_unlock`).
+Pricing: free download with a 7-day full-access trial; after that the one-time in-app purchase (`binaural_premium_unlock`) is required to keep using the app. No free tier and no per-track tiers.
 Sound credits: `app/src/main/assets/ambient/CREDITS.md` (all CC0).

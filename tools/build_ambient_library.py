@@ -115,7 +115,7 @@ def write_manifest(spec, stats):
     for t in spec["tracks"]:
         s = stats.get(t["key"], {})
         tracks.append(dict(key=t["key"], category=t["cat"], name=t["name"], file=f"ambient/{t['key']}.ogg",
-                           premium=not t["free"], durationSec=s.get("seconds"), bytes=s.get("bytes"),
+                           durationSec=s.get("seconds"), bytes=s.get("bytes"),
                            source="Freesound", sourceId=t["fs"], sourceTitle=t["source_title"],
                            author=t["author"], license=t["license"], url=t["url"]))
     (OUT / "manifest.json").write_text(json.dumps(dict(version=1, loudnessLufs=TARGET_LUFS,
@@ -128,11 +128,11 @@ def write_manifest(spec, stats):
           "Processing: excerpt trimmed to ~5 min, loudness-normalised to -20 LUFS, equal-power 4 s crossfade at the",
           "loop seam, encoded as OGG Vorbis. Built by `tools/build_ambient_library.py` from `tools/ambient_tracks.json`.", ""]
     for c in spec["categories"]:
-        md += [f"## {CAT_TITLES[c]}", "", "| Track | Tier | Original title | Author | License | Source |",
-               "|---|---|---|---|---|---|"]
+        md += [f"## {CAT_TITLES[c]}", "", "| Track | Original title | Author | License | Source |",
+               "|---|---|---|---|---|"]
         for t in spec["tracks"]:
             if t["cat"] == c:
-                md.append(f"| {t['name']} | {'Free' if t['free'] else 'Premium'} | {t['source_title'].replace('|','/')} "
+                md.append(f"| {t['name']} | {t['source_title'].replace('|','/')} "
                           f"| {t['author']} | CC0 1.0 | {t['url']} |")
         md.append("")
     md += ["CC0 deed: https://creativecommons.org/publicdomain/zero/1.0/", ""]

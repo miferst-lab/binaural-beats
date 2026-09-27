@@ -88,7 +88,6 @@ fun HomeScreen(
     onCustomBeat: (Float) -> Unit,
     onOpenSettings: () -> Unit,
     onDismissFreeLimit: () -> Unit = {},
-    onDismissPremiumUpsell: () -> Unit = {},
     onUpgradePremium: () -> Unit = {}
 ) {
     val playPauseLabel = stringResource(
@@ -279,9 +278,7 @@ fun HomeScreen(
 
                         AmbientPicker(
                             selected = state.ambient,
-                            hasFullAccess = state.hasFullAccess,
                             accent = SoftTeal,
-                            lockedAccent = SoftAmber,
                             onAmbientSelected = onAmbientSelected,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -408,24 +405,6 @@ fun HomeScreen(
                 dismissButton = {
                     TextButton(onClick = onDismissFreeLimit) {
                         Text(stringResource(R.string.trial_expired_ok))
-                    }
-                }
-            )
-        }
-
-        if (state.showPremiumUpsellDialog) {
-            AlertDialog(
-                onDismissRequest = onDismissPremiumUpsell,
-                title = { Text(stringResource(R.string.premium_upsell_title)) },
-                text = { Text(stringResource(R.string.premium_upsell_message)) },
-                confirmButton = {
-                    TextButton(onClick = onUpgradePremium) {
-                        Text(stringResource(R.string.upgrade_premium))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = onDismissPremiumUpsell) {
-                        Text(stringResource(R.string.premium_upsell_cancel))
                     }
                 }
             )

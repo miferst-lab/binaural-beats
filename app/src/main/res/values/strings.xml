@@ -53,9 +53,8 @@
     <string name="volume_increase">Increase volume by 1%</string>
     <string name="ambient_volume_decrease">Decrease ambient volume by 1%</string>
     <string name="ambient_volume_increase">Increase ambient volume by 1%</string>
-    <string name="ambient_locked_cd">Locked premium ambient</string>
     <string name="ambient_now_playing">Selected: %1$s</string>
-    <string name="ambient_library_summary">%1$d real-world recordings · %2$d free</string>
+    <string name="ambient_library_summary">%1$d real-world recordings</string>
 
     <string name="credits_title">Sound credits</string>
     <string name="credits_open">Sound credits</string>
@@ -67,14 +66,10 @@
 
     <string name="upgrade_premium">Upgrade to Premium</string>
 
-    <string name="premium_upsell_title">Premium ambient</string>
-    <string name="premium_upsell_message">This ambient sound is part of Premium (unlocked during your free trial). Unlock Premium to keep using the full library of 40+ recordings.</string>
-    <string name="premium_upsell_cancel">Not now</string>
-
     <string name="settings_section_premium">Premium</string>
     <string name="settings_premium_status_on">Premium unlocked</string>
-    <string name="settings_premium_status_off">Free plan — 7-day trial from install</string>
-    <string name="settings_premium_desc">Premium unlocks unlimited listening and the full ambient library after the trial.</string>
+    <string name="settings_premium_status_off">Not purchased — 7-day full-access trial from install</string>
+    <string name="settings_premium_desc">The first 7 days give you the full app for free. After that, a one-time Premium purchase is required to keep listening.</string>
     <string name="settings_debug_unlock">Debug: allow premium unlock</string>
     <string name="settings_debug_unlock_desc">For testing without Play Billing. Turns on local purchase unlock.</string>
     <string name="settings_premium_active">You have Premium</string>

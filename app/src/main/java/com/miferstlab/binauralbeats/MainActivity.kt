@@ -83,7 +83,6 @@ class MainActivity : ComponentActivity() {
                     onKeepScreenOnChanged = viewModel::setKeepScreenOn,
                     onAppearanceChanged = viewModel::setAppearanceMode,
                     onDismissFreeLimit = viewModel::dismissFreeLimitDialog,
-                    onDismissPremiumUpsell = viewModel::dismissPremiumUpsellDialog,
                     onUpgradePremium = { viewModel.purchasePremium(this) },
                     onDebugUnlockChanged = viewModel::setDebugUnlockEnabled,
                     isDebugUnlockEnabled = viewModel.isDebugUnlockEnabled(),
@@ -128,7 +127,6 @@ private fun BinauralApp(
     onKeepScreenOnChanged: (Boolean) -> Unit,
     onAppearanceChanged: (AppearanceMode) -> Unit,
     onDismissFreeLimit: () -> Unit,
-    onDismissPremiumUpsell: () -> Unit,
     onUpgradePremium: () -> Unit,
     onDebugUnlockChanged: (Boolean) -> Unit,
     isDebugUnlockEnabled: Boolean,
@@ -156,7 +154,6 @@ private fun BinauralApp(
             onCustomBeat = onCustomBeat,
             onOpenSettings = { screen = Screen.Settings.name },
             onDismissFreeLimit = onDismissFreeLimit,
-            onDismissPremiumUpsell = onDismissPremiumUpsell,
             onUpgradePremium = onUpgradePremium
         )
         Screen.Settings -> SettingsScreen(
