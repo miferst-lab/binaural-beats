@@ -39,8 +39,8 @@ Left ≈ carrier − beat/2, right ≈ carrier + beat/2.
 ## Ambient library
 
 - Audio: `app/src/main/assets/ambient/<key>.ogg` — OGG Vorbis q0 (~64 kbps), 44.1 kHz stereo, ~5 min,
-  loudness-normalised to −20 LUFS, 4 s equal-power crossfade baked into the loop seam; played gapless by
-  Media3 ExoPlayer (`REPEAT_MODE_ONE`, `asset:///` URIs).
+  loudness-normalised to −20 LUFS, 4 s equal-power crossfade baked into the loop seam; at runtime a dual
+  Media3 ExoPlayer equal-power crossfade (~2 s) masks the OGG/Vorbis decoder wrap (`asset:///` URIs).
 - Sources: Freesound.org, **CC0 1.0 only** — see `app/src/main/assets/ambient/CREDITS.md` / `manifest.json`.
 - Spec: `tools/ambient_tracks.json` (source id, excerpt start, category, English name).
 - Rebuild audio: `python3 tools/build_ambient_library.py` (needs ffmpeg + numpy).

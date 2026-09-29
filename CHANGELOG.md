@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.1
+
+- **Ambient loop seams**: dual ExoPlayer equal-power crossfade (~2 s) at loop boundaries replaces
+  single-player `REPEAT_MODE_ONE`, which left an audible OGG/Vorbis decoder gap every ~5 minutes
+  despite the baked 4 s end→start crossfade in assets. Backup position poll + `STATE_ENDED` safety net.
+- Version 1.5.1 (versionCode 9)
+
+
 ## 1.5.0
 
 - **New ambient library**: 44 real field recordings from Freesound (CC0 1.0 only), ~5 min each,
