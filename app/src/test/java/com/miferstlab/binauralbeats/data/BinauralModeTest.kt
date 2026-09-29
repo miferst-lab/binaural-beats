@@ -11,7 +11,7 @@ class BinauralModeTest {
 
     @Test
     fun relaxPreset_alphaBeatAround220() {
-        val mode = BinauralMode.RELAKS
+        val mode = BinauralMode.RELAX
         val left = mode.leftHz()
         val right = mode.rightHz()
 
@@ -22,28 +22,28 @@ class BinauralModeTest {
 
     @Test
     fun focusPreset_betaBeat() {
-        val mode = BinauralMode.SKUPIENIE
+        val mode = BinauralMode.FOCUS
         assertEquals(16f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
         assertEquals(220f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
     }
 
     @Test
     fun readingPreset_smrBeat() {
-        val mode = BinauralMode.CZYTANIE
+        val mode = BinauralMode.READING
         assertEquals(13f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
         assertEquals(210f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
     }
 
     @Test
     fun energyPreset_highBetaBeat() {
-        val mode = BinauralMode.ENERGIA
+        val mode = BinauralMode.ENERGY
         assertEquals(22f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
         assertEquals(230f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
     }
 
     @Test
     fun sleepPreset_deltaBeat_lowerCarrier() {
-        val mode = BinauralMode.SEN
+        val mode = BinauralMode.SLEEP
         assertEquals(3f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
         assertEquals(180f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
         assertEquals(0.22f, mode.defaultVolume, 0f)
@@ -51,14 +51,14 @@ class BinauralModeTest {
 
     @Test
     fun meditationPreset_thetaBeat() {
-        val mode = BinauralMode.MEDYTACJA
+        val mode = BinauralMode.MEDITATION
         assertEquals(6f, FrequencyMath.beatFromEars(mode.leftHz(), mode.rightHz()), 0.001f)
         assertEquals(200f, (mode.leftHz() + mode.rightHz()) / 2f, 0.001f)
     }
 
     @Test
     fun presetIgnoresCustomCarrierAndBeatArgs() {
-        val mode = BinauralMode.RELAKS
+        val mode = BinauralMode.RELAX
         val withDefaults = mode.leftHz() to mode.rightHz()
         val withCustomArgs = mode.leftHz(400f, 30f) to mode.rightHz(400f, 30f)
         assertEquals(withDefaults.first, withCustomArgs.first, 0f)
@@ -67,7 +67,7 @@ class BinauralModeTest {
 
     @Test
     fun customMode_usesClampedCarrierAndBeat() {
-        val mode = BinauralMode.NIESTANDARDOWY
+        val mode = BinauralMode.CUSTOM
         val left = mode.leftHz(customCarrier = 300f, customBeat = 12f)
         val right = mode.rightHz(customCarrier = 300f, customBeat = 12f)
 
@@ -78,7 +78,7 @@ class BinauralModeTest {
 
     @Test
     fun customMode_clampsOutOfRangeInputs() {
-        val mode = BinauralMode.NIESTANDARDOWY
+        val mode = BinauralMode.CUSTOM
         // Carrier below min and beat above max → clamped before L/R split.
         val (c, b) = mode.resolvedCarrierBeat(10f, 99f)
         assertEquals(FrequencyMath.CARRIER_MIN, c, 0f)
@@ -93,7 +93,7 @@ class BinauralModeTest {
 
     @Test
     fun customMode_defaultsMatchEnumFields() {
-        val mode = BinauralMode.NIESTANDARDOWY
+        val mode = BinauralMode.CUSTOM
         assertEquals(mode.carrierHz, mode.leftHz().let { it + mode.beatHz / 2f }, 0.001f)
         assertEquals(
             mode.beatHz,

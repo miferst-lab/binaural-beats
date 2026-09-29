@@ -1,19 +1,17 @@
-# Ambient loop licenses
+# Ambient sound licenses
 
-All ambient bed files shipped in `app/src/main/res/raw/` are **downloaded** (not synthesized) from [BigSoundBank](https://bigsoundbank.com/), released by **Joseph SARDIN** under **CC0** (public-domain dedication). Trimmed, equal-power end→start acrossfaded (~2.5s) for seamless single-player looping, and converted to OGG Vorbis for the app; no other changes to authorship.
+The ambient library (v1.5.0+) lives in `app/src/main/assets/ambient/`.
+Full per-track credits (source URL, author, license) are in:
 
-| App file | Source title | Sound # | Author | License | Source URL |
-|----------|--------------|---------|--------|---------|------------|
-| `ambient_forest_night.ogg` | Field cricket | 1020 | Joseph SARDIN | CC0 | https://bigsoundbank.com/field-cricket-s1020.html |
-| `ambient_waves.ogg` | Sea Waves with Tern Calls | 267 | Joseph SARDIN | CC0 | https://bigsoundbank.com/sea-waves-with-tern-calls-s0267.html |
-| `ambient_morning_village.ogg` | Birds waking #2 | 935 | Joseph SARDIN | CC0 | https://bigsoundbank.com/wake-birds-2-s0935.html |
-| `ambient_rain.ogg` | Rain and Thunder #1 | 124 | Joseph SARDIN | CC0 | https://bigsoundbank.com/rain-and-storm-s0124.html |
-| `ambient_fireplace.ogg` | Big Branching Fire #1 | 987 | Joseph SARDIN | CC0 | https://bigsoundbank.com/big-branching-fire-1-s0987.html |
-| `ambient_stream.ogg` | Small Cascade | 507 | Joseph SARDIN | CC0 | https://bigsoundbank.com/small-cascade-s0507.html |
-| `ambient_cave_drip.ogg` | Cave #1 | 2135 | Joseph SARDIN | CC0 | https://bigsoundbank.com/cave-1-s2135.html |
-| `ambient_mountain_wind.ogg` | Wind | 595 | Joseph SARDIN | CC0 | https://bigsoundbank.com/wind-s0595.html |
-| `ambient_soft_thunder.ogg` | Rain and Thunder #1 (EQ’d distant) | 124 | Joseph SARDIN | CC0 | https://bigsoundbank.com/rain-and-storm-s0124.html |
+- `app/src/main/assets/ambient/CREDITS.md` — human-readable
+- `app/src/main/assets/ambient/manifest.json` — machine-readable
+- In the app: **Settings → About → Sound credits**
 
-**Synthesized assets:** none.
+All tracks are **Freesound.org recordings released under CC0 1.0** (public-domain dedication):
+commercial use in a paid app is allowed, no attribution required (we credit anyway).
+No NC/ND, Epidemic Sound or unclear-license material is included.
 
-CC0 deed: https://creativecommons.org/publicdomain/zero/1.0/
+The previous BigSoundBank (CC0) loops used up to v1.4.0 were removed.
+
+Regenerate: `python3 tools/build_ambient_library.py` then `python3 tools/gen_ambient_kotlin.py`
+(spec: `tools/ambient_tracks.json`).

@@ -176,10 +176,6 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setAmbient(ambient: AmbientSound) {
-        if (ambient.isPremium && !_state.value.hasFullAccess) {
-            _state.update { it.copy(showPremiumUpsellDialog = true) }
-            return
-        }
         prefs.edit().putString(KEY_AMBIENT, ambient.prefsValue).apply()
         _state.update { it.copy(ambient = ambient) }
         if (sessionActive) {
@@ -203,14 +199,14 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     fun setCustomCarrier(hz: Float) {
         _state.update { it.copy(customCarrierHz = FrequencyMath.clampCarrier(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }
 
     fun setCustomBeat(hz: Float) {
         _state.update { it.copy(customBeatHz = FrequencyMath.clampBeat(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }
@@ -238,8 +234,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
                 isPremium = enabled,
                 isTrialActive = if (enabled) false else Entitlements.isTrialActive(trialStartMs, effectiveNow()),
                 trialDaysRemaining = if (enabled) 0 else Entitlements.trialRemainingDays(trialStartMs, effectiveNow()),
-                showTrialExpiredDialog = false,
-                showPremiumUpsellDialog = false
+                showTrialExpiredDialog = false
             )
         }
     }
@@ -262,19 +257,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     /** Back-compat name used by MainActivity / HomeScreen. */
     fun dismissFreeLimitDialog() = dismissTrialExpiredDialog()
 
-    fun dismissPremiumUpsellDialog() {
-        _state.update { it.copy(showPremiumUpsellDialog = false) }
-    }
-
     fun play() {
         if (!canPlay()) {
             _state.update { it.copy(showTrialExpiredDialog = true, isPlaying = false) }
             return
-        }
-        // Downgrade locked ambient if access lapsed.
-        if (_state.value.ambient.isPremium && !_state.value.hasFullAccess) {
-            prefs.edit().putString(KEY_AMBIENT, AmbientSound.OFF.prefsValue).apply()
-            _state.update { it.copy(ambient = AmbientSound.OFF) }
         }
         val ctx = getApplication<Application>()
         val s = _state.value
@@ -377,14 +363,14 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     companion object {
-        private const val PREFS_NAME = "binaural"
+        private const val PREFS_NAME = Entitlements.PREFS_NAME
         private const val KEY_APPEARANCE_MODE = "appearance_mode"
         private const val KEY_AMBIENT = "ambient"
         private const val KEY_AMBIENT_VOLUME = "ambient_volume"
-        private const val KEY_PREMIUM = "is_premium"
+        private const val KEY_PREMIUM = Entitlements.KEY_PREMIUM
         private const val KEY_DEBUG_UNLOCK = "debug_premium_unlock"
-        private const val KEY_TRIAL_START = "trial_start_ms"
-        private const val KEY_FURTHEST_NOW = "trial_furthest_now_ms"
+        private const val KEY_TRIAL_START = Entitlements.KEY_TRIAL_START
+        private const val KEY_FURTHEST_NOW = Entitlements.KEY_FURTHEST_NOW
         private const val TRIAL_TICK_MS = 60_000L
     }
 }

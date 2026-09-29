@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.5.1
+
+- **Ambient loop seams**: dual ExoPlayer equal-power crossfade (~2 s) at loop boundaries replaces
+  single-player `REPEAT_MODE_ONE`, which left an audible OGG/Vorbis decoder gap every ~5 minutes
+  despite the baked 4 s end→start crossfade in assets. Backup position poll + `STATE_ENDED` safety net.
+- Version 1.5.1 (versionCode 9)
+
+
+## 1.5.0
+
+- **New ambient library**: 44 real field recordings from Freesound (CC0 1.0 only), ~5 min each,
+  loudness-normalised to −20 LUFS, 4 s equal-power crossfade at the loop seam, OGG Vorbis q0 in `assets/ambient/`
+- 9 groups: Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi;
+  ambient picker now shows category chips + tracks of the selected category (volume slider and ±1% kept)
+- Business model: 7-day free trial of the full app (all 44 tracks, all modes), then playback is blocked until Premium
+  (`binaural_premium_unlock`). **No free tier and no per-track free/premium split** — the `free` flag was removed from
+  `tools/ambient_tracks.json`, the `premium` field from `manifest.json`, the Tier column from `CREDITS.md`,
+  `AmbientSound.isPremium` / `freeEntries` / `premiumEntries`, and the lock icons + "Premium ambient" upsell dialog from the picker
+- Trial gate is also enforced in the playback service (checked every minute while playing), so a session started
+  before the trial ends cannot keep playing after it once the Activity/ViewModel is gone
+- Store listing (`store/PLAY.md`), README and Settings copy describe the 7-day trial → Premium model
+- Old ambient selections (≤1.4.0) migrate to the closest new track
+- **Sound credits** screen (Settings → About → Sound credits); `CREDITS.md` + `manifest.json` next to the audio
+- **App switched to English**: all UI strings, mode names, trial/paywall texts, notifications, store listing,
+  privacy policy, README (Polish `values-pl` removed); mode enum constants renamed to English
+- Version shown in About now comes from the package; system Back navigates Settings/Credits
+- Tooling: `tools/build_ambient_library.py`, `tools/gen_ambient_kotlin.py`, spec `tools/ambient_tracks.json`
+  (replaces `tools/make_seamless_loops.py`); old BigSoundBank `res/raw` loops removed
+
 ## 1.4.0
 
 - Seamless ambient loops (v2): equal-power end→start acrossfade (~2.5s) re-encoded into every OGG bed + gapless ExoPlayer `REPEAT_MODE_ONE` (replaces dual MediaPlayer crossfade that still clicked on thunder/cave)
