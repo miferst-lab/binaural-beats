@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.2
+
+- **Fix: ambient beds stopped after one pass (~5 min).** In 1.5.1 both crossfade players ran with
+  `REPEAT_MODE_OFF`, so looping depended entirely on the app-side handover timer; whenever that handover
+  did not run in time (main-thread Handler stalled, screen off without a player wake lock, player error on the
+  incoming player) the active clip reached its end and the bed went silent.
+- Loop logic moved into a pure, unit-tested `AmbientLoopController` (fade progress from elapsed real time,
+  not tick counting); both ExoPlayers now use `REPEAT_MODE_ONE` as a fallback loop and `WAKE_MODE_LOCAL`;
+  a failed player is re-prepared and the other one takes over (fade aborted if the incoming player fails).
+- New headless tests simulate 12 loop cycles, stalled/missing ticks, player failures, pause mid-fade.
+- Version 1.5.2 (versionCode 10)
+
 ## 1.5.1
 
 - **Ambient loop seams**: dual ExoPlayer equal-power crossfade (~2 s) at loop boundaries replaces
