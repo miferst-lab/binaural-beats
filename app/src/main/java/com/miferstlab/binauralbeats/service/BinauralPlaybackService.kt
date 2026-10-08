@@ -91,6 +91,7 @@ class BinauralPlaybackService : Service() {
 
                 // Promote to FGS immediately (Android 8+/14 timeout).
                 startAsForeground()
+                logBackgroundRestriction()
 
                 engine.setFrequencies(
                     currentMode.leftHz(carrier, beat),
@@ -193,6 +194,15 @@ class BinauralPlaybackService : Service() {
         stopPlayback()
         ambientPlayer.release()
         super.onDestroy()
+    }
+
+    /** Battery "Restricted" demotes this service when the screen goes off; make that visible in logcat. */
+    private fun logBackgroundRestriction() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        val am = getSystemService(android.app.ActivityManager::class.java) ?: return
+        if (am.isBackgroundRestricted) {
+            android.util.Log.w(TAG, "Battery usage is Restricted: Android will stop playback in the background")
+        }
     }
 
     private fun startTrialGuard() {
@@ -318,6 +328,7 @@ class BinauralPlaybackService : Service() {
     }
 
     companion object {
+        private const val TAG = "BinauralService"
         const val CHANNEL_ID = "binaural_playback"
         const val NOTIFICATION_ID = 42
         private const val TRIAL_GUARD_INTERVAL_MS = 60_000L

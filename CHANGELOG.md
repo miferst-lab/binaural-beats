@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.5.3
+
+- **Fix: ambient beds still stopped after the first pass on the owner's phone with 1.5.2.** The phone ran 1.5.0
+  (single ExoPlayer, `REPEAT_MODE_ONE`) before 1.5.2, never 1.5.1, so the 1.5.2 diagnosis (1.5.1's
+  `REPEAT_MODE_OFF`) did not apply; both builds depended on ExoPlayer wrapping / a main-thread handover timer.
+- Ambient playback rewritten without ExoPlayer: MediaExtractor + MediaCodec decode each pass (fresh decoder
+  per pass) into the app's own streaming AudioTrack on a worker thread; `SeamlessPcmLooper` crossfades the last
+  2 s of every pass into the first 2 s of the next (equal power, sample-accurate). Decoder failures reopen the
+  clip with the same crossfade, a dead AudioTrack is rebuilt, partial wake lock while playing. Media3 dependency removed.
+- Binaural tone: a failed `AudioTrack.write` (e.g. dead track after an output change) no longer ends the
+  generator thread silently; the track is rebuilt and generation continues.
+- Battery usage "Restricted" detection: Play shows a one-time dialog with a shortcut to App info, and the
+  service logs a warning (Android demotes the playback service at screen-off for restricted apps).
+- Tests: `SeamlessPcmLooperTest` (12–50 passes, exact crossfade samples, decoder death mid-pass, failed reopens
+  with back-off, empty reads, clip shorter than the crossfade) replaces `AmbientLoopControllerTest`.
+- Version 1.5.3 (versionCode 11)
+
 ## 1.5.2
 
 - **Fix: ambient beds stopped after one pass (~5 min).** In 1.5.1 both crossfade players ran with

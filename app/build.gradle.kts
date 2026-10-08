@@ -12,8 +12,8 @@ android {
         applicationId = "com.miferstlab.binauralbeats"
         minSdk = 26
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.5.2"
+        versionCode = 11
+        versionName = "1.5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,9 +63,6 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.common)
 
     testImplementation(libs.junit)
 }

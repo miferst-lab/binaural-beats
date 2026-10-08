@@ -83,6 +83,10 @@
     <string name="trial_expired_title">Trial ended</string>
     <string name="trial_expired_message">Your free 7-day trial has ended. Unlock Premium to keep listening to binaural tones and ambients.</string>
     <string name="trial_expired_ok">OK</string>
+    <string name="bg_restricted_title">Sound will stop with the screen off</string>
+    <string name="bg_restricted_message">Battery usage for Binaural Waves is set to Restricted. Android then stops background playback a few minutes after the screen turns off. Open App info → Battery and choose Unrestricted (or Optimized).</string>
+    <string name="bg_restricted_open_settings">Open settings</string>
+    <string name="bg_restricted_later">Not now</string>
     <!-- BEGIN GENERATED AMBIENT (tools/gen_ambient_kotlin.py) -->
     <string name="ambient_cat_nature">Nature</string>
     <string name="ambient_cat_joyful">Joyful</string>

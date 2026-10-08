@@ -1,7 +1,11 @@
 package com.miferstlab.binauralbeats
 
 import android.Manifest
+import android.app.ActivityManager
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -12,12 +16,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,6 +44,10 @@ class MainActivity : ComponentActivity() {
     private val viewModel: BinauralViewModel by viewModels()
 
     private var notificationPermissionAsked = false
+
+    /** Shown at most once per Activity instance, right before playback starts. */
+    private var backgroundRestrictionWarned = false
+    private var showBackgroundRestricted by mutableStateOf(false)
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -70,6 +82,7 @@ class MainActivity : ComponentActivity() {
                     onModeSelected = viewModel::selectMode,
                     onPlayPause = {
                         ensureNotificationPermission()
+                        if (!state.isPlaying) warnIfBackgroundRestricted()
                         viewModel.togglePlayPause()
                     },
                     onVolumeChange = viewModel::setVolume,
@@ -88,7 +101,50 @@ class MainActivity : ComponentActivity() {
                     isDebugUnlockEnabled = viewModel.isDebugUnlockEnabled(),
                     onSetPremium = viewModel::setPremium
                 )
+
+                if (showBackgroundRestricted) {
+                    AlertDialog(
+                        onDismissRequest = { showBackgroundRestricted = false },
+                        title = { Text(stringResource(R.string.bg_restricted_title)) },
+                        text = { Text(stringResource(R.string.bg_restricted_message)) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                showBackgroundRestricted = false
+                                openAppSettings()
+                            }) { Text(stringResource(R.string.bg_restricted_open_settings)) }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showBackgroundRestricted = false }) {
+                                Text(stringResource(R.string.bg_restricted_later))
+                            }
+                        }
+                    )
+                }
             }
+        }
+    }
+
+    /**
+     * Battery usage "Restricted" (Settings → Apps → Binaural Waves → Battery) makes Android demote
+     * the playback service as soon as the screen turns off and then cut background work, so the
+     * sound stops after a few minutes no matter how the app loops. Google's guidance is to detect
+     * it and tell the user; we cannot lift it ourselves.
+     */
+    private fun warnIfBackgroundRestricted() {
+        if (backgroundRestrictionWarned || Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        val am = getSystemService(ActivityManager::class.java) ?: return
+        if (am.isBackgroundRestricted) {
+            backgroundRestrictionWarned = true
+            showBackgroundRestricted = true
+        }
+    }
+
+    private fun openAppSettings() {
+        runCatching {
+            startActivity(
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
         }
     }
 
