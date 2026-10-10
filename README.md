@@ -17,7 +17,7 @@ Android app (Kotlin + Jetpack Compose, Material 3) that generates stereo sine to
   Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi — with separate volume and ±1% buttons
 - **Sound credits** screen (Settings → About)
 - **Mix with other apps** on by default (Spotify is not paused)
-- 7-day free trial of the full app from install; after that playback is blocked until the one-time Premium purchase (`binaural_premium_unlock`). No free tier, no per-track locks
+- 7-day free trial of the full app from install; after that playback is blocked until a Premium subscription (`binaural_premium`, monthly or yearly base plan, each with a 7-day Play free-trial offer). No free tier, no per-track locks
 - English UI, calm dark "galactic" theme
 
 ### Frequency presets
@@ -114,7 +114,7 @@ The app reads prices from Play at runtime; do not hardcode them.
 ## Privacy / Play Console
 
 - No data collection — no analytics, accounts, ads, location or contacts. Data safety: *No data collected*.
-- Permissions: `FOREGROUND_SERVICE` / `MEDIA_PLAYBACK`, `POST_NOTIFICATIONS`, `WAKE_LOCK` — background playback and the Stop notification only.
+- Permissions (release manifest): `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_MEDIA_PLAYBACK`, `POST_NOTIFICATIONS`, `WAKE_LOCK` — background playback and the Stop notification; `INTERNET`, `ACCESS_NETWORK_STATE`, `com.android.vending.BILLING` — added by Google Play Billing for the subscription. Full explanation: `store/PRIVACY.md`.
 - Policy text: `store/PRIVACY.md`; listing text: `store/PLAY.md`.
 
 ---
