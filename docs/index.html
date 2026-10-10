@@ -1,60 +1,72 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Privacy Policy / Polityka prywatności — Binaural Waves</title>
-<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.55;color:#222}h1{font-size:1.6rem}h2{font-size:1.2rem;margin-top:1.6rem}hr{margin:2.5rem 0}</style></head>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;line-height:1.55;color:#222}h1{font-size:1.6rem}h2{font-size:1.2rem;margin-top:1.6rem}hr{margin:2.5rem 0}code{font-size:.95em}</style></head>
 <body>
 <p><a href="#pl">Polski ↓</a></p>
 <section id="en" lang="en">
 <h1>Privacy Policy — Binaural Waves</h1>
-<p><strong>Last updated:</strong> 10 October 2026<br><strong>Developer:</strong> miferst-lab<br><strong>App:</strong> Binaural Waves (<code>com.miferstlab.binauralbeats</code>), version 1.6.0</p>
-<h2>What we collect</h2>
-<p>The developer does <strong>not collect, receive, transmit or sell</strong> any personal data.</p>
+<p><strong>Last updated:</strong> 10 October 2026<br><strong>Developer:</strong> miferst-lab<br><strong>App:</strong> Binaural Waves (<code>com.miferstlab.binauralbeats</code>), version 1.6.0<br><strong>Effective date:</strong> 10 October 2026</p>
+<h2>Summary</h2>
+<p>The developer does <strong>not collect, receive, transmit or sell</strong> any personal data. There are no accounts, no advertising and no analytics or tracking SDKs. All tones and ambient sounds are bundled in the app and play offline. The only network use is Google Play Billing, which talks to Google Play to manage the Premium subscription.</p>
+<h2>What is stored on your device</h2>
+<p>Stored locally only (Android app-private storage, never sent to the developer):</p>
 <ul>
-<li>No account or sign-in</li>
-<li>No analytics, advertising or trackers</li>
-<li>Settings (appearance, mix with other apps, selected sounds, volume, trial start date, unlocked status) are stored only on your device</li>
-<li>All tones and ambient sounds are bundled in the app and play offline</li>
+<li>appearance (theme) setting, selected ambient sound and ambient volume;</li>
+<li>the date the 7-day trial started (and a clock safeguard value used to detect clock changes);</li>
+<li>the last known Premium status (whether Google Play reported an active subscription).</li>
 </ul>
+<p>Android's own backup (<code>allowBackup</code>) may include this app-private data in your Google/device backup; this is handled by Android and Google, not by the developer. Uninstalling the app removes the local data.</p>
 <h2>Subscriptions and payments</h2>
-<p>Premium is offered as a subscription (monthly or yearly, with a 7-day free trial). Subscriptions and payments are handled entirely by Google Play. We never see or store your payment details. The app uses Google Play Billing only to check whether your subscription is active; this communication is between the app and Google Play and is governed by <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</p>
-<h2>Permissions</h2>
+<p>Premium is a subscription (monthly or yearly; a 7-day free-trial offer may apply). Payment, billing, renewals, cancellation and refunds are handled entirely by Google Play, so the developer never sees or stores your payment details. You can cancel any time in Google Play. The app uses the Google Play Billing library to check whether your subscription is active, and keeps the result on the device. This communication is between the app and Google Play and is governed by <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</p>
+<h2>No advertising, no analytics</h2>
+<p>The app contains no ad SDK, analytics, crash-reporting or tracking library, and does not send audio or personal data to the developer's servers (the developer operates none for this app). The only network-capable component in the app is the Google Play Billing library; the library bundles Google's own data-transport components, so Google may receive technical information from it under Google's policy; we cannot see or control that.</p>
+<h2>Permissions (as in the release manifest)</h2>
 <ul>
-<li><strong>Internet (INTERNET)</strong> — used only by Google Play Billing to verify and manage your subscription. The app sends no other data over the network.</li>
-<li><strong>Billing (BILLING)</strong> — to purchase and manage the Premium subscription through Google Play.</li>
-<li><strong>Notifications</strong> — optional, to show playback controls in the background.</li>
-<li><strong>Foreground service / media playback</strong> and <strong>wake lock</strong> — so tones and ambient sounds keep playing with the screen off.</li>
+<li><strong>INTERNET</strong> and <strong>ACCESS_NETWORK_STATE</strong> — added by the Google Play Billing library so the app can reach Google Play to verify and manage the subscription and check whether a connection is available. The app code itself makes no other network requests.</li>
+<li><strong>com.android.vending.BILLING</strong> — to start and check the Premium subscription through Google Play.</li>
+<li><strong>FOREGROUND_SERVICE</strong> and <strong>FOREGROUND_SERVICE_MEDIA_PLAYBACK</strong> — a foreground service of type media playback keeps tones and ambient sounds playing with the screen off.</li>
+<li><strong>WAKE_LOCK</strong> — keeps the CPU awake while audio is playing so playback is not interrupted.</li>
+<li><strong>POST_NOTIFICATIONS</strong> — optional; shows the playback notification with a Stop action. Playback works if you deny it.</li>
 </ul>
+<p>The app does not request access to contacts, location, camera, microphone, photos, files, phone or health data.</p>
 <h2>Children</h2>
 <p>The app is not directed at children under 13 and does not profile users.</p>
 <h2>Contact</h2>
-<p>Questions: <a href="mailto:miferst@pm.me">miferst@pm.me</a></p>
-<p>Changes to this policy will be published on this page.</p>
+<p>Questions: <a href="mailto:miferst@pm.me">miferst@pm.me</a>, or the repository <a href="https://github.com/miferst-lab/binaural-beats">github.com/miferst-lab/binaural-beats</a> (Issues).</p>
+<p>Changes to this policy will be published in the repository policy file and on this page.</p>
 </section>
 <hr>
 <section id="pl" lang="pl">
 <h1>Polityka prywatności — Binaural Waves</h1>
-<p><strong>Ostatnia aktualizacja:</strong> 10 października 2026<br><strong>Deweloper:</strong> miferst-lab<br><strong>Aplikacja:</strong> Binaural Waves (<code>com.miferstlab.binauralbeats</code>), wersja 1.6.0</p>
-<h2>Co zbieramy</h2>
-<p>Deweloper <strong>nie zbiera, nie otrzymuje, nie przesyła i nie sprzedaje</strong> żadnych danych osobowych.</p>
+<p><strong>Ostatnia aktualizacja:</strong> 10 października 2026<br><strong>Deweloper:</strong> miferst-lab<br><strong>Aplikacja:</strong> Binaural Waves (<code>com.miferstlab.binauralbeats</code>), wersja 1.6.0<br><strong>Obowiązuje od:</strong> 10 października 2026</p>
+<h2>Podsumowanie</h2>
+<p>Deweloper <strong>nie zbiera, nie otrzymuje, nie przesyła i nie sprzedaje</strong> żadnych danych osobowych. Nie ma kont, reklam ani analityki czy trackerów. Wszystkie tony i dźwięki tła są wbudowane w aplikację i działają offline. Jedyne użycie sieci to Google Play Billing, który łączy się z Google Play, aby obsłużyć subskrypcję Premium.</p>
+<h2>Co jest zapisane na urządzeniu</h2>
+<p>Tylko lokalnie (prywatna pamięć aplikacji, nigdy nie wysyłane do dewelopera):</p>
 <ul>
-<li>Brak konta i logowania</li>
-<li>Brak analityki, reklam i trackerów</li>
-<li>Ustawienia (wygląd, miks z innymi aplikacjami, wybrane dźwięki, głośność, data rozpoczęcia okresu próbnego, status odblokowania) zostają wyłącznie na urządzeniu</li>
-<li>Wszystkie tony i dźwięki tła są wbudowane w aplikację i działają offline</li>
+<li>wygląd (motyw), wybrany dźwięk tła i jego głośność;</li>
+<li>data rozpoczęcia 7-dniowego okresu próbnego (oraz wartość zabezpieczająca przed cofnięciem zegara);</li>
+<li>ostatni znany status Premium (czy Google Play zgłosiło aktywną subskrypcję).</li>
 </ul>
+<p>Kopia zapasowa Androida (<code>allowBackup</code>) może obejmować te dane w kopii Google/urządzenia; obsługuje to Android i Google, nie deweloper. Odinstalowanie aplikacji usuwa dane lokalne.</p>
 <h2>Subskrypcje i płatności</h2>
-<p>Premium jest dostępne w subskrypcji (miesięcznej lub rocznej, z 7-dniowym okresem próbnym). Subskrypcje i płatności obsługuje w całości Google Play. Nigdy nie widzimy ani nie przechowujemy danych płatniczych. Aplikacja używa Google Play Billing wyłącznie do sprawdzenia, czy subskrypcja jest aktywna; ta komunikacja odbywa się między aplikacją a Google Play i podlega <a href="https://policies.google.com/privacy?hl=pl">Polityce prywatności Google</a>.</p>
-<h2>Uprawnienia</h2>
+<p>Premium to subskrypcja (miesięczna lub roczna; może obowiązywać 7-dniowy okres próbny). Płatności, rozliczenia, odnowienia, anulowanie i zwroty obsługuje w całości Google Play, więc deweloper nigdy nie widzi ani nie przechowuje danych płatniczych. Subskrypcję możesz anulować w każdej chwili w Google Play. Aplikacja używa biblioteki Google Play Billing do sprawdzenia, czy subskrypcja jest aktywna, i zapisuje wynik na urządzeniu. Ta komunikacja odbywa się między aplikacją a Google Play i podlega <a href="https://policies.google.com/privacy?hl=pl">Polityce prywatności Google</a>.</p>
+<h2>Brak reklam i analityki</h2>
+<p>Aplikacja nie zawiera SDK reklamowych, analitycznych, raportowania awarii ani śledzących i nie wysyła dźwięku ani danych osobowych na serwery dewelopera (deweloper nie prowadzi dla tej aplikacji żadnych serwerów). Jedyny komponent aplikacji zdolny do łączności sieciowej to biblioteka Google Play Billing; biblioteka zawiera własne komponenty transportu danych Google, więc Google może otrzymywać z niej informacje techniczne zgodnie z własną polityką; nie widzimy ani nie kontrolujemy tego.</p>
+<h2>Uprawnienia (zgodnie z manifestem wydania)</h2>
 <ul>
-<li><strong>Internet (INTERNET)</strong> — używany wyłącznie przez Google Play Billing do weryfikacji i zarządzania subskrypcją. Aplikacja nie wysyła w sieci żadnych innych danych.</li>
-<li><strong>Płatności (BILLING)</strong> — do zakupu i zarządzania subskrypcją Premium przez Google Play.</li>
-<li><strong>Powiadomienia</strong> — opcjonalnie, do sterowania odtwarzaniem w tle.</li>
-<li><strong>Usługa pierwszoplanowa / odtwarzanie multimediów</strong> oraz <strong>blokada uśpienia (wake lock)</strong> — aby dźwięki grały przy wyłączonym ekranie.</li>
+<li><strong>INTERNET</strong> i <strong>ACCESS_NETWORK_STATE</strong> — dodane przez bibliotekę Google Play Billing, aby aplikacja mogła połączyć się z Google Play w celu weryfikacji i obsługi subskrypcji oraz sprawdzić dostępność połączenia. Kod aplikacji nie wykonuje innych żądań sieciowych.</li>
+<li><strong>com.android.vending.BILLING</strong> — do rozpoczęcia i sprawdzania subskrypcji Premium przez Google Play.</li>
+<li><strong>FOREGROUND_SERVICE</strong> i <strong>FOREGROUND_SERVICE_MEDIA_PLAYBACK</strong> — usługa pierwszoplanowa typu odtwarzanie multimediów utrzymuje tony i dźwięki tła przy wyłączonym ekranie.</li>
+<li><strong>WAKE_LOCK</strong> — utrzymuje procesor aktywny podczas odtwarzania, by dźwięk nie był przerywany.</li>
+<li><strong>POST_NOTIFICATIONS</strong> — opcjonalne; pokazuje powiadomienie odtwarzania z przyciskiem Stop. Odtwarzanie działa też po odmowie.</li>
 </ul>
+<p>Aplikacja nie prosi o dostęp do kontaktów, lokalizacji, aparatu, mikrofonu, zdjęć, plików, telefonu ani danych zdrowotnych.</p>
 <h2>Dzieci</h2>
 <p>Aplikacja nie jest skierowana do dzieci poniżej 13. roku życia i nie profiluje użytkowników.</p>
 <h2>Kontakt</h2>
-<p>Pytania: <a href="mailto:miferst@pm.me">miferst@pm.me</a></p>
-<p>Zmiany tej polityki opublikujemy na tej stronie.</p>
+<p>Pytania: <a href="mailto:miferst@pm.me">miferst@pm.me</a> lub repozytorium <a href="https://github.com/miferst-lab/binaural-beats">github.com/miferst-lab/binaural-beats</a> (Issues).</p>
+<p>Zmiany tej polityki opublikujemy w pliku polityki w repozytorium i na tej stronie.</p>
 </section>
 </body></html>
