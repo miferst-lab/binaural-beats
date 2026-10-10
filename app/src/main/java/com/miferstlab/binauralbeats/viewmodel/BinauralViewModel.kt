@@ -9,7 +9,11 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.miferstlab.binauralbeats.BuildConfig
 import com.miferstlab.binauralbeats.billing.BillingManager
+import com.miferstlab.binauralbeats.billing.PlayBillingGateway
+import com.miferstlab.binauralbeats.billing.PremiumPlan
+import com.miferstlab.binauralbeats.billing.PremiumStore
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
@@ -45,9 +49,25 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     private var trialTickerJob: Job? = null
 
     private val billing = BillingManager(
-        context = application,
-        onPremiumUnlocked = { setPremium(true) },
-        allowDebugUnlock = { prefs.getBoolean(KEY_DEBUG_UNLOCK, false) }
+        gateway = PlayBillingGateway(application),
+        store = object : PremiumStore {
+            override fun isPremium(): Boolean = prefs.getBoolean(KEY_PREMIUM, false)
+            override fun setPremium(premium: Boolean) {
+                prefs.edit().putBoolean(KEY_PREMIUM, premium).apply()
+            }
+        },
+        scheduler = { delayMs, action ->
+            viewModelScope.launch {
+                delay(delayMs)
+                action()
+            }
+        },
+        debugBuild = BuildConfig.DEBUG,
+        debugUnlockAllowed = { BuildConfig.DEBUG && prefs.getBoolean(KEY_DEBUG_UNLOCK, false) },
+        onStateChanged = { b ->
+            _state.update { it.copy(billingStatus = b.status, premiumPlans = b.plans) }
+        },
+        onPremiumChanged = { premium -> setPremium(premium) }
     )
 
     private val connection = object : ServiceConnection {
@@ -67,6 +87,11 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     init {
+        if (!BuildConfig.DEBUG) {
+            // Release builds never honor a leftover debug unlock flag.
+            prefs.edit().remove(KEY_DEBUG_UNLOCK).apply()
+        }
+        billing.start()
         refreshTrialState()
         startTrialTicker()
     }
@@ -176,10 +201,6 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setAmbient(ambient: AmbientSound) {
-        if (ambient.isPremium && !_state.value.hasFullAccess) {
-            _state.update { it.copy(showPremiumUpsellDialog = true) }
-            return
-        }
         prefs.edit().putString(KEY_AMBIENT, ambient.prefsValue).apply()
         _state.update { it.copy(ambient = ambient) }
         if (sessionActive) {
@@ -203,14 +224,14 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     fun setCustomCarrier(hz: Float) {
         _state.update { it.copy(customCarrierHz = FrequencyMath.clampCarrier(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }
 
     fun setCustomBeat(hz: Float) {
         _state.update { it.copy(customBeatHz = FrequencyMath.clampBeat(hz)) }
-        if (_state.value.isPlaying && _state.value.mode == BinauralMode.NIESTANDARDOWY) {
+        if (_state.value.isPlaying && _state.value.mode == BinauralMode.CUSTOM) {
             pushUpdateToService()
         }
     }
@@ -238,21 +259,27 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
                 isPremium = enabled,
                 isTrialActive = if (enabled) false else Entitlements.isTrialActive(trialStartMs, effectiveNow()),
                 trialDaysRemaining = if (enabled) 0 else Entitlements.trialRemainingDays(trialStartMs, effectiveNow()),
-                showTrialExpiredDialog = false,
-                showPremiumUpsellDialog = false
+                showTrialExpiredDialog = false
             )
         }
     }
 
     /** Settings debug toggle — allows purchase button / BillingManager debug path. */
     fun setDebugUnlockEnabled(enabled: Boolean) {
+        if (!BuildConfig.DEBUG) return
         prefs.edit().putBoolean(KEY_DEBUG_UNLOCK, enabled).apply()
     }
 
-    fun isDebugUnlockEnabled(): Boolean = prefs.getBoolean(KEY_DEBUG_UNLOCK, false)
+    fun isDebugUnlockEnabled(): Boolean = BuildConfig.DEBUG && prefs.getBoolean(KEY_DEBUG_UNLOCK, false)
 
-    fun purchasePremium(activity: Activity?) {
-        billing.purchasePremium(activity)
+    fun purchasePremium(activity: Activity?, plan: PremiumPlan) {
+        // Play free trial only after the in-app trial has ended (no accidental 14 days).
+        billing.purchasePremium(activity, plan, useTrial = !_state.value.isTrialActive)
+    }
+
+    /** Re-sync with Play (restore purchases); call from Activity.onResume. */
+    fun refreshBilling() {
+        billing.start()
     }
 
     fun dismissTrialExpiredDialog() {
@@ -262,19 +289,10 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     /** Back-compat name used by MainActivity / HomeScreen. */
     fun dismissFreeLimitDialog() = dismissTrialExpiredDialog()
 
-    fun dismissPremiumUpsellDialog() {
-        _state.update { it.copy(showPremiumUpsellDialog = false) }
-    }
-
     fun play() {
         if (!canPlay()) {
             _state.update { it.copy(showTrialExpiredDialog = true, isPlaying = false) }
             return
-        }
-        // Downgrade locked ambient if access lapsed.
-        if (_state.value.ambient.isPremium && !_state.value.hasFullAccess) {
-            prefs.edit().putString(KEY_AMBIENT, AmbientSound.OFF.prefsValue).apply()
-            _state.update { it.copy(ambient = AmbientSound.OFF) }
         }
         val ctx = getApplication<Application>()
         val s = _state.value
@@ -369,6 +387,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     override fun onCleared() {
         trialTickerJob?.cancel()
+        billing.stop()
         if (bound) {
             runCatching { getApplication<Application>().unbindService(connection) }
             bound = false
@@ -377,14 +396,14 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     companion object {
-        private const val PREFS_NAME = "binaural"
+        private const val PREFS_NAME = Entitlements.PREFS_NAME
         private const val KEY_APPEARANCE_MODE = "appearance_mode"
         private const val KEY_AMBIENT = "ambient"
         private const val KEY_AMBIENT_VOLUME = "ambient_volume"
-        private const val KEY_PREMIUM = "is_premium"
+        private const val KEY_PREMIUM = Entitlements.KEY_PREMIUM
         private const val KEY_DEBUG_UNLOCK = "debug_premium_unlock"
-        private const val KEY_TRIAL_START = "trial_start_ms"
-        private const val KEY_FURTHEST_NOW = "trial_furthest_now_ms"
+        private const val KEY_TRIAL_START = Entitlements.KEY_TRIAL_START
+        private const val KEY_FURTHEST_NOW = Entitlements.KEY_FURTHEST_NOW
         private const val TRIAL_TICK_MS = 60_000L
     }
 }

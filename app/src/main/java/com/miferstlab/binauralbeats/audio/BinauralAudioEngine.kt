@@ -106,10 +106,25 @@ class BinauralAudioEngine(
 
             thread = Thread({
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO)
-                if (useFloat) {
-                    writeLoopFloat(created.bufferSizeInFrames.coerceAtLeast(256))
-                } else {
-                    writeLoop16(created.bufferSizeInFrames.coerceAtLeast(256))
+                // A write error (e.g. ERROR_DEAD_OBJECT after an output/route change or an audio
+                // server restart) used to end this thread silently while the UI still showed
+                // "playing". Rebuild the track and keep generating instead.
+                while (running) {
+                    val current = track ?: break
+                    val frames = try {
+                        current.bufferSizeInFrames.coerceAtLeast(256)
+                    } catch (_: IllegalStateException) {
+                        256
+                    }
+                    val trackDied = if (useFloat) writeLoopFloat(frames) else writeLoop16(frames)
+                    if (!trackDied || !running) break
+                    if (!rebuildTrack()) {
+                        try {
+                            Thread.sleep(500)
+                        } catch (_: InterruptedException) {
+                            break
+                        }
+                    }
                 }
             }, "BinauralAudioEngine").also { it.start() }
         }
@@ -229,7 +244,31 @@ class BinauralAudioEngine(
         return null
     }
 
-    private fun writeLoopFloat(framesPerChunkHint: Int) {
+    /** Replaces a dead AudioTrack. @return false if no new track could be created. */
+    private fun rebuildTrack(): Boolean {
+        synchronized(lock) {
+            if (!running) return false
+            val old = track
+            try {
+                old?.release()
+            } catch (_: Exception) {
+            }
+            track = null
+            val fresh = createInitializedTrack() ?: return false
+            track = fresh
+            try {
+                fresh.setVolume(1f)
+                if (!paused) fresh.play()
+            } catch (_: IllegalStateException) {
+                return false
+            }
+            Log.w(TAG, "AudioTrack rebuilt after a write failure (sr=$sampleRate float=$useFloat)")
+            return true
+        }
+    }
+
+    /** @return true if the track died (write error) and must be rebuilt, false when stopped. */
+    private fun writeLoopFloat(framesPerChunkHint: Int): Boolean {
         val framesPerChunk = framesPerChunkHint.coerceIn(256, 4096)
         val buffer = FloatArray(framesPerChunk * 2)
         val twoPi = 2.0 * PI
@@ -239,7 +278,7 @@ class BinauralAudioEngine(
                 try {
                     Thread.sleep(20)
                 } catch (_: InterruptedException) {
-                    break
+                    return false
                 }
                 continue
             }
@@ -261,20 +300,22 @@ class BinauralAudioEngine(
                 i++
             }
 
-            val t = track ?: break
+            val t = track ?: return false
             val written = try {
                 t.write(buffer, 0, buffer.size, AudioTrack.WRITE_BLOCKING)
             } catch (_: IllegalStateException) {
-                break
+                return running
             }
             if (written < 0) {
                 Log.e(TAG, "AudioTrack.write float failed: $written")
-                break
+                return running
             }
         }
+        return false
     }
 
-    private fun writeLoop16(framesPerChunkHint: Int) {
+    /** @return true if the track died (write error) and must be rebuilt, false when stopped. */
+    private fun writeLoop16(framesPerChunkHint: Int): Boolean {
         val framesPerChunk = framesPerChunkHint.coerceIn(256, 4096)
         val buffer = ShortArray(framesPerChunk * 2)
         val twoPi = 2.0 * PI
@@ -284,7 +325,7 @@ class BinauralAudioEngine(
                 try {
                     Thread.sleep(20)
                 } catch (_: InterruptedException) {
-                    break
+                    return false
                 }
                 continue
             }
@@ -310,17 +351,18 @@ class BinauralAudioEngine(
                 i++
             }
 
-            val t = track ?: break
+            val t = track ?: return false
             val written = try {
                 t.write(buffer, 0, buffer.size)
             } catch (_: IllegalStateException) {
-                break
+                return running
             }
             if (written < 0) {
                 Log.e(TAG, "AudioTrack.write 16-bit failed: $written")
-                break
+                return running
             }
         }
+        return false
     }
 
     companion object {
