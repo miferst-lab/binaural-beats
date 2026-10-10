@@ -10,7 +10,8 @@ spec = json.loads((ROOT / "tools/ambient_tracks.json").read_text())
 PKG = ROOT / "app/src/main/java/com/miferstlab/binauralbeats"
 CATS = {"nature": ("NATURE", "Nature"), "joyful": ("JOYFUL", "Joyful"), "calm": ("CALM", "Calm"),
         "focus": ("FOCUS", "Focus"), "sleep": ("SLEEP", "Sleep"), "melancholic": ("MELANCHOLIC", "Melancholic"),
-        "noir": ("NOIR", "Crime & Noir"), "fantasy": ("FANTASY", "Fantasy"), "scifi": ("SCI_FI", "Sci‑Fi")}
+        "noir": ("NOIR", "Crime & Noir"), "fantasy": ("FANTASY", "Fantasy"), "scifi": ("SCI_FI", "Sci‑Fi"),
+        "dark": ("DARK", "Dark ambient")}
 # Old prefs values (≤ v1.4.x) → new keys, so upgraded users keep a sensible selection.
 LEGACY = {"forest_night": "nature_night_forest", "waves": "nature_waves", "morning_village": "joyful_dawn_chorus",
           "rain": "nature_rain", "fireplace": "nature_fireplace", "stream": "nature_stream",

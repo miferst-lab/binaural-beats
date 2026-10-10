@@ -13,8 +13,8 @@ Android app (Kotlin + Jetpack Compose, Material 3) that generates stereo sine to
 - Real-time synthesis via `AudioTrack` (PCM 16-bit)
 - Foreground service — keeps playing with the screen off; notification with **Stop**
 - Volume slider with −/+ (1%) buttons, play/pause
-- **Ambient library**: 44 real field recordings (~5 min each, seamless loops) in 9 groups —
-  Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi — with separate volume and ±1% buttons
+- **Ambient library**: 55 recordings and soundscapes (~3–5 min each, seamless loops) in 10 groups —
+  Nature, Joyful, Calm, Focus, Sleep, Melancholic, Crime & Noir, Fantasy, Sci‑Fi, Dark ambient — with separate volume and ±1% buttons
 - **Sound credits** screen (Settings → About)
 - **Mix with other apps** on by default (Spotify is not paused)
 - 7-day free trial of the full app from install; after that playback is blocked until a Premium subscription (`binaural_premium`, monthly or yearly base plan, each with a 7-day Play free-trial offer). No free tier, no per-track locks

@@ -53,12 +53,12 @@
     <string name="ambient_volume_decrease">Zmniejsz głośność tła o 1%</string>
     <string name="ambient_volume_increase">Zwiększ głośność tła o 1%</string>
     <string name="ambient_now_playing">Wybrano: %1$s</string>
-    <string name="ambient_library_summary">%1$d nagrań terenowych</string>
+    <string name="ambient_library_summary">%1$d nagrań i pejzaży dźwiękowych</string>
 
     <string name="credits_title">Autorzy dźwięków</string>
     <string name="credits_open">Autorzy dźwięków</string>
     <string name="credits_open_desc">Autorzy i licencje nagrań tła</string>
-    <string name="credits_intro">Wszystkie dźwięki tła to prawdziwe nagrania terenowe z Freesound.org, udostępnione przez autorów na licencji Creative Commons 0 (domena publiczna). Nie trzeba podawać autorstwa, ale chcemy podziękować każdemu autorowi. Nagrania zostały przycięte, wyrównane głośnościowo i zapętlone na potrzeby aplikacji.</string>
+    <string name="credits_intro">Wszystkie dźwięki tła to nagrania terenowe i pejzaże dźwiękowe z Freesound.org, udostępnione przez autorów na licencji Creative Commons 0 (domena publiczna). Nie trzeba podawać autorstwa, ale chcemy podziękować każdemu autorowi. Zostały przycięte, wyrównane głośnościowo i zapętlone na potrzeby aplikacji.</string>
     <string name="credits_item_source">„%1$s” — %2$s</string>
     <string name="credits_item_license">%1$s · Freesound</string>
     <string name="credits_open_link_cd">Otwórz stronę źródłową: %1$s</string>
@@ -104,6 +104,7 @@
     <string name="ambient_cat_noir">Kryminał i noir</string>
     <string name="ambient_cat_fantasy">Fantasy</string>
     <string name="ambient_cat_scifi">Sci‑Fi</string>
+    <string name="ambient_cat_dark">Mroczny ambient</string>
     <string name="ambient_nature_rain">Delikatny deszcz</string>
     <string name="ambient_nature_thunder">Burza</string>
     <string name="ambient_nature_waves">Fale oceanu</string>
@@ -148,5 +149,16 @@
     <string name="ambient_scifi_engineering">Pokład inżynieryjny</string>
     <string name="ambient_scifi_station">Stacja kosmiczna</string>
     <string name="ambient_scifi_night_city">Neonowe miasto nocą</string>
+    <string name="ambient_dark_tectonic_cathedral">Tektoniczna katedra</string>
+    <string name="ambient_dark_ice_cathedral">Lodowa katedra</string>
+    <string name="ambient_dark_primordial_forest">Pradawny las</string>
+    <string name="ambient_dark_howling_wind">Wyjący wiatr</string>
+    <string name="ambient_dark_windswept_ridge">Smagana wiatrem grań</string>
+    <string name="ambient_dark_resonant_cave">Pogłosowa jaskinia</string>
+    <string name="ambient_dark_dungeon">Ciemne lochy</string>
+    <string name="ambient_dark_abandoned_warehouse">Opuszczony magazyn</string>
+    <string name="ambient_dark_cosmic_drone">Głęboki kosmiczny dron</string>
+    <string name="ambient_dark_void_monolith">Monolit w pustce</string>
+    <string name="ambient_dark_deep_sea">Pomruk głębin</string>
     <!-- END GENERATED AMBIENT -->
 </resources>

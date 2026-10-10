@@ -1,10 +1,10 @@
 # Ambient sound credits
 
-All ambient loops are real field recordings from [Freesound.org](https://freesound.org), released by their
+All ambient loops are field recordings and sound-design soundscapes from [Freesound.org](https://freesound.org), released by their
 authors under **Creative Commons 0 (CC0 1.0, public-domain dedication)** — free for commercial use,
 no attribution required. We credit every author anyway.
 
-Processing: excerpt trimmed to ~5 min, loudness-normalised to -20 LUFS, equal-power 4 s crossfade at the
+Processing: excerpt trimmed to ~3-5 min, loudness-normalised to -20 LUFS, equal-power 4 s crossfade at the
 loop seam, encoded as OGG Vorbis. Built by `tools/build_ambient_library.py` from `tools/ambient_tracks.json`.
 
 ## Nature
@@ -95,5 +95,21 @@ loop seam, encoded as OGG Vorbis. Built by `tools/build_ambient_library.py` from
 | Engineering deck | RoomTone07 | richwise | CC0 1.0 | https://freesound.org/people/richwise/sounds/474832/ |
 | Space station | Sci-fi Station.wav | Shoni182 | CC0 1.0 | https://freesound.org/people/Shoni182/sounds/417606/ |
 | Neon city night | TokyoStreetAtNight_120.wav | markystar | CC0 1.0 | https://freesound.org/people/markystar/sounds/42195/ |
+
+## Dark ambient
+
+| Track | Original title | Author | License | Source |
+|---|---|---|---|---|
+| Tectonic cathedral | Tectonic Cathedral Sacred Drone by Mantice | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/854871/ |
+| Ice cathedral | Ice Cathedral Sacred Drone by Mantice | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/856220/ |
+| Primordial forest | Primordial Forest Sacred Drone by Mantice | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/854868/ |
+| Howling wind | Low Wind Howling Indoor | Kinoton | CC0 1.0 | https://freesound.org/people/Kinoton/sounds/815100/ |
+| Windswept ridge | Dark Ambient sound windy | pgameart | CC0 1.0 | https://freesound.org/people/pgameart/sounds/558147/ |
+| Resonant cave | Resonant Cave Experimental Drone by Mantice | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/856219/ |
+| Dark dungeon | Dark Dungeon Ambience | Kinoton | CC0 1.0 | https://freesound.org/people/Kinoton/sounds/516566/ |
+| Abandoned warehouse | abandoned warehouse | Kostrava | CC0 1.0 | https://freesound.org/people/Kostrava/sounds/240895/ |
+| Deep cosmic drone | Deep Cosmic Drone | kkenny101 | CC0 1.0 | https://freesound.org/people/kkenny101/sounds/855487/ |
+| Void monolith | Void Monolith Subharmonic Drone by Mantice | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/854874/ |
+| Deep sea rumble | Deep Ocean Rumble – Dark Sea Ambience | bassimat | CC0 1.0 | https://freesound.org/people/bassimat/sounds/867644/ |
 
 CC0 deed: https://creativecommons.org/publicdomain/zero/1.0/

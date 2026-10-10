@@ -18,7 +18,7 @@ Binaural Waves plays clean stereo binaural beats (separate left/right tones) lay
 • Meditation — theta waves (~6 Hz)
 • Custom — your own carrier and L/R difference
 
-**Ambient library — 44 real field recordings, ~5 minutes each, seamlessly looped**
+**Ambient library — 55 recordings and soundscapes, 3–5 minutes each, seamlessly looped**
 • Nature — rain, thunderstorm, ocean waves, forest stream, fireplace, night forest, cave
 • Joyful — dawn chorus, sunny meadow, summer field, street market
 • Calm — gentle shore, babbling brook, mountain dusk, night breeze
@@ -28,6 +28,7 @@ Binaural Waves plays clean stereo binaural beats (separate left/right tones) lay
 • Crime & Noir — rainy city night, wet streets, an old pendulum clock
 • Fantasy — tavern, mountain village, village bells, dripping cavern, wind over the peaks
 • Sci‑Fi — spaceship hum, starship cruise, engineering deck, space station, neon city
+• Dark ambient — cathedral and ice-cathedral drones, primordial forest, howling wind, windswept ridge, resonant cave, dark dungeon, abandoned warehouse, deep cosmic drone, void monolith, deep-sea rumble
 Separate ambient volume with fine ±1% steps.
 
 **Plays under your music**
@@ -39,7 +40,7 @@ Mixes with other apps by default — Spotify and other players keep playing.
 • No account, no ads, works offline
 
 **7 days full access, then Premium subscription**
-Use the full app free for 7 days after install: every mode and all 44 soundscapes, unlimited.
+Use the full app free for 7 days after install: every mode and all 55 soundscapes, unlimited.
 After that, playback requires a Premium subscription (monthly or yearly, renews automatically). Prices are shown in your local currency in Google Play; for reference 14.99 PLN per month or 99.99 PLN per year. If you subscribe after those first 7 days, new subscribers get a 7-day free trial of the subscription; subscribing earlier starts the plan right away, with no extra trial. Cancel anytime in Google Play (Payments & subscriptions). There is no free tier after the trial.
 
 Use stereo headphones — the binaural effect needs separate left and right channels.
@@ -65,14 +66,14 @@ Pricing: free download with a 7-day full-access trial from install; after that a
 - Prices are set in Play Console and read from Google Play at runtime (nothing hardcoded in the app). Reference: 14.99 PLN/month, 99.99 PLN/year (about 3.99 / 24.99 USD).
 - The in-app 7 days from install apply to people who never subscribed. The Play free-trial offer is only used once the in-app trial has ended; subscribing during the in-app trial gets the plain base plan, so nobody receives 14 free days by accident.
 - Users cancel in Google Play (Payments & subscriptions → Subscriptions).
-Sound credits: `app/src/main/assets/ambient/CREDITS.md` (all 44 recordings are Freesound CC0 1.0; see `store/AMBIENT_LICENSES.md`).
+Sound credits: `app/src/main/assets/ambient/CREDITS.md` (all 55 recordings are Freesound CC0 1.0; see `store/AMBIENT_LICENSES.md`).
 
 ---
 
 # Google Play — opis w sklepie (polski)
 
 ## Krótki opis (≤ 80 znaków)
-Tony binauralne i 44 dźwięki natury: skupienie, sen, czytanie.
+Tony binauralne i 55 dźwięków tła: skupienie, sen, czytanie.
 
 ## Pełny opis
 
@@ -87,8 +88,8 @@ TRYBY
 • Medytacja – fale theta (ok. 6 Hz)
 • Własny – ustaw sam częstotliwość nośną i różnicę L/P
 
-BIBLIOTEKA DŹWIĘKÓW – 44 prawdziwe nagrania terenowe
-Każde trwa ok. 5 minut i zapętla się płynnie, bez słyszalnego szwu.
+BIBLIOTEKA DŹWIĘKÓW – 55 nagrań i pejzaży dźwiękowych
+Każde trwa 3–5 minut i zapętla się płynnie, bez słyszalnego szwu.
 • Natura – deszcz, burza, morze, leśny strumień, kominek, noc w lesie, jaskinia
 • Radość – śpiew ptaków o świcie, słoneczna łąka, letnie pole, targ uliczny
 • Spokój – cichy brzeg, szemrzący potok, górski zmierzch, nocna bryza
@@ -98,6 +99,7 @@ Każde trwa ok. 5 minut i zapętla się płynnie, bez słyszalnego szwu.
 • Noir – deszczowa noc w mieście, mokre ulice, stary zegar z wahadłem
 • Fantasy – tawerna, górska wioska, dzwony we wsi, kapiąca jaskinia, wiatr nad szczytami
 • Sci-fi – szum statku kosmicznego, rejs gwiezdny, pokład inżynieryjny, stacja kosmiczna, neonowe miasto
+• Mroczny ambient – katedra, lodowa katedra, pradawny las, wyjący wiatr, smagana wiatrem grań, pogłosowa jaskinia, ciemne lochy, opuszczony magazyn, kosmiczny dron, monolit w pustce, pomruk głębin
 Osobna głośność dźwięków otoczenia, regulowana co 1%.
 
 DODATKOWO
@@ -107,7 +109,7 @@ DODATKOWO
 • Bez konta, bez reklam, działa offline
 
 7 DNI PEŁNEJ WERSJI, POTEM PREMIUM
-Przez 7 dni od instalacji korzystasz z całej aplikacji za darmo: wszystkie tryby i wszystkie 44 dźwięki, bez ograniczeń.
+Przez 7 dni od instalacji korzystasz z całej aplikacji za darmo: wszystkie tryby i wszystkie 55 dźwięków, bez ograniczeń.
 Potem odtwarzanie wymaga subskrypcji Premium (miesięcznej lub rocznej, odnawianej automatycznie). Ceny widać w Google Play w Twojej walucie; orientacyjnie 14,99 zł miesięcznie lub 99,99 zł rocznie. Jeśli zasubskrybujesz po tych pierwszych 7 dniach, nowi subskrybenci dostają 7-dniowy okres próbny subskrypcji; subskrypcja wykupiona wcześniej startuje od razu, bez dodatkowego okresu próbnego. Subskrypcję możesz anulować w każdej chwili w Google Play (Płatności i subskrypcje). Po okresie próbnym aplikacji nie ma wersji darmowej.
 
 WAŻNE

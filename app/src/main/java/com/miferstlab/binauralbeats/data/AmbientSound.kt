@@ -12,7 +12,8 @@ enum class AmbientCategory(val prefsValue: String) {
     MELANCHOLIC("melancholic"),
     NOIR("noir"),
     FANTASY("fantasy"),
-    SCI_FI("scifi")
+    SCI_FI("scifi"),
+    DARK("dark")
 }
 
 /**
@@ -251,6 +252,61 @@ enum class AmbientSound(
         "scifi_night_city", AmbientCategory.SCI_FI,
         sourceTitle = "TokyoStreetAtNight_120.wav", author = "markystar",
         sourceUrl = "https://freesound.org/people/markystar/sounds/42195/", license = "CC0 1.0"
+    ),
+    DARK_TECTONIC_CATHEDRAL(
+        "dark_tectonic_cathedral", AmbientCategory.DARK,
+        sourceTitle = "Tectonic Cathedral Sacred Drone by Mantice", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/854871/", license = "CC0 1.0"
+    ),
+    DARK_ICE_CATHEDRAL(
+        "dark_ice_cathedral", AmbientCategory.DARK,
+        sourceTitle = "Ice Cathedral Sacred Drone by Mantice", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/856220/", license = "CC0 1.0"
+    ),
+    DARK_PRIMORDIAL_FOREST(
+        "dark_primordial_forest", AmbientCategory.DARK,
+        sourceTitle = "Primordial Forest Sacred Drone by Mantice", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/854868/", license = "CC0 1.0"
+    ),
+    DARK_HOWLING_WIND(
+        "dark_howling_wind", AmbientCategory.DARK,
+        sourceTitle = "Low Wind Howling Indoor", author = "Kinoton",
+        sourceUrl = "https://freesound.org/people/Kinoton/sounds/815100/", license = "CC0 1.0"
+    ),
+    DARK_WINDSWEPT_RIDGE(
+        "dark_windswept_ridge", AmbientCategory.DARK,
+        sourceTitle = "Dark Ambient sound windy", author = "pgameart",
+        sourceUrl = "https://freesound.org/people/pgameart/sounds/558147/", license = "CC0 1.0"
+    ),
+    DARK_RESONANT_CAVE(
+        "dark_resonant_cave", AmbientCategory.DARK,
+        sourceTitle = "Resonant Cave Experimental Drone by Mantice", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/856219/", license = "CC0 1.0"
+    ),
+    DARK_DUNGEON(
+        "dark_dungeon", AmbientCategory.DARK,
+        sourceTitle = "Dark Dungeon Ambience", author = "Kinoton",
+        sourceUrl = "https://freesound.org/people/Kinoton/sounds/516566/", license = "CC0 1.0"
+    ),
+    DARK_ABANDONED_WAREHOUSE(
+        "dark_abandoned_warehouse", AmbientCategory.DARK,
+        sourceTitle = "abandoned warehouse", author = "Kostrava",
+        sourceUrl = "https://freesound.org/people/Kostrava/sounds/240895/", license = "CC0 1.0"
+    ),
+    DARK_COSMIC_DRONE(
+        "dark_cosmic_drone", AmbientCategory.DARK,
+        sourceTitle = "Deep Cosmic Drone", author = "kkenny101",
+        sourceUrl = "https://freesound.org/people/kkenny101/sounds/855487/", license = "CC0 1.0"
+    ),
+    DARK_VOID_MONOLITH(
+        "dark_void_monolith", AmbientCategory.DARK,
+        sourceTitle = "Void Monolith Subharmonic Drone by Mantice", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/854874/", license = "CC0 1.0"
+    ),
+    DARK_DEEP_SEA(
+        "dark_deep_sea", AmbientCategory.DARK,
+        sourceTitle = "Deep Ocean Rumble – Dark Sea Ambience", author = "bassimat",
+        sourceUrl = "https://freesound.org/people/bassimat/sounds/867644/", license = "CC0 1.0"
     );
 
     /** Path inside the APK assets, or null for [OFF]. */

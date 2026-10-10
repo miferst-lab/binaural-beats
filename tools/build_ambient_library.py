@@ -33,7 +33,7 @@ VORBIS_Q = "0"      # ~64 kbps nominal stereo; ambient beds sound fine here
 CAT_TITLES = {
     "nature": "Nature", "joyful": "Joyful & Uplifting", "calm": "Calm & Relax",
     "focus": "Focus", "sleep": "Sleep", "melancholic": "Melancholic",
-    "noir": "Crime & Noir", "fantasy": "Fantasy", "scifi": "Sci-Fi",
+    "noir": "Crime & Noir", "fantasy": "Fantasy", "scifi": "Sci-Fi", "dark": "Dark ambient",
 }
 
 def sh(cmd, **kw):
@@ -95,7 +95,12 @@ def build(t) -> dict:
             f"volume={TARGET_LUFS - got:.2f}dB,alimiter=limit=0.79:level=false:latency=true",
             "-c:a", "pcm_f32le", str(boosted)])
         boosted.replace(norm)
-    y = seamless(read_f32(norm))
+    x = read_f32(norm)
+    for t0, half, db in t.get("duck", []):  # [centre s (in the trimmed segment), half-width s, attenuation dB]
+        a, b = max(0, int((t0 - half) * SR)), min(len(x), int((t0 + half) * SR))
+        env = 1.0 - (1.0 - 10 ** (-db / 20)) * np.sin(np.pi * np.linspace(0, 1, b - a)) ** 2
+        x[a:b] *= env[:, None]
+    y = seamless(x)
     peak = float(np.max(np.abs(y)))
     if peak > 0.89:  # keep headroom after crossfade summing
         y *= 0.89 / peak
@@ -122,10 +127,10 @@ def write_manifest(spec, stats):
         categories=[dict(key=c, title=CAT_TITLES[c]) for c in spec["categories"]], tracks=tracks),
         indent=1, ensure_ascii=False) + "\n")
     md = ["# Ambient sound credits", "",
-          "All ambient loops are real field recordings from [Freesound.org](https://freesound.org), released by their",
+          "All ambient loops are field recordings and sound-design soundscapes from [Freesound.org](https://freesound.org), released by their",
           "authors under **Creative Commons 0 (CC0 1.0, public-domain dedication)** — free for commercial use,",
           "no attribution required. We credit every author anyway.", "",
-          "Processing: excerpt trimmed to ~5 min, loudness-normalised to -20 LUFS, equal-power 4 s crossfade at the",
+          "Processing: excerpt trimmed to ~3-5 min, loudness-normalised to -20 LUFS, equal-power 4 s crossfade at the",
           "loop seam, encoded as OGG Vorbis. Built by `tools/build_ambient_library.py` from `tools/ambient_tracks.json`.", ""]
     for c in spec["categories"]:
         md += [f"## {CAT_TITLES[c]}", "", "| Track | Original title | Author | License | Source |",

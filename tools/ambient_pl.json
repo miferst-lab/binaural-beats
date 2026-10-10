@@ -8,6 +8,7 @@
  "cat_noir": "Kryminał i noir",
  "cat_fantasy": "Fantasy",
  "cat_scifi": "Sci‑Fi",
+ "cat_dark": "Mroczny ambient",
  "nature_rain": "Delikatny deszcz",
  "nature_thunder": "Burza",
  "nature_waves": "Fale oceanu",
@@ -51,5 +52,16 @@
  "scifi_starship": "Rejs gwiezdnego statku",
  "scifi_engineering": "Pokład inżynieryjny",
  "scifi_station": "Stacja kosmiczna",
- "scifi_night_city": "Neonowe miasto nocą"
+ "scifi_night_city": "Neonowe miasto nocą",
+ "dark_tectonic_cathedral": "Tektoniczna katedra",
+ "dark_ice_cathedral": "Lodowa katedra",
+ "dark_primordial_forest": "Pradawny las",
+ "dark_howling_wind": "Wyjący wiatr",
+ "dark_windswept_ridge": "Smagana wiatrem grań",
+ "dark_resonant_cave": "Pogłosowa jaskinia",
+ "dark_dungeon": "Ciemne lochy",
+ "dark_abandoned_warehouse": "Opuszczony magazyn",
+ "dark_cosmic_drone": "Głęboki kosmiczny dron",
+ "dark_void_monolith": "Monolit w pustce",
+ "dark_deep_sea": "Pomruk głębin"
 }

@@ -10,10 +10,49 @@ class AmbientSoundTest {
 
     @Test
     fun libraryIsLargeAndEveryCategoryHasTracks() {
-        assertEquals(44, AmbientSound.tracks.size)
+        assertEquals(55, AmbientSound.tracks.size)
         AmbientCategory.entries.forEach { cat ->
             assertTrue("$cat has tracks", AmbientSound.inCategory(cat).size >= 4)
         }
+    }
+
+    @Test
+    fun darkAmbientCategoryIsLastAndHasElevenLoopableTracks() {
+        assertEquals(AmbientCategory.DARK, AmbientCategory.entries.last())
+        assertEquals("dark", AmbientCategory.DARK.prefsValue)
+        val dark = AmbientSound.inCategory(AmbientCategory.DARK)
+        assertEquals(11, dark.size)
+        dark.forEach { assertTrue(it.prefsValue, it.prefsValue.startsWith("dark_")) }
+        assertEquals(AmbientSound.DARK_TECTONIC_CATHEDRAL, AmbientSound.fromPrefs("dark_tectonic_cathedral"))
+    }
+
+    @Test
+    fun darkAmbientHasStringsInBothLanguages() {
+        val en = File("src/main/res/values/strings.xml").readText()
+        val pl = File("src/main/res/values-pl/strings.xml").readText()
+        listOf(en, pl).forEach { xml ->
+            assertTrue(xml.contains("name=\"ambient_cat_dark\""))
+            AmbientSound.inCategory(AmbientCategory.DARK).forEach {
+                assertTrue(it.prefsValue, xml.contains("name=\"ambient_${it.prefsValue}\""))
+            }
+        }
+        assertTrue(en.contains(">Dark ambient<"))
+        assertTrue(pl.contains(">Mroczny ambient<"))
+    }
+
+    @Test
+    fun manifestListsDarkAmbientTracksWithDurations() {
+        val manifest = File("src/main/assets/ambient/manifest.json")
+        if (!manifest.exists()) return
+        val text = manifest.readText()
+        assertTrue(text.contains("\"key\": \"dark\""))
+        AmbientSound.inCategory(AmbientCategory.DARK).forEach {
+            assertTrue(it.prefsValue, text.contains("\"file\": \"ambient/${it.prefsValue}.ogg\""))
+        }
+        val dur = Regex("\"key\": \"(dark_[a-z_]+)\",\\s+\"category\": \"dark\",[^}]*?\"durationSec\": ([0-9.]+)")
+            .findAll(text).map { it.groupValues[2].toDouble() }.toList()
+        assertEquals(11, dur.size)
+        dur.forEach { assertTrue("loop at least ~2.9 min: $it", it >= 170.0) }
     }
 
     @Test

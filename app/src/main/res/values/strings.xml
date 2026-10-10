@@ -54,12 +54,12 @@
     <string name="ambient_volume_decrease">Decrease ambient volume by 1%</string>
     <string name="ambient_volume_increase">Increase ambient volume by 1%</string>
     <string name="ambient_now_playing">Selected: %1$s</string>
-    <string name="ambient_library_summary">%1$d real-world recordings</string>
+    <string name="ambient_library_summary">%1$d recordings and soundscapes</string>
 
     <string name="credits_title">Sound credits</string>
     <string name="credits_open">Sound credits</string>
     <string name="credits_open_desc">Authors and licenses of the ambient recordings</string>
-    <string name="credits_intro">All ambient sounds are real field recordings from Freesound.org, released by their authors under Creative Commons 0 (public domain). No attribution is required, but we\'d like to thank every recordist. Recordings were trimmed, loudness-normalised and looped for this app.</string>
+    <string name="credits_intro">All ambient sounds are field recordings and sound-design soundscapes from Freesound.org, released by their authors under Creative Commons 0 (public domain). No attribution is required, but we\'d like to thank every recordist. They were trimmed, loudness-normalised and looped for this app.</string>
     <string name="credits_item_source">“%1$s” by %2$s</string>
     <string name="credits_item_license">%1$s · Freesound</string>
     <string name="credits_open_link_cd">Open source page for %1$s</string>
@@ -103,6 +103,7 @@
     <string name="ambient_cat_noir">Crime &amp; Noir</string>
     <string name="ambient_cat_fantasy">Fantasy</string>
     <string name="ambient_cat_scifi">Sci‑Fi</string>
+    <string name="ambient_cat_dark">Dark ambient</string>
     <string name="ambient_nature_rain">Gentle rain</string>
     <string name="ambient_nature_thunder">Thunderstorm</string>
     <string name="ambient_nature_waves">Ocean waves</string>
@@ -147,5 +148,16 @@
     <string name="ambient_scifi_engineering">Engineering deck</string>
     <string name="ambient_scifi_station">Space station</string>
     <string name="ambient_scifi_night_city">Neon city night</string>
+    <string name="ambient_dark_tectonic_cathedral">Tectonic cathedral</string>
+    <string name="ambient_dark_ice_cathedral">Ice cathedral</string>
+    <string name="ambient_dark_primordial_forest">Primordial forest</string>
+    <string name="ambient_dark_howling_wind">Howling wind</string>
+    <string name="ambient_dark_windswept_ridge">Windswept ridge</string>
+    <string name="ambient_dark_resonant_cave">Resonant cave</string>
+    <string name="ambient_dark_dungeon">Dark dungeon</string>
+    <string name="ambient_dark_abandoned_warehouse">Abandoned warehouse</string>
+    <string name="ambient_dark_cosmic_drone">Deep cosmic drone</string>
+    <string name="ambient_dark_void_monolith">Void monolith</string>
+    <string name="ambient_dark_deep_sea">Deep sea rumble</string>
     <!-- END GENERATED AMBIENT -->
 </resources>

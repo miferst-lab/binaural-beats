@@ -54,6 +54,17 @@ fun ambientLabelRes(ambient: AmbientSound): Int = when (ambient) {
     AmbientSound.SCIFI_ENGINEERING -> R.string.ambient_scifi_engineering
     AmbientSound.SCIFI_STATION -> R.string.ambient_scifi_station
     AmbientSound.SCIFI_NIGHT_CITY -> R.string.ambient_scifi_night_city
+    AmbientSound.DARK_TECTONIC_CATHEDRAL -> R.string.ambient_dark_tectonic_cathedral
+    AmbientSound.DARK_ICE_CATHEDRAL -> R.string.ambient_dark_ice_cathedral
+    AmbientSound.DARK_PRIMORDIAL_FOREST -> R.string.ambient_dark_primordial_forest
+    AmbientSound.DARK_HOWLING_WIND -> R.string.ambient_dark_howling_wind
+    AmbientSound.DARK_WINDSWEPT_RIDGE -> R.string.ambient_dark_windswept_ridge
+    AmbientSound.DARK_RESONANT_CAVE -> R.string.ambient_dark_resonant_cave
+    AmbientSound.DARK_DUNGEON -> R.string.ambient_dark_dungeon
+    AmbientSound.DARK_ABANDONED_WAREHOUSE -> R.string.ambient_dark_abandoned_warehouse
+    AmbientSound.DARK_COSMIC_DRONE -> R.string.ambient_dark_cosmic_drone
+    AmbientSound.DARK_VOID_MONOLITH -> R.string.ambient_dark_void_monolith
+    AmbientSound.DARK_DEEP_SEA -> R.string.ambient_dark_deep_sea
 }
 
 @StringRes
@@ -67,4 +78,5 @@ fun ambientCategoryRes(category: AmbientCategory): Int = when (category) {
     AmbientCategory.NOIR -> R.string.ambient_cat_noir
     AmbientCategory.FANTASY -> R.string.ambient_cat_fantasy
     AmbientCategory.SCI_FI -> R.string.ambient_cat_scifi
+    AmbientCategory.DARK -> R.string.ambient_cat_dark
 }

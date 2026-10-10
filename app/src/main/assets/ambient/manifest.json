@@ -37,6 +37,10 @@
   {
    "key": "scifi",
    "title": "Sci-Fi"
+  },
+  {
+   "key": "dark",
+   "title": "Dark ambient"
   }
  ],
  "tracks": [
@@ -655,6 +659,160 @@
    "author": "markystar",
    "license": "CC0 1.0",
    "url": "https://freesound.org/people/markystar/sounds/42195/"
+  },
+  {
+   "key": "dark_tectonic_cathedral",
+   "category": "dark",
+   "name": "Tectonic cathedral",
+   "file": "ambient/dark_tectonic_cathedral.ogg",
+   "durationSec": 296.0,
+   "bytes": 579810,
+   "source": "Freesound",
+   "sourceId": 854871,
+   "sourceTitle": "Tectonic Cathedral Sacred Drone by Mantice",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/854871/"
+  },
+  {
+   "key": "dark_ice_cathedral",
+   "category": "dark",
+   "name": "Ice cathedral",
+   "file": "ambient/dark_ice_cathedral.ogg",
+   "durationSec": 296.0,
+   "bytes": 1899582,
+   "source": "Freesound",
+   "sourceId": 856220,
+   "sourceTitle": "Ice Cathedral Sacred Drone by Mantice",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/856220/"
+  },
+  {
+   "key": "dark_primordial_forest",
+   "category": "dark",
+   "name": "Primordial forest",
+   "file": "ambient/dark_primordial_forest.ogg",
+   "durationSec": 296.0,
+   "bytes": 1267596,
+   "source": "Freesound",
+   "sourceId": 854868,
+   "sourceTitle": "Primordial Forest Sacred Drone by Mantice",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/854868/"
+  },
+  {
+   "key": "dark_howling_wind",
+   "category": "dark",
+   "name": "Howling wind",
+   "file": "ambient/dark_howling_wind.ogg",
+   "durationSec": 194.6,
+   "bytes": 1396170,
+   "source": "Freesound",
+   "sourceId": 815100,
+   "sourceTitle": "Low Wind Howling Indoor",
+   "author": "Kinoton",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/Kinoton/sounds/815100/"
+  },
+  {
+   "key": "dark_windswept_ridge",
+   "category": "dark",
+   "name": "Windswept ridge",
+   "file": "ambient/dark_windswept_ridge.ogg",
+   "durationSec": 209.8,
+   "bytes": 1536563,
+   "source": "Freesound",
+   "sourceId": 558147,
+   "sourceTitle": "Dark Ambient sound windy",
+   "author": "pgameart",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/pgameart/sounds/558147/"
+  },
+  {
+   "key": "dark_resonant_cave",
+   "category": "dark",
+   "name": "Resonant cave",
+   "file": "ambient/dark_resonant_cave.ogg",
+   "durationSec": 296.0,
+   "bytes": 1762292,
+   "source": "Freesound",
+   "sourceId": 856219,
+   "sourceTitle": "Resonant Cave Experimental Drone by Mantice",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/856219/"
+  },
+  {
+   "key": "dark_dungeon",
+   "category": "dark",
+   "name": "Dark dungeon",
+   "file": "ambient/dark_dungeon.ogg",
+   "durationSec": 176.0,
+   "bytes": 1190091,
+   "source": "Freesound",
+   "sourceId": 516566,
+   "sourceTitle": "Dark Dungeon Ambience",
+   "author": "Kinoton",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/Kinoton/sounds/516566/"
+  },
+  {
+   "key": "dark_abandoned_warehouse",
+   "category": "dark",
+   "name": "Abandoned warehouse",
+   "file": "ambient/dark_abandoned_warehouse.ogg",
+   "durationSec": 205.5,
+   "bytes": 1538955,
+   "source": "Freesound",
+   "sourceId": 240895,
+   "sourceTitle": "abandoned warehouse",
+   "author": "Kostrava",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/Kostrava/sounds/240895/"
+  },
+  {
+   "key": "dark_cosmic_drone",
+   "category": "dark",
+   "name": "Deep cosmic drone",
+   "file": "ambient/dark_cosmic_drone.ogg",
+   "durationSec": 300.0,
+   "bytes": 994196,
+   "source": "Freesound",
+   "sourceId": 855487,
+   "sourceTitle": "Deep Cosmic Drone",
+   "author": "kkenny101",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/kkenny101/sounds/855487/"
+  },
+  {
+   "key": "dark_void_monolith",
+   "category": "dark",
+   "name": "Void monolith",
+   "file": "ambient/dark_void_monolith.ogg",
+   "durationSec": 296.0,
+   "bytes": 1135544,
+   "source": "Freesound",
+   "sourceId": 854874,
+   "sourceTitle": "Void Monolith Subharmonic Drone by Mantice",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/854874/"
+  },
+  {
+   "key": "dark_deep_sea",
+   "category": "dark",
+   "name": "Deep sea rumble",
+   "file": "ambient/dark_deep_sea.ogg",
+   "durationSec": 296.0,
+   "bytes": 2262241,
+   "source": "Freesound",
+   "sourceId": 867644,
+   "sourceTitle": "Deep Ocean Rumble – Dark Sea Ambience",
+   "author": "bassimat",
+   "license": "CC0 1.0",
+   "url": "https://freesound.org/people/bassimat/sounds/867644/"
   }
  ]
 }

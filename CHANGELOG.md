@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.7.0
+
+- **New ambient category "Dark ambient" (PL "Mroczny ambient")** with 11 loops, 3–5 min each, all Freesound
+  CC0 1.0: Tectonic cathedral, Ice cathedral, Primordial forest, Howling wind, Windswept ridge, Resonant cave,
+  Dark dungeon, Abandoned warehouse, Deep cosmic drone, Void monolith, Deep sea rumble. Same pipeline as the
+  rest of the library (-20 LUFS, equal-power loop seam, OGG Vorbis q0); about +16 MB. The library now has 55 tracks
+  in 10 categories; English names by default, Polish in `values-pl`.
+- `tools/build_ambient_library.py` gained an optional per-track `duck` (smooth local attenuation of a stray
+  transient) used on two tracks; credits (`CREDITS.md`, `manifest.json`, `store/AMBIENT_LICENSES.md`), store
+  texts and tests updated (55 tracks, new category checks).
+
 ## 1.6.1
 
 - **Light theme redesign for readability (WCAG AA).** The light palette reused the night neons: cyan
