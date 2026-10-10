@@ -37,11 +37,37 @@ val NightSurfaceVariant = SurfaceGlassVariant
 val OnNight = Starlight
 val OnNightMuted = StarlightMuted
 
-/** Calmer light scheme */
-val LightBg = Color(0xFFF4F5FB)
+/**
+ * Light scheme. Every pair used for text/icons is checked against WCAG AA in LightThemeContrastTest
+ * (4.5:1 for text, 3:1 for icons/borders/controls).
+ */
+val LightBg = Color(0xFFEEF0F9)
 val LightSurface = Color(0xFFFFFFFF)
-val LightSurfaceVariant = Color(0xFFE6E8F5)
+val LightSurfaceVariant = Color(0xFFDEE1F2)
 val LightOn = Color(0xFF1A1B2E)
-val LightOnMuted = Color(0xFF5C6280)
-val LightPrimary = Color(0xFF5B4FC7)
-val LightSecondary = Color(0xFF2A9BA3)
+val LightOnMuted = Color(0xFF474C6B)
+val LightPrimary = Color(0xFF4F43BD)
+val LightOnPrimary = Color(0xFFFFFFFF)
+val LightPrimaryContainer = Color(0xFFE2DEFF)
+val LightOnPrimaryContainer = Color(0xFF1E1568)
+val LightSecondary = Color(0xFF006879)
+val LightSecondaryContainer = Color(0xFFCDEEF3)
+val LightOnSecondaryContainer = Color(0xFF00252C)
+val LightTertiary = Color(0xFF8A2B9E)
+val LightTertiaryContainer = Color(0xFFF5D9FA)
+val LightOnTertiaryContainer = Color(0xFF3A0B45)
+val LightOutline = Color(0xFF767D9F)
+val LightOutlineVariant = Color(0xFFC3C8E0)
+val LightError = Color(0xFFB3261E)
+val LightErrorContainer = Color(0xFFF9DEDC)
+val LightOnErrorContainer = Color(0xFF410E0B)
+val LightDialog = Color(0xFFFFFFFF)
+
+/** Accent hues darkened for white/pale surfaces (>= 4.5:1 on every light surface). */
+val LightCyan = Color(0xFF006879)
+val LightTeal = Color(0xFF00675B)
+val LightViolet = Color(0xFF5B4FC7)
+val LightMagenta = Color(0xFF8A2B9E)
+val LightAmber = Color(0xFF865000)
+val LightSky = Color(0xFF0A5AA6)
+val LightEmber = Color(0xFFAD3700)

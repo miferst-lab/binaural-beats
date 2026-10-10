@@ -105,4 +105,18 @@ s = sx.read_text()
 s = re.sub(r"    <!-- BEGIN GENERATED AMBIENT.*?END GENERATED AMBIENT -->", "\n".join(block), s, flags=re.S) \
     if "BEGIN GENERATED AMBIENT" in s else s.replace("</resources>", "\n".join(block) + "\n</resources>")
 sx.write_text(s)
+# Polish translation block (tools/ambient_pl.json) -> values-pl/strings.xml
+import json as _json
+pl = _json.loads((ROOT / "tools/ambient_pl.json").read_text())
+def _esc_pl(t):
+    return escape(t).replace(chr(39), chr(92)+chr(39))
+pblock = ["    <!-- BEGIN GENERATED AMBIENT (tools/gen_ambient_kotlin.py) -->"]
+pblock += [f'    <string name="ambient_cat_{c}">{_esc_pl(pl["cat_" + c])}</string>' for c in spec["categories"]]
+pblock += [f'    <string name="ambient_{t["key"]}">{_esc_pl(pl[t["key"]])}</string>' for t in spec["tracks"]]
+pblock += ["    <!-- END GENERATED AMBIENT -->"]
+px = ROOT / "app/src/main/res/values-pl/strings.xml"
+ps = px.read_text()
+ps = re.sub(r"    <!-- BEGIN GENERATED AMBIENT.*?END GENERATED AMBIENT -->", "\n".join(pblock), ps, flags=re.S) \
+    if "BEGIN GENERATED AMBIENT" in ps else ps.replace("</resources>", "\n".join(pblock) + "\n</resources>")
+px.write_text(ps)
 print("generated", len(spec["tracks"]), "tracks")

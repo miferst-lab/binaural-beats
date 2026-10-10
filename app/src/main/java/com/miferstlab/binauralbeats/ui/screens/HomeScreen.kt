@@ -64,17 +64,10 @@ import com.miferstlab.binauralbeats.data.FrequencyMath
 import com.miferstlab.binauralbeats.data.PlaybackState
 import com.miferstlab.binauralbeats.ui.components.AmbientPicker
 import com.miferstlab.binauralbeats.ui.components.BrainWaveVisual
-import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
+import com.miferstlab.binauralbeats.ui.theme.Accent
 import com.miferstlab.binauralbeats.ui.theme.GalaxyBackdrop
-import com.miferstlab.binauralbeats.ui.theme.NebulaCyan
+import com.miferstlab.binauralbeats.ui.theme.glassSurfaceColor
 import com.miferstlab.binauralbeats.ui.theme.NebulaMagenta
-import com.miferstlab.binauralbeats.ui.theme.SoftAmber
-import com.miferstlab.binauralbeats.ui.theme.SoftEmber
-import com.miferstlab.binauralbeats.ui.theme.SoftSky
-import com.miferstlab.binauralbeats.ui.theme.SoftCoral
-import com.miferstlab.binauralbeats.ui.theme.SoftLavender
-import com.miferstlab.binauralbeats.ui.theme.SoftTeal
-import com.miferstlab.binauralbeats.ui.theme.VoidBg
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -96,7 +89,7 @@ fun HomeScreen(
     val playPauseLabel = stringResource(
         if (state.isPlaying) R.string.pause else R.string.play
     )
-    val glassSurface = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
+    val glassSurface = glassSurfaceColor()
     val showGalaxy = MaterialTheme.colorScheme.background.luminance() < 0.3f
 
     Box(Modifier.fillMaxSize()) {
@@ -156,11 +149,7 @@ fun HomeScreen(
                             label = { Text(stringResource(modeTitleRes(mode))) },
                             border = BorderStroke(
                                 width = if (selected) 1.5.dp else 1.dp,
-                                color = if (selected) {
-                                    accent.copy(alpha = 0.85f)
-                                } else {
-                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                                }
+                                color = Accent.chipBorder(selected, accent, MaterialTheme.colorScheme.outline)
                             ),
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = accent.copy(alpha = 0.28f),
@@ -200,8 +189,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .size(96.dp)
                         .semantics { contentDescription = playPauseLabel },
-                    containerColor = NebulaCyan,
-                    contentColor = VoidBg,
+                    containerColor = Accent.cyan,
+                    contentColor = Accent.onCyan,
                     elevation = FloatingActionButtonDefaults.elevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 12.dp
@@ -211,7 +200,7 @@ fun HomeScreen(
                         imageVector = if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                         contentDescription = null,
                         modifier = Modifier.size(44.dp),
-                        tint = VoidBg
+                        tint = Accent.onCyan
                     )
                 }
 
@@ -220,7 +209,7 @@ fun HomeScreen(
                 Text(
                     text = playPauseLabel,
                     style = MaterialTheme.typography.labelLarge,
-                    color = ElectricViolet.copy(alpha = 0.9f)
+                    color = Accent.violet
                 )
 
                 if (!state.isPremium) {
@@ -248,7 +237,7 @@ fun HomeScreen(
                     onVolumeChange = onVolumeChange,
                     onNudge = onVolumeNudge,
                     glassSurface = glassSurface,
-                    accent = NebulaCyan,
+                    accent = Accent.cyan,
                     decreaseCd = stringResource(R.string.volume_decrease),
                     increaseCd = stringResource(R.string.volume_increase)
                 )
@@ -258,7 +247,7 @@ fun HomeScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, SoftTeal.copy(alpha = 0.28f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.teal, 0.28f))
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                         Row(
@@ -268,7 +257,7 @@ fun HomeScreen(
                             Icon(
                                 Icons.Default.MusicNote,
                                 contentDescription = null,
-                                tint = SoftTeal
+                                tint = Accent.teal
                             )
                             Spacer(Modifier.width(8.dp))
                             Text(
@@ -281,7 +270,7 @@ fun HomeScreen(
 
                         AmbientPicker(
                             selected = state.ambient,
-                            accent = SoftTeal,
+                            accent = Accent.teal,
                             onAmbientSelected = onAmbientSelected,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -292,7 +281,7 @@ fun HomeScreen(
                                 volume = state.ambientVolume,
                                 onVolumeChange = onAmbientVolumeChange,
                                 onNudge = onAmbientVolumeNudge,
-                                accent = SoftTeal,
+                                accent = Accent.teal,
                                 decreaseCd = stringResource(R.string.ambient_volume_decrease),
                                 increaseCd = stringResource(R.string.ambient_volume_increase),
                                 showTitle = true,
@@ -307,7 +296,7 @@ fun HomeScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = glassSurface),
-                        border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.22f))
+                        border = BorderStroke(1.dp, Accent.cardBorder(Accent.violet, 0.22f))
                     ) {
                         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                             Text(
@@ -320,9 +309,9 @@ fun HomeScreen(
                                 onValueChange = onCustomCarrier,
                                 valueRange = FrequencyMath.CARRIER_MIN..FrequencyMath.CARRIER_MAX,
                                 colors = SliderDefaults.colors(
-                                    thumbColor = ElectricViolet,
-                                    activeTrackColor = ElectricViolet.copy(alpha = 0.85f),
-                                    inactiveTrackColor = NebulaCyan.copy(alpha = 0.2f)
+                                    thumbColor = Accent.violet,
+                                    activeTrackColor = Accent.violet.copy(alpha = if (Accent.dark) 0.85f else 1f),
+                                    inactiveTrackColor = Accent.inactiveTrack
                                 )
                             )
                             Spacer(Modifier.height(8.dp))
@@ -336,9 +325,9 @@ fun HomeScreen(
                                 onValueChange = onCustomBeat,
                                 valueRange = FrequencyMath.BEAT_MIN..FrequencyMath.BEAT_MAX,
                                 colors = SliderDefaults.colors(
-                                    thumbColor = NebulaMagenta,
-                                    activeTrackColor = NebulaMagenta.copy(alpha = 0.85f),
-                                    inactiveTrackColor = ElectricViolet.copy(alpha = 0.2f)
+                                    thumbColor = Accent.magenta,
+                                    activeTrackColor = Accent.magenta.copy(alpha = if (Accent.dark) 0.85f else 1f),
+                                    inactiveTrackColor = Accent.inactiveTrack
                                 )
                             )
                         }
@@ -350,9 +339,9 @@ fun HomeScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = SoftTeal.copy(alpha = 0.14f)
+                        containerColor = Accent.teal.copy(alpha = 0.14f)
                     ),
-                    border = BorderStroke(1.dp, SoftTeal.copy(alpha = 0.4f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.teal, 0.4f))
                 ) {
                     Row(
                         Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
@@ -361,7 +350,7 @@ fun HomeScreen(
                         Icon(
                             Icons.Default.Headset,
                             contentDescription = null,
-                            tint = SoftTeal,
+                            tint = Accent.teal,
                             modifier = Modifier.size(26.dp)
                         )
                         Spacer(Modifier.width(12.dp))
@@ -434,7 +423,7 @@ private fun VolumeCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = glassSurface),
-        border = BorderStroke(1.dp, accent.copy(alpha = 0.18f))
+        border = BorderStroke(1.dp, Accent.cardBorder(accent, 0.18f))
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
             Row(
@@ -525,8 +514,8 @@ private fun VolumeSliderRow(
             modifier = Modifier.weight(1f),
             colors = SliderDefaults.colors(
                 thumbColor = accent,
-                activeTrackColor = accent.copy(alpha = 0.85f),
-                inactiveTrackColor = ElectricViolet.copy(alpha = 0.25f)
+                activeTrackColor = accent.copy(alpha = if (Accent.dark) 0.85f else 1f),
+                inactiveTrackColor = Accent.inactiveTrack
             )
         )
         IconButton(
@@ -564,12 +553,13 @@ private fun modeDescriptionRes(mode: BinauralMode): Int = when (mode) {
     BinauralMode.CUSTOM -> R.string.mode_custom_desc
 }
 
-private fun modeAccent(mode: BinauralMode) = when (mode) {
-    BinauralMode.RELAX -> NebulaCyan
-    BinauralMode.FOCUS -> SoftAmber
-    BinauralMode.READING -> SoftSky
-    BinauralMode.ENERGY -> SoftEmber
-    BinauralMode.SLEEP -> SoftLavender
-    BinauralMode.MEDITATION -> SoftTeal
-    BinauralMode.CUSTOM -> SoftCoral
+@Composable
+private fun modeAccent(mode: BinauralMode): Color = when (mode) {
+    BinauralMode.RELAX -> Accent.cyan
+    BinauralMode.FOCUS -> Accent.amber
+    BinauralMode.READING -> Accent.sky
+    BinauralMode.ENERGY -> Accent.ember
+    BinauralMode.SLEEP -> Accent.violet
+    BinauralMode.MEDITATION -> Accent.teal
+    BinauralMode.CUSTOM -> Accent.magenta
 }

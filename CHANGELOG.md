@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.6.1
+
+- **Light theme redesign for readability (WCAG AA).** The light palette reused the night neons: cyan
+  `#3DE0E8` on white was 1.6:1, teal `#4ECDC4` 1.9:1, amber 1.8:1, sky 1.9:1, ember 2.3:1, violet 3.3:1;
+  the outline was 1.7:1 and the slider "inactive" tracks nearly invisible. Light mode now has its own darkened
+  accents (`Accents.kt`, via `LocalAccents`), solid white cards with visible borders, a stronger muted-text
+  colour, 3:1+ outlines/switch/slider tracks, white-on-teal play button, light dialogs and explicit
+  surfaceContainer colours. Night colours are unchanged.
+- Status/navigation bar icons now follow the app theme (not only the device theme); the window background no
+  longer flashes dark in light mode.
+- New `ThemeContrastTest` computes WCAG ratios for the key text/background/control pairs of both themes.
+- **English default resources, Polish in `values-pl`.** `values-pl` previously held only the billing strings;
+  it now translates every string (modes, settings, notification, paywall, trial/battery dialogs, credits,
+  all 44 ambient names and 9 categories). `tools/gen_ambient_kotlin.py` generates both ambient blocks
+  (Polish names in `tools/ambient_pl.json`). Fixed Polish grammar in the billing-unavailable message.
+- App language follows the device language (English fallback).
+
 ## 1.6.0
 
 - **Real Google Play Billing (billing library 8.3.0), as a subscription.** Subscription id `binaural_premium`

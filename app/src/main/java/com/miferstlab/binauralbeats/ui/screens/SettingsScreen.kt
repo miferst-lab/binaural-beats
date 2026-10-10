@@ -51,9 +51,9 @@ import com.miferstlab.binauralbeats.ui.components.PremiumPlanButtons
 import com.miferstlab.binauralbeats.billing.PremiumPlan
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.PlaybackState
-import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
+import com.miferstlab.binauralbeats.ui.theme.Accent
 import com.miferstlab.binauralbeats.ui.theme.GalaxyBackdrop
-import com.miferstlab.binauralbeats.ui.theme.NebulaCyan
+import com.miferstlab.binauralbeats.ui.theme.glassSurfaceColor
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -75,7 +75,7 @@ fun SettingsScreen(
             context.packageManager.getPackageInfo(context.packageName, 0).versionName
         }.getOrNull() ?: ""
     }
-    val glassSurface = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
+    val glassSurface = glassSurfaceColor()
     val showGalaxy = MaterialTheme.colorScheme.background.luminance() < 0.3f
 
     Box(Modifier.fillMaxSize()) {
@@ -121,7 +121,7 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.2f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.violet, 0.2f))
                 ) {
                     Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                         Text(
@@ -165,7 +165,7 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, NebulaCyan.copy(alpha = 0.18f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.cyan, 0.18f))
                 ) {
                     ListItem(
                         headlineContent = {
@@ -186,8 +186,8 @@ fun SettingsScreen(
                                 checked = state.mixWithOtherApps,
                                 onCheckedChange = onMixChanged,
                                 colors = SwitchDefaults.colors(
-                                    checkedThumbColor = NebulaCyan,
-                                    checkedTrackColor = NebulaCyan.copy(alpha = 0.45f)
+                                    checkedThumbColor = Accent.switchThumb,
+                                    checkedTrackColor = Accent.switchTrack
                                 )
                             )
                         },
@@ -216,8 +216,8 @@ fun SettingsScreen(
                                 checked = state.keepScreenOn,
                                 onCheckedChange = onKeepScreenOnChanged,
                                 colors = SwitchDefaults.colors(
-                                    checkedThumbColor = NebulaCyan,
-                                    checkedTrackColor = NebulaCyan.copy(alpha = 0.45f)
+                                    checkedThumbColor = Accent.switchThumb,
+                                    checkedTrackColor = Accent.switchTrack
                                 )
                             )
                         },
@@ -237,7 +237,7 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.22f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.violet, 0.22f))
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(
@@ -259,7 +259,7 @@ fun SettingsScreen(
                             Text(
                                 text = stringResource(R.string.settings_premium_active),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = NebulaCyan
+                                color = Accent.cyan
                             )
                             Spacer(Modifier.height(8.dp))
                             if (BuildConfig.DEBUG) {
@@ -300,8 +300,8 @@ fun SettingsScreen(
                                     checked = isDebugUnlockEnabled,
                                     onCheckedChange = onDebugUnlockChanged,
                                     colors = SwitchDefaults.colors(
-                                        checkedThumbColor = NebulaCyan,
-                                        checkedTrackColor = NebulaCyan.copy(alpha = 0.45f)
+                                        checkedThumbColor = Accent.switchThumb,
+                                        checkedTrackColor = Accent.switchTrack
                                     )
                                 )
                             },
@@ -323,7 +323,7 @@ fun SettingsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = glassSurface),
-                    border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.16f))
+                    border = BorderStroke(1.dp, Accent.cardBorder(Accent.violet, 0.16f))
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text(
@@ -386,14 +386,10 @@ private fun AppearanceChip(
         label = { Text(label) },
         border = BorderStroke(
             width = if (selected) 1.5.dp else 1.dp,
-            color = if (selected) {
-                NebulaCyan.copy(alpha = 0.85f)
-            } else {
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-            }
+            color = Accent.chipBorder(selected, Accent.cyan, MaterialTheme.colorScheme.outline)
         ),
         colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = NebulaCyan.copy(alpha = 0.28f),
+            selectedContainerColor = Accent.chipSelectedContainer(Accent.cyan, 0.28f),
             selectedLabelColor = MaterialTheme.colorScheme.onSurface,
             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
             labelColor = MaterialTheme.colorScheme.onSurfaceVariant

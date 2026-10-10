@@ -36,15 +36,15 @@ import com.miferstlab.binauralbeats.data.AmbientCategory
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.ui.ambientCategoryRes
 import com.miferstlab.binauralbeats.ui.ambientLabelRes
-import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
+import com.miferstlab.binauralbeats.ui.theme.Accent
 import com.miferstlab.binauralbeats.ui.theme.GalaxyBackdrop
-import com.miferstlab.binauralbeats.ui.theme.SoftTeal
+import com.miferstlab.binauralbeats.ui.theme.glassSurfaceColor
 
 /** In-app credits for every ambient recording (author, original title, license, source link). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreditsScreen(onBack: () -> Unit) {
-    val glassSurface = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)
+    val glassSurface = glassSurfaceColor()
     val showGalaxy = MaterialTheme.colorScheme.background.luminance() < 0.3f
     val uriHandler = LocalUriHandler.current
 
@@ -90,7 +90,7 @@ fun CreditsScreen(onBack: () -> Unit) {
                         Text(
                             text = stringResource(ambientCategoryRes(category)),
                             style = MaterialTheme.typography.labelLarge,
-                            color = SoftTeal,
+                            color = Accent.teal,
                             modifier = Modifier.padding(start = 4.dp, top = 12.dp, bottom = 6.dp)
                         )
                     }
@@ -104,7 +104,7 @@ fun CreditsScreen(onBack: () -> Unit) {
                                 .semantics { contentDescription = linkCd }
                                 .clickable { runCatching { uriHandler.openUri(sound.sourceUrl) } },
                             colors = CardDefaults.cardColors(containerColor = glassSurface),
-                            border = BorderStroke(1.dp, ElectricViolet.copy(alpha = 0.16f))
+                            border = BorderStroke(1.dp, Accent.cardBorder(Accent.violet, 0.16f))
                         ) {
                             Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
                                 Text(name, style = MaterialTheme.typography.titleSmall)
@@ -120,7 +120,7 @@ fun CreditsScreen(onBack: () -> Unit) {
                                 Text(
                                     text = stringResource(R.string.credits_item_license, sound.license),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }

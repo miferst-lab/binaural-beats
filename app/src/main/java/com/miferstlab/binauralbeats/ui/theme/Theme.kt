@@ -5,9 +5,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
-private val DarkColors = darkColorScheme(
+internal val DarkColors = darkColorScheme(
     primary = NebulaCyan,
     onPrimary = VoidBg,
     primaryContainer = NebulaIndigo,
@@ -28,22 +29,40 @@ private val DarkColors = darkColorScheme(
     outlineVariant = Color(0xFF2A2F4A)
 )
 
-private val LightColors = lightColorScheme(
+internal val LightColors = lightColorScheme(
     primary = LightPrimary,
-    onPrimary = Color.White,
-    primaryContainer = ElectricViolet.copy(alpha = 0.22f),
-    onPrimaryContainer = LightOn,
+    onPrimary = LightOnPrimary,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
     secondary = LightSecondary,
     onSecondary = Color.White,
-    tertiary = NebulaMagenta,
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
+    tertiary = LightTertiary,
+    onTertiary = Color.White,
+    tertiaryContainer = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
     background = LightBg,
     onBackground = LightOn,
     surface = LightSurface,
     onSurface = LightOn,
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnMuted,
-    outline = Color(0xFFC5C8DA)
+    surfaceTint = LightPrimary,
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    error = LightError,
+    onError = Color.White,
+    errorContainer = LightErrorContainer,
+    onErrorContainer = LightOnErrorContainer,
+    surfaceContainerLowest = Color.White,
+    surfaceContainerLow = Color(0xFFF6F7FC),
+    surfaceContainer = Color(0xFFF1F2FA),
+    surfaceContainerHigh = LightDialog,
+    surfaceContainerHighest = LightSurfaceVariant
 )
+
+internal val NightColors = DarkColors
 
 @Composable
 fun BinauralBeatsTheme(
@@ -51,9 +70,11 @@ fun BinauralBeatsTheme(
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkColors else LightColors
-    MaterialTheme(
-        colorScheme = colors,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalAccents provides if (darkTheme) NightAccents else DayAccents) {
+        MaterialTheme(
+            colorScheme = colors,
+            typography = Typography,
+            content = content
+        )
+    }
 }

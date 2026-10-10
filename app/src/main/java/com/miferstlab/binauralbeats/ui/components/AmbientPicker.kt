@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
+import com.miferstlab.binauralbeats.ui.theme.Accent
 import com.miferstlab.binauralbeats.data.AmbientCategory
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.ui.ambientCategoryRes
@@ -79,11 +80,10 @@ fun AmbientPicker(
                     },
                     border = BorderStroke(
                         width = if (isCurrent) 1.5.dp else 1.dp,
-                        color = if (isCurrent) accent.copy(alpha = 0.85f)
-                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)
+                        color = Accent.chipBorder(isCurrent, accent, MaterialTheme.colorScheme.outline)
                     ),
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = accent.copy(alpha = 0.22f),
+                        selectedContainerColor = Accent.chipSelectedContainer(accent, 0.22f),
                         selectedLabelColor = MaterialTheme.colorScheme.onSurface,
                         containerColor = Color.Transparent,
                         labelColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -107,13 +107,12 @@ fun AmbientPicker(
                     label = { Text(stringResource(ambientLabelRes(ambient))) },
                     border = BorderStroke(
                         width = if (isSelected) 1.5.dp else 1.dp,
-                        color = if (isSelected) accent.copy(alpha = 0.85f)
-                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                        color = Accent.chipBorder(isSelected, accent, MaterialTheme.colorScheme.outline)
                     ),
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = accent.copy(alpha = 0.28f),
+                        selectedContainerColor = Accent.chipSelectedContainer(accent, 0.28f),
                         selectedLabelColor = MaterialTheme.colorScheme.onSurface,
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.45f),
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = if (Accent.dark) 0.45f else 1f),
                         labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )

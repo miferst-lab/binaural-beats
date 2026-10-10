@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,9 +18,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
-import com.miferstlab.binauralbeats.ui.theme.NebulaCyan
-import com.miferstlab.binauralbeats.ui.theme.NebulaMagenta
+import com.miferstlab.binauralbeats.ui.theme.Accent
 import com.miferstlab.binauralbeats.ui.theme.Starlight
 import kotlin.math.PI
 import kotlin.math.sin
@@ -53,6 +52,12 @@ fun BrainWaveVisual(
         label = "pulse"
     )
 
+    val accents = Accent
+    val cyan = accents.cyan
+    val violet = accents.violet
+    val magenta = accents.magenta
+    val ringColor = if (accents.dark) Starlight else MaterialTheme.colorScheme.onSurfaceVariant
+
     Canvas(
         modifier = modifier
             .fillMaxWidth()
@@ -68,14 +73,14 @@ fun BrainWaveVisual(
             rings.forEachIndexed { i, frac ->
                 val r = minOf(w, h) * frac
                 drawCircle(
-                    color = Starlight.copy(alpha = 0.08f + i * 0.03f),
+                    color = ringColor.copy(alpha = if (accents.dark) 0.08f + i * 0.03f else 0.3f + i * 0.1f),
                     radius = r,
                     center = Offset(cx, cy),
                     style = Stroke(width = 1.2f)
                 )
             }
             drawCircle(
-                color = NebulaCyan.copy(alpha = 0.12f),
+                color = cyan.copy(alpha = 0.12f),
                 radius = minOf(w, h) * 0.08f,
                 center = Offset(cx, cy)
             )
@@ -83,9 +88,9 @@ fun BrainWaveVisual(
         }
 
         val waves = listOf(
-            Triple(NebulaCyan.copy(alpha = 0.85f), 1.0f, 0f),
-            Triple(ElectricViolet.copy(alpha = 0.7f), 0.72f, 0.7f),
-            Triple(NebulaMagenta.copy(alpha = 0.55f), 0.5f, 1.4f)
+            Triple(cyan.copy(alpha = 0.85f), 1.0f, 0f),
+            Triple(violet.copy(alpha = 0.7f), 0.72f, 0.7f),
+            Triple(magenta.copy(alpha = if (accents.dark) 0.55f else 0.8f), 0.5f, 1.4f)
         )
 
         waves.forEach { (color, ampScale, phaseOffset) ->

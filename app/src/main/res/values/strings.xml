@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Binaural Waves</string>
+<resources>
+    <string name="app_name" translatable="false">Binaural Waves</string>
     <string name="mode_relax">Relax</string>
     <string name="mode_focus">Focus</string>
     <string name="mode_sleep">Sleep</string>

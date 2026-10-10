@@ -12,7 +12,13 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import android.graphics.drawable.ColorDrawable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import com.miferstlab.binauralbeats.ui.theme.LightBg
+import com.miferstlab.binauralbeats.ui.theme.VoidBg
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -72,6 +78,25 @@ class MainActivity : ComponentActivity() {
                 AppearanceMode.NIGHT -> true
                 AppearanceMode.LIGHT -> false
                 AppearanceMode.SYSTEM -> systemDark
+            }
+
+            val barBackground = if (darkTheme) VoidBg else LightBg
+            SideEffect {
+                // The app theme (not only the device theme) decides the system-bar icon colour:
+                // light icons over the night backdrop, dark icons over the light background.
+                enableEdgeToEdge(
+                    statusBarStyle = if (darkTheme) {
+                        SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                    } else {
+                        SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                    },
+                    navigationBarStyle = if (darkTheme) {
+                        SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                    } else {
+                        SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                    }
+                )
+                window.setBackgroundDrawable(ColorDrawable(barBackground.toArgb()))
             }
 
             BinauralBeatsTheme(darkTheme = darkTheme) {
