@@ -44,7 +44,11 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.miferstlab.binauralbeats.BuildConfig
 import com.miferstlab.binauralbeats.R
+import com.miferstlab.binauralbeats.ui.components.billingMessage
+import com.miferstlab.binauralbeats.ui.components.PremiumPlanButtons
+import com.miferstlab.binauralbeats.billing.PremiumPlan
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.PlaybackState
 import com.miferstlab.binauralbeats.ui.theme.ElectricViolet
@@ -59,7 +63,7 @@ fun SettingsScreen(
     onKeepScreenOnChanged: (Boolean) -> Unit,
     onAppearanceChanged: (AppearanceMode) -> Unit,
     onBack: () -> Unit,
-    onUpgradePremium: () -> Unit = {},
+    onUpgradePremium: (PremiumPlan) -> Unit = {},
     onDebugUnlockChanged: (Boolean) -> Unit = {},
     isDebugUnlockEnabled: Boolean = false,
     onSetPremium: (Boolean) -> Unit = {},
@@ -258,14 +262,23 @@ fun SettingsScreen(
                                 color = NebulaCyan
                             )
                             Spacer(Modifier.height(8.dp))
-                            OutlinedButton(onClick = { onSetPremium(false) }) {
-                                Text(stringResource(R.string.settings_remove_premium_debug))
+                            if (BuildConfig.DEBUG) {
+                                OutlinedButton(onClick = { onSetPremium(false) }) {
+                                    Text(stringResource(R.string.settings_remove_premium_debug))
+                                }
                             }
                         } else {
-                            Button(onClick = onUpgradePremium) {
-                                Text(stringResource(R.string.upgrade_premium))
+                            PremiumPlanButtons(state, onUpgradePremium)
+                            billingMessage(state)?.let {
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
+                        if (BuildConfig.DEBUG) {
                         Spacer(Modifier.height(8.dp))
                         HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                         ListItem(
@@ -294,6 +307,7 @@ fun SettingsScreen(
                             },
                             colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                         )
+                        }
                     }
                 }
 

@@ -9,8 +9,12 @@ navigationCompose = "2.8.5"
 lifecycleViewmodelCompose = "2.8.7"
 junit = "4.13.2"
 media3 = "1.5.1"
+billing = "8.3.0"
+fragment = "1.8.5"
 
 [libraries]
+android-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

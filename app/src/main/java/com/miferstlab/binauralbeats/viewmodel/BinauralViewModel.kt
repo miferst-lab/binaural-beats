@@ -9,7 +9,11 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.miferstlab.binauralbeats.BuildConfig
 import com.miferstlab.binauralbeats.billing.BillingManager
+import com.miferstlab.binauralbeats.billing.PlayBillingGateway
+import com.miferstlab.binauralbeats.billing.PremiumPlan
+import com.miferstlab.binauralbeats.billing.PremiumStore
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
@@ -45,9 +49,25 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     private var trialTickerJob: Job? = null
 
     private val billing = BillingManager(
-        context = application,
-        onPremiumUnlocked = { setPremium(true) },
-        allowDebugUnlock = { prefs.getBoolean(KEY_DEBUG_UNLOCK, false) }
+        gateway = PlayBillingGateway(application),
+        store = object : PremiumStore {
+            override fun isPremium(): Boolean = prefs.getBoolean(KEY_PREMIUM, false)
+            override fun setPremium(premium: Boolean) {
+                prefs.edit().putBoolean(KEY_PREMIUM, premium).apply()
+            }
+        },
+        scheduler = { delayMs, action ->
+            viewModelScope.launch {
+                delay(delayMs)
+                action()
+            }
+        },
+        debugBuild = BuildConfig.DEBUG,
+        debugUnlockAllowed = { BuildConfig.DEBUG && prefs.getBoolean(KEY_DEBUG_UNLOCK, false) },
+        onStateChanged = { b ->
+            _state.update { it.copy(billingStatus = b.status, premiumPlans = b.plans) }
+        },
+        onPremiumChanged = { premium -> setPremium(premium) }
     )
 
     private val connection = object : ServiceConnection {
@@ -67,6 +87,11 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
     }
 
     init {
+        if (!BuildConfig.DEBUG) {
+            // Release builds never honor a leftover debug unlock flag.
+            prefs.edit().remove(KEY_DEBUG_UNLOCK).apply()
+        }
+        billing.start()
         refreshTrialState()
         startTrialTicker()
     }
@@ -241,13 +266,20 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     /** Settings debug toggle — allows purchase button / BillingManager debug path. */
     fun setDebugUnlockEnabled(enabled: Boolean) {
+        if (!BuildConfig.DEBUG) return
         prefs.edit().putBoolean(KEY_DEBUG_UNLOCK, enabled).apply()
     }
 
-    fun isDebugUnlockEnabled(): Boolean = prefs.getBoolean(KEY_DEBUG_UNLOCK, false)
+    fun isDebugUnlockEnabled(): Boolean = BuildConfig.DEBUG && prefs.getBoolean(KEY_DEBUG_UNLOCK, false)
 
-    fun purchasePremium(activity: Activity?) {
-        billing.purchasePremium(activity)
+    fun purchasePremium(activity: Activity?, plan: PremiumPlan) {
+        // Play free trial only after the in-app trial has ended (no accidental 14 days).
+        billing.purchasePremium(activity, plan, useTrial = !_state.value.isTrialActive)
+    }
+
+    /** Re-sync with Play (restore purchases); call from Activity.onResume. */
+    fun refreshBilling() {
+        billing.start()
     }
 
     fun dismissTrialExpiredDialog() {
@@ -355,6 +387,7 @@ class BinauralViewModel(application: Application) : AndroidViewModel(application
 
     override fun onCleared() {
         trialTickerJob?.cancel()
+        billing.stop()
         if (bound) {
             runCatching { getApplication<Application>().unbindService(connection) }
             bound = false

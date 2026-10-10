@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upgrade_premium">Odblokuj Premium</string>
+    <string name="plan_monthly_label">Miesięcznie · %1$s / mies.</string>
+    <string name="plan_yearly_label">Rocznie · %1$s / rok</string>
+    <string name="plan_trial_note">%1$d dni za darmo, potem %2$s. Zrezygnujesz w dowolnej chwili w Google Play.</string>
+    <string name="billing_unavailable">Subskrypcja w Google Play jest teraz niedostępny (brak połączenia albo produkt nie został jeszcze opublikowany). Sprawdź połączenie i spróbuj ponownie później. Okres próbny nie jest zagrożony.</string>
+    <string name="billing_pending">Subskrypcja oczekuje na realizację. Premium odblokuje się, gdy płatność zostanie zakończona.</string>
+    <string name="billing_failed">Nie udało się dokończyć subskrypcji. Spróbuj ponownie.</string>
+</resources>

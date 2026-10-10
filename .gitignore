@@ -14,3 +14,9 @@ app/build/
 */build/
 .kotlin/
 .ambient_work/
+
+# Release signing secrets — never commit
+keystore.properties
+*.jks
+*.keystore
+credentials.txt

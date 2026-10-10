@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.miferstlab.binauralbeats.billing.PremiumPlan
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.AppearanceMode
 import com.miferstlab.binauralbeats.data.BinauralMode
@@ -53,6 +54,11 @@ class MainActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             // Optional: playback works without the notification shade action if denied.
         }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshBilling()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +102,7 @@ class MainActivity : ComponentActivity() {
                     onKeepScreenOnChanged = viewModel::setKeepScreenOn,
                     onAppearanceChanged = viewModel::setAppearanceMode,
                     onDismissFreeLimit = viewModel::dismissFreeLimitDialog,
-                    onUpgradePremium = { viewModel.purchasePremium(this) },
+                    onUpgradePremium = { plan -> viewModel.purchasePremium(this, plan) },
                     onDebugUnlockChanged = viewModel::setDebugUnlockEnabled,
                     isDebugUnlockEnabled = viewModel.isDebugUnlockEnabled(),
                     onSetPremium = viewModel::setPremium
@@ -183,7 +189,7 @@ private fun BinauralApp(
     onKeepScreenOnChanged: (Boolean) -> Unit,
     onAppearanceChanged: (AppearanceMode) -> Unit,
     onDismissFreeLimit: () -> Unit,
-    onUpgradePremium: () -> Unit,
+    onUpgradePremium: (PremiumPlan) -> Unit,
     onDebugUnlockChanged: (Boolean) -> Unit,
     isDebugUnlockEnabled: Boolean,
     onSetPremium: (Boolean) -> Unit

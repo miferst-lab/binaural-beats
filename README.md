@@ -82,6 +82,35 @@ This app is not a medical device and is not medical advice. It does not diagnose
 
 ---
 
+## Release build & Google Play
+
+```bash
+./gradlew bundleRelease   # app/build/outputs/bundle/release/app-release.aab (signed if keystore configured)
+```
+
+Signing: create `keystore.properties` in the repo root (git-ignored; never commit it or the keystore):
+
+```
+storeFile=/absolute/path/to/upload.jks
+storePassword=...
+keyAlias=binaural-upload
+keyPassword=...
+```
+
+or set env vars `BINAURAL_KEYSTORE_FILE`, `BINAURAL_KEYSTORE_PASSWORD`, `BINAURAL_KEY_ALIAS`,
+`BINAURAL_KEY_PASSWORD`. Without either, `bundleRelease` produces an unsigned bundle and debug/CI builds are unaffected.
+
+Play Console setup for billing (Monetize → Products → Subscriptions):
+
+1. Create subscription `binaural_premium`.
+2. Base plan `monthly` (auto-renewing, billing period 1 month) and base plan `yearly` (1 year); set prices
+   (reference: 14.99 PLN/month, 99.99 PLN/year, ~3.99 USD / 24.99 USD) and activate both.
+3. On each base plan add an offer with a **Free trial, 7 days**, eligibility "new customer acquisition"; activate.
+4. Add license testers (Settings → License testing) and install the app from an Internal testing track
+   (billing only works for a Play-installed build signed with the Play-registered key).
+
+The app reads prices from Play at runtime; do not hardcode them.
+
 ## Privacy / Play Console
 
 - No data collection — no analytics, accounts, ads, location or contacts. Data safety: *No data collected*.

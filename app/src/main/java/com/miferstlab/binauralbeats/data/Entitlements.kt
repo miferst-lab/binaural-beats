@@ -6,7 +6,12 @@ package com.miferstlab.binauralbeats.data
  *
  * During trial: full app access (all modes, all ambients, unlimited listening).
  * After trial without Premium: playback blocked until purchase.
- * Purchased ([PRODUCT_ID_PREMIUM]): unlimited, no trial nag.
+ * Subscribed ([PRODUCT_ID_PREMIUM]): unlimited while the subscription is active.
+ *
+ * Interaction with the Play free-trial offer: the in-app 7 days (from install) are for users who
+ * never subscribed. The Play 7-day trial is only offered once the in-app trial has ended; while the
+ * in-app trial is still running, a user who subscribes early gets the plain base plan (no extra
+ * trial), so nobody gets 14 free days by accident.
  *
  * The old 30-minute per-session listen clock is retired.
  */
@@ -16,10 +21,14 @@ object Entitlements {
 
     /**
      * Google Play Billing product id for premium unlock.
-     * Create a non-consumable (or subscription) with this id in Play Console,
-     * then wire [com.miferstlab.binauralbeats.billing.BillingManager].
+     * Subscription with two base plans (monthly, yearly), each with a 7-day free-trial offer.
+     * See [com.miferstlab.binauralbeats.billing.BillingManager].
      */
-    const val PRODUCT_ID_PREMIUM: String = "binaural_premium_unlock"
+    const val PRODUCT_ID_PREMIUM: String = "binaural_premium"
+
+    /** Base plan ids inside the [PRODUCT_ID_PREMIUM] subscription (P1M / P1Y). */
+    const val BASE_PLAN_MONTHLY: String = "monthly"
+    const val BASE_PLAN_YEARLY: String = "yearly"
 
     /** SharedPreferences shared by the ViewModel and the playback service. */
     const val PREFS_NAME: String = "binaural"

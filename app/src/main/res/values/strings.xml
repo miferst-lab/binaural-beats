@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Binaural Waves</string>
     <string name="mode_relax">Relax</string>
     <string name="mode_focus">Focus</string>
@@ -65,11 +65,17 @@
     <string name="credits_open_link_cd">Open source page for %1$s</string>
 
     <string name="upgrade_premium">Upgrade to Premium</string>
+    <string name="plan_monthly_label">Monthly · %1$s / month</string>
+    <string name="plan_yearly_label">Yearly · %1$s / year</string>
+    <string name="plan_trial_note">%1$d days free, then %2$s. Cancel anytime in Google Play.</string>
+    <string name="billing_unavailable">Google Play subscription is not available right now (no connection, or the product is not published yet). Check your connection and try again later. Your free trial is not affected.</string>
+    <string name="billing_pending">Your subscription is pending. Premium unlocks as soon as the payment is completed.</string>
+    <string name="billing_failed">The subscription could not be completed. Please try again.</string>
 
     <string name="settings_section_premium">Premium</string>
     <string name="settings_premium_status_on">Premium unlocked</string>
-    <string name="settings_premium_status_off">Not purchased — 7-day full-access trial from install</string>
-    <string name="settings_premium_desc">The first 7 days give you the full app for free. After that, a one-time Premium purchase is required to keep listening.</string>
+    <string name="settings_premium_status_off">Not subscribed — 7-day full-access trial from install</string>
+    <string name="settings_premium_desc">The first 7 days give you the full app for free. After that, a Premium subscription (monthly or yearly, with a 7-day free trial) is required to keep listening.</string>
     <string name="settings_debug_unlock">Debug: allow premium unlock</string>
     <string name="settings_debug_unlock_desc">For testing without Play Billing. Turns on local purchase unlock.</string>
     <string name="settings_premium_active">You have Premium</string>
@@ -81,7 +87,7 @@
     </plurals>
     <string name="trial_expired_banner">Trial ended — purchase required</string>
     <string name="trial_expired_title">Trial ended</string>
-    <string name="trial_expired_message">Your free 7-day trial has ended. Unlock Premium to keep listening to binaural tones and ambients.</string>
+    <string name="trial_expired_message">Your free 7-day trial has ended. Subscribe to Premium to keep listening to binaural tones and ambients.</string>
     <string name="trial_expired_ok">OK</string>
     <string name="bg_restricted_title">Sound will stop with the screen off</string>
     <string name="bg_restricted_message">Battery usage for Binaural Waves is set to Restricted. Android then stops background playback a few minutes after the screen turns off. Open App info → Battery and choose Unrestricted (or Optimized).</string>

@@ -55,6 +55,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.miferstlab.binauralbeats.R
+import com.miferstlab.binauralbeats.ui.components.billingMessage
+import com.miferstlab.binauralbeats.ui.components.PremiumPlanButtons
+import com.miferstlab.binauralbeats.billing.PremiumPlan
 import com.miferstlab.binauralbeats.data.AmbientSound
 import com.miferstlab.binauralbeats.data.BinauralMode
 import com.miferstlab.binauralbeats.data.FrequencyMath
@@ -88,7 +91,7 @@ fun HomeScreen(
     onCustomBeat: (Float) -> Unit,
     onOpenSettings: () -> Unit,
     onDismissFreeLimit: () -> Unit = {},
-    onUpgradePremium: () -> Unit = {}
+    onUpgradePremium: (PremiumPlan) -> Unit = {}
 ) {
     val playPauseLabel = stringResource(
         if (state.isPlaying) R.string.pause else R.string.play
@@ -396,13 +399,18 @@ fun HomeScreen(
             AlertDialog(
                 onDismissRequest = onDismissFreeLimit,
                 title = { Text(stringResource(R.string.trial_expired_title)) },
-                text = { Text(stringResource(R.string.trial_expired_message)) },
-                confirmButton = {
-                    TextButton(onClick = onUpgradePremium) {
-                        Text(stringResource(R.string.upgrade_premium))
+                text = {
+                    Column {
+                        Text(stringResource(R.string.trial_expired_message))
+                        billingMessage(state)?.let {
+                            Spacer(Modifier.height(8.dp))
+                            Text(it, style = MaterialTheme.typography.bodySmall)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        PremiumPlanButtons(state, onUpgradePremium)
                     }
                 },
-                dismissButton = {
+                confirmButton = {
                     TextButton(onClick = onDismissFreeLimit) {
                         Text(stringResource(R.string.trial_expired_ok))
                     }

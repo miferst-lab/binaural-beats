@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.6.0
+
+- **Real Google Play Billing (billing library 8.3.0), as a subscription.** Subscription id `binaural_premium`
+  with base plans `monthly` (P1M) and `yearly` (P1Y), each with a 7-day free-trial offer. Prices are never
+  hardcoded: the paywall shows the localized price strings from Play `ProductDetails` at runtime; if Play or
+  the product is unavailable (offline, not created yet) a clear PL/EN message is shown and the trial is untouched.
+- `BillingManager` (testable via `BillingGateway` interface, unit-tested with a fake): connect with
+  exponential-backoff retry, query SUBS details, `launchBillingFlow` with the chosen plan's offer token,
+  acknowledge, restore/re-check on app start and every resume (`queryPurchasesAsync(SUBS)`). Premium only
+  while Play reports an active subscription (expiry, refund → locked again in release builds; offline keeps
+  last known state). PENDING purchases never unlock.
+- **Trial interaction:** the in-app 7 days from install stay for users who never subscribed. The Play free-trial
+  offer is only used once the in-app trial ended; subscribing during the in-app trial gets the plain base plan,
+  so nobody receives 14 free days by accident.
+- Debug premium switch and "Remove Premium (debug)" are gated by `BuildConfig.DEBUG`; release builds clear
+  any leftover debug flag and never honor it.
+- Release signing via git-ignored `keystore.properties` or env vars; R8 minify + resource shrinking enabled
+  for release (keep rules for billing, audio, service).
+- Version 1.6.0 (versionCode 12)
+
 ## 1.5.3
 
 - **Fix: ambient beds still stopped after the first pass on the owner's phone with 1.5.2.** The phone ran 1.5.0

@@ -13,6 +13,10 @@ data class PlaybackState(
     val ambientVolume: Float = 0.35f,
     /** SharedPreferences / Billing entitlement. */
     val isPremium: Boolean = false,
+    /** Plans with runtime prices from Play (empty until loaded / unavailable). */
+    val premiumPlans: List<com.miferstlab.binauralbeats.billing.PlanInfo> = emptyList(),
+    val billingStatus: com.miferstlab.binauralbeats.billing.BillingStatus =
+        com.miferstlab.binauralbeats.billing.BillingStatus.LOADING,
     /** Trial still active (computed; full access while true unless premium). */
     val isTrialActive: Boolean = true,
     /** Whole days left in trial (0 when expired / premium). */
