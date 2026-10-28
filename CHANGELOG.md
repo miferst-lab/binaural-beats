@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.1
+
+- Play Billing Library upgraded 8.3.0 → 9.1.0 (supported for new apps/updates until 31 Aug 2028); no API changes needed.
+- Version prepared for the Google Play closed test (subscription `binaural_premium`, base plans `monthly`/`yearly`, 7-day trial offers).
+
 ## 1.7.0
 
 - **New ambient category "Dark ambient" (PL "Mroczny ambient")** with 11 loops, 3–5 min each, all Freesound
